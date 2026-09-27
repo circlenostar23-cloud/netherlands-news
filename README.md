@@ -29,7 +29,7 @@ Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`
 3. Fill in the keys in `.env`, then run `./scripts/sync-secrets.sh` to push them as Actions secrets. The full list of **secrets** is:
    - `GEMINI_API_KEY`: from aistudio.google.com/apikey (free tier)
    - `ANTHROPIC_API_KEY`: optional, only if you switch the writer to Claude
-   - `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `EMAIL_TO`: create an app password at myaccount.google.com/apppasswords (2FA required)
+   - `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `EMAIL_TO`: optional. If any are missing, email is skipped. A Gmail app password grants full mailbox access, so the recommended backup is instead: on the repo page, **Watch → Custom → Releases**. GitHub then emails you each new episode, with the MP3 and the briefing as downloads.
    - `FEED_SECRET_PATH`: a random string, e.g. the output of `openssl rand -hex 12`
 4. Add a **variable** `SITE_BASE_URL` set to `https://circlenostar23-cloud.github.io/netherlands-news`.
 5. Go to **Actions → Daily episode → Run workflow** to test it.

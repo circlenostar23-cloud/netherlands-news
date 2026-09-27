@@ -70,10 +70,12 @@ def run(args) -> None:
     from nlnews import deliver, publish
     feed = None
     if not args.no_publish:
-        publish.upload_episode(f"ep-{day.isoformat()}", title, script.description, mp3, duration)
+        publish.upload_episode(f"ep-{day.isoformat()}", title, script.description, mp3, duration, briefing_md)
         print(f"  feed written: {publish.build_feed()}")
         feed = publish.feed_url()
-    if not args.no_email:
+    if args.no_email or not deliver.configured():
+        print("  email skipped (not configured)")
+    else:
         deliver.send_email(briefing, briefing_md, mp3, feed)
         print("  email sent")
 
@@ -86,7 +88,8 @@ def feed(_args) -> None:
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     logging.getLogger("httpx").setLevel(logging.WARNING)
-    logging.getLogger("trafilatura").setLevel(logging.ERROR)
+    for noisy in ("trafilatura", "urllib3", "courlan", "htmldate"):
+        logging.getLogger(noisy).setLevel(logging.ERROR)
 
     p = argparse.ArgumentParser(prog="nlnews")
     sub = p.add_subparsers(dest="cmd", required=True)

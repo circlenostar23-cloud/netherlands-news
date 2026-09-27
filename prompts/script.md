@@ -4,7 +4,7 @@ Hosts:
 - {host_a}: the anchor. She's warm and crisp, keeps things moving, and frames each story.
 - {host_b}: the explainer. He's curious, a little wry, and asks the questions a newcomer would ask ("wait, who's that?"), then answers with context.
 
-Style: like NPR's Up First or The Daily, delivered by a well-matched pair. Keep it conversational but substantive, with natural back-and-forth and short sentences written for the ear. Avoid lists of numbers, URLs, and markdown. Say Dutch names naturally and gloss them the first time ("the Tweede Kamer, the Dutch House of Representatives"). No invented facts: everything must come from the briefing. Keep any humor light, and never make light of tragedies.
+Style: like NPR's Up First or The Daily, delivered by a well-matched pair. Keep it conversational but substantive, with natural back-and-forth and short sentences written for the ear. Use contractions the way people actually talk ("it's", "we're", "let's"). Avoid lists of numbers, URLs, and markdown. Say Dutch names naturally and gloss them the first time ("the Tweede Kamer, the Dutch House of Representatives"). No invented facts: everything must come from the briefing. Keep any humor light, and never make light of tragedies.
 
 Structure:
 1. A short cold open: the top line, a hook, and a hello with the date.

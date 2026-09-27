@@ -1,5 +1,10 @@
-"""Backup delivery: email the MP3 + briefing via Gmail SMTP."""
+"""Optional email delivery via Gmail SMTP. Skipped unless GMAIL_* / EMAIL_TO are all set.
 
+The default backup channel is GitHub's own release notifications (see README), which
+needs no mailbox credentials.
+"""
+
+import os
 import smtplib
 from email.message import EmailMessage
 from pathlib import Path
@@ -8,10 +13,15 @@ from nlnews.config import SHOW_TITLE, require_env
 from nlnews.models import Briefing
 
 GMAIL_ATTACHMENT_LIMIT = 24 * 1024 * 1024
+REQUIRED = ("GMAIL_USER", "GMAIL_APP_PASSWORD", "EMAIL_TO")
+
+
+def configured() -> bool:
+    return all(os.environ.get(n) for n in REQUIRED)
 
 
 def send_email(briefing: Briefing, briefing_md: Path, mp3: Path | None, feed_url: str | None) -> None:
-    env = require_env("GMAIL_USER", "GMAIL_APP_PASSWORD", "EMAIL_TO")
+    env = require_env(*REQUIRED)
     msg = EmailMessage()
     msg["Subject"] = f"{SHOW_TITLE} — {briefing.date}"
     msg["From"] = env["GMAIL_USER"]

@@ -29,15 +29,18 @@ def _repo() -> str:
     return os.environ.get("GITHUB_REPOSITORY") or json.loads(_gh("repo", "view", "--json", "nameWithOwner"))["nameWithOwner"]
 
 
-def upload_episode(tag: str, title: str, description: str, mp3: Path, duration: int) -> None:
+def upload_episode(tag: str, title: str, description: str, mp3: Path, duration: int, briefing_md: Path) -> None:
+    """Create (or update) the episode's release. Watching the repo's releases on GitHub
+    turns this into an email notification with the MP3 and briefing attached as downloads."""
     meta = json.dumps({"duration": duration})
     notes = f"{description}\n\n<!-- nlnews {meta} -->"
+    assets = [str(mp3), f"{briefing_md}#Briefing (NotebookLM source)"]
     try:
         _gh("release", "view", tag, "--repo", _repo())
-        _gh("release", "upload", tag, str(mp3), "--clobber", "--repo", _repo())
+        _gh("release", "upload", tag, *assets, "--clobber", "--repo", _repo())
         _gh("release", "edit", tag, "--title", title, "--notes", notes, "--repo", _repo())
     except subprocess.CalledProcessError:
-        _gh("release", "create", tag, str(mp3), "--title", title, "--notes", notes, "--repo", _repo())
+        _gh("release", "create", tag, *assets, "--title", title, "--notes", notes, "--repo", _repo())
 
 
 def feed_url() -> str | None:
