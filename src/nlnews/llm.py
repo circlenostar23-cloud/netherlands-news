@@ -1,11 +1,14 @@
-"""Structured-output LLM calls. Gemini (free tier) by default; set NLNEWS_WRITER=claude to use Claude."""
+"""Structured-output LLM calls. See WRITER in config.py for the available backends."""
 
+import json
 import os
+import subprocess
+import tempfile
 from typing import TypeVar
 
 from pydantic import BaseModel
 
-from nlnews.config import CLAUDE_MODEL, GEMINI_TEXT_MODEL, WRITER
+from nlnews.config import CLAUDE_CODE_MODEL, CLAUDE_MODEL, GEMINI_TEXT_MODEL, WRITER
 
 T = TypeVar("T", bound=BaseModel)
 _clients: dict = {}
@@ -64,6 +67,42 @@ def _ask_claude(system: str, user: str, schema: type[T], effort: str, max_tokens
     return response.parsed_output
 
 
+def _ask_claude_code(system: str, user: str, schema: type[T], effort: str, max_tokens: int) -> T:
+    """Headless Claude Code (`claude -p`) — runs on a Claude subscription instead of API billing."""
+    cmd = [
+        "claude", "-p",
+        "--model", CLAUDE_CODE_MODEL,
+        "--effort", effort,
+        "--system-prompt", system,
+        "--json-schema", json.dumps(schema.model_json_schema()),
+        "--output-format", "json",
+        "--tools", "",
+        "--no-session-persistence",
+    ]
+    # Run from an empty dir so no project files or CLAUDE.md leak into the context
+    with tempfile.TemporaryDirectory() as cwd:
+        proc = subprocess.run(cmd, input=user, capture_output=True, text=True, cwd=cwd, timeout=900)
+    try:
+        out = json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        raise RuntimeError(f"claude CLI failed (exit {proc.returncode}): {proc.stderr[-500:] or proc.stdout[-500:]}")
+    if out.get("is_error"):
+        raise RuntimeError(f"claude CLI error: {out.get('result')}")
+    print(f"  [claude-code/{CLAUDE_CODE_MODEL}] {out.get('duration_ms', 0) / 1000:.0f}s")
+    if out.get("structured_output") is not None:
+        return schema.model_validate(out["structured_output"])
+    return schema.model_validate_json(out["result"])
+
+
+BACKENDS = {"claude-code": _ask_claude_code, "claude": _ask_claude, "gemini": _ask_gemini}
+
+
 def ask(system: str, user: str, schema: type[T], *, effort: str = "medium", max_tokens: int = 16000) -> T:
-    fn = _ask_claude if WRITER == "claude" else _ask_gemini
-    return fn(system, user, schema, effort, max_tokens)
+    try:
+        return BACKENDS[WRITER](system, user, schema, effort, max_tokens)
+    except Exception as exc:
+        if WRITER == "gemini":
+            raise
+        # Subscription limits or an expired token shouldn't cost you the morning episode
+        print(f"  {WRITER} failed ({exc}); falling back to Gemini")
+        return _ask_gemini(system, user, schema, effort, max_tokens)

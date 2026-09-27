@@ -15,8 +15,14 @@ TZ = ZoneInfo("Europe/Amsterdam")
 
 load_dotenv(ROOT / ".env")
 
-# Which model writes the briefing + script: "gemini" (free tier) or "claude" (paid API)
-WRITER = os.environ.get("NLNEWS_WRITER", "gemini")
+# Which model writes the briefing + script:
+#   "claude-code" — Claude via the Claude Code CLI on your Claude Pro/Max subscription
+#                   (needs CLAUDE_CODE_OAUTH_TOKEN from `claude setup-token`)
+#   "gemini"      — Gemini API free tier
+#   "claude"      — Claude API (paid separately from a subscription)
+# Defaults to claude-code when a subscription token is present, else gemini.
+WRITER = os.environ.get("NLNEWS_WRITER") or ("claude-code" if os.environ.get("CLAUDE_CODE_OAUTH_TOKEN") else "gemini")
+CLAUDE_CODE_MODEL = os.environ.get("NLNEWS_CLAUDE_CODE_MODEL", "opus")
 GEMINI_TEXT_MODEL = os.environ.get("NLNEWS_GEMINI_MODEL", "gemini-3.8-flash")
 CLAUDE_MODEL = os.environ.get("NLNEWS_CLAUDE_MODEL", "claude-sonnet-5")
 TTS_MODEL = os.environ.get("NLNEWS_TTS_MODEL", "gemini-3.8-flash-tts")

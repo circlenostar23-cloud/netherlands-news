@@ -27,6 +27,7 @@ jobs:
     environment:
       name: github-pages
     env:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       GMAIL_USER: ${{ secrets.GMAIL_USER }}
@@ -47,7 +48,9 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
 
       - name: Install
-        run: pip install -e .
+        run: |
+          pip install -e .
+          npm install -g @anthropic-ai/claude-code
 
       - name: Run pipeline
         run: python -m nlnews run ${{ inputs.no_email && '--no-email' || '' }}

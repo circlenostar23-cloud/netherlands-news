@@ -27,7 +27,8 @@ Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`
 1. Create the repo on **circlenostar23-cloud** and push.
 2. Go to **Settings → Pages → Source: GitHub Actions**.
 3. Fill in the keys in `.env`, then run `./scripts/sync-secrets.sh` to push them as Actions secrets. The full list of **secrets** is:
-   - `GEMINI_API_KEY`: from aistudio.google.com/apikey (free tier)
+   - `CLAUDE_CODE_OAUTH_TOKEN`: optional but recommended. Run `claude setup-token`. Claude (Opus, through Claude Code) then writes the briefing and script on your Claude Pro/Max subscription, with no API billing. If it fails, for example because you've hit your usage limit, the run falls back to Gemini.
+   - `GEMINI_API_KEY`: from aistudio.google.com/apikey (free tier). Used for the voices, and for writing when there's no Claude token.
    - `ANTHROPIC_API_KEY`: optional, only if you switch the writer to Claude
    - `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `EMAIL_TO`: optional. If any are missing, email is skipped. A Gmail app password grants full mailbox access, so the recommended backup is instead: on the repo page, **Watch → Custom → Releases**. GitHub then emails you each new episode, with the MP3 and the briefing as downloads.
    - `FEED_SECRET_PATH`: a random string, e.g. the output of `openssl rand -hex 12`
