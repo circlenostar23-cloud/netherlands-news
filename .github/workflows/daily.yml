@@ -1,0 +1,67 @@
+name: Daily episode
+
+on:
+  schedule:
+    # 04:30 UTC = 06:30 Amsterdam in summer (CEST), 05:30 in winter (CET)
+    - cron: "30 4 * * *"
+  workflow_dispatch:
+    inputs:
+      no_email:
+        description: "Skip email"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # create releases
+  pages: write
+  id-token: write
+
+concurrency:
+  group: daily-episode
+  cancel-in-progress: false
+
+jobs:
+  episode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: github-pages
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GMAIL_USER: ${{ secrets.GMAIL_USER }}
+      GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+      EMAIL_TO: ${{ secrets.EMAIL_TO }}
+      FEED_SECRET_PATH: ${{ secrets.FEED_SECRET_PATH }}
+      SITE_BASE_URL: ${{ vars.SITE_BASE_URL }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
+      - name: Install
+        run: pip install -e .
+
+      - name: Run pipeline
+        run: python -m nlnews run ${{ inputs.no_email && '--no-email' || '' }}
+
+      - name: Keep working files for debugging
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode-data
+          path: data/
+          retention-days: 7
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/
+      - uses: actions/deploy-pages@v4

@@ -1,0 +1,21 @@
+[project]
+name = "nlnews"
+version = "0.1.0"
+description = "Daily Dutch news, curated and translated into an English two-host podcast."
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=1.8",
+    "google-genai>=2.25",
+    "feedparser>=6.0",
+    "trafilatura>=2.0",
+    "pyyaml>=6.0",
+    "pydantic>=2.7",
+    "python-dotenv>=1.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

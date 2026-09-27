@@ -1,0 +1,20 @@
+# Feeds pulled each day. `section` drives future segmenting; `weight` nudges curation
+# toward more authoritative/general sources. All URLs verified 2026-09-27.
+sources:
+  # NOS — public broadcaster, the Dutch equivalent of NPR/BBC. Primary source.
+  - {name: NOS, url: "https://feeds.nos.nl/nosnieuwsalgemeen", lang: nl, section: national, weight: 1.0}
+  - {name: NOS, url: "https://feeds.nos.nl/nosnieuwsbinnenland", lang: nl, section: national, weight: 1.0}
+  - {name: NOS, url: "https://feeds.nos.nl/nosnieuwspolitiek", lang: nl, section: politics, weight: 1.0}
+  - {name: NOS, url: "https://feeds.nos.nl/nosnieuwseconomie", lang: nl, section: business, weight: 1.0}
+  - {name: NOS, url: "https://feeds.nos.nl/nosnieuwscultuurenmedia", lang: nl, section: culture, weight: 0.9}
+  - {name: NOS, url: "https://feeds.nos.nl/nosnieuwsbuitenland", lang: nl, section: world, weight: 0.8}
+  # NU.nl — largest Dutch news site.
+  - {name: NU.nl, url: "https://www.nu.nl/rss/Algemeen", lang: nl, section: national, weight: 0.9}
+  - {name: NU.nl, url: "https://www.nu.nl/rss/Politiek", lang: nl, section: politics, weight: 0.9}
+  - {name: NU.nl, url: "https://www.nu.nl/rss/Economie", lang: nl, section: business, weight: 0.9}
+  # Het Parool — Amsterdam's newspaper (paywalled; headlines + partial text).
+  - {name: Het Parool, url: "https://www.parool.nl/amsterdam/rss.xml", lang: nl, section: amsterdam, weight: 0.8}
+  # English-language outlets — useful for expat-relevant angles.
+  - {name: NL Times, url: "https://nltimes.nl/rss", lang: en, section: national, weight: 0.8}
+  - {name: NL Times, url: "https://nltimes.nl/rss/amsterdam", lang: en, section: amsterdam, weight: 0.8}
+  - {name: DutchNews.nl, url: "https://www.dutchnews.nl/feed/", lang: en, section: national, weight: 0.8}
