@@ -29,7 +29,10 @@ def write_briefing(day: date, selection: StorySelection, articles: list[Article]
         for aid in story.article_ids:
             if a := full.get(aid):
                 parts.append(f"\n--- {a.source} ({a.lang}) {a.url}\n{a.title}\n\n{a.full_text}")
-    return ask(load_prompt("write"), "\n".join(parts), Briefing, effort="medium", max_tokens=32000)
+    briefing = ask(load_prompt("write"), "\n".join(parts), Briefing, effort="medium", max_tokens=32000)
+    if len(briefing.stories) < len(selection.stories):
+        print(f"  warning: briefing covers {len(briefing.stories)} of {len(selection.stories)} selected stories")
+    return briefing
 
 
 def render_markdown(b: Briefing) -> str:
