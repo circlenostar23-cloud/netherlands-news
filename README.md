@@ -26,7 +26,7 @@ Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`
 
 1. Create the repo on **circlenostar23-cloud** and push.
 2. Go to **Settings → Pages → Source: GitHub Actions**.
-3. Go to **Settings → Secrets and variables → Actions** and add these **secrets**:
+3. Fill in the keys in `.env`, then run `./scripts/sync-secrets.sh` to push them as Actions secrets. The full list of **secrets** is:
    - `ANTHROPIC_API_KEY`: from console.anthropic.com
    - `GEMINI_API_KEY`: from aistudio.google.com/apikey
    - `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `EMAIL_TO`: create an app password at myaccount.google.com/apppasswords (2FA required)
