@@ -5,3 +5,4 @@ __pycache__/
 data/
 site/*/
 !site/cover.png
+compare/

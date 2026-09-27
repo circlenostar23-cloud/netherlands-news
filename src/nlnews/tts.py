@@ -1,4 +1,8 @@
-"""Voice the script with Gemini multi-speaker TTS, one request per segment, then stitch to MP3."""
+"""Voice the script with Gemini multi-speaker TTS, then stitch to MP3.
+
+The Gemini TTS free tier allows only 10 requests/day, so segments are packed into
+a few larger requests (~4 per episode) rather than one request per segment.
+"""
 
 import base64
 import logging
@@ -14,11 +18,27 @@ from nlnews.models import EpisodeScript, Segment
 
 log = logging.getLogger(__name__)
 SAMPLE_RATE = 24000  # Gemini TTS returns 16-bit mono PCM WAV at 24 kHz
+MAX_WORDS_PER_REQUEST = 600  # ~4 minutes of audio per request
 
 
-def _synthesize(client: genai.Client, segment: Segment) -> bytes:
+def _words(seg: Segment) -> int:
+    return sum(len(l.text.split()) for l in seg.lines)
+
+
+def _chunk(segments: list[Segment]) -> list[list[Segment]]:
+    """Group consecutive segments into requests of at most MAX_WORDS_PER_REQUEST words."""
+    chunks: list[list[Segment]] = []
+    for seg in segments:
+        if chunks and sum(map(_words, chunks[-1])) + _words(seg) <= MAX_WORDS_PER_REQUEST:
+            chunks[-1].append(seg)
+        else:
+            chunks.append([seg])
+    return chunks
+
+
+def _synthesize(client: genai.Client, segments: list[Segment]) -> bytes:
     content = []
-    for line in segment.lines:
+    for line in (l for seg in segments for l in seg.lines):
         meta = {"type": "speech_metadata", "speaker": line.speaker}
         if line.style:
             meta["style"] = line.style
@@ -58,12 +78,13 @@ def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> Path
     seg_dir = out_dir / "segments"
     seg_dir.mkdir(exist_ok=True)
 
+    chunks = _chunk(script.segments)
     wavs = []
-    for i, seg in enumerate(script.segments):
-        path = seg_dir / f"{i:02d}.wav"
-        if not path.exists():  # resumable: reuse segments from an earlier partial run
-            print(f"  TTS segment {i + 1}/{len(script.segments)}: {seg.title}")
-            path.write_bytes(_with_retries(lambda: _synthesize(client, seg)))
+    for i, chunk in enumerate(chunks):
+        path = seg_dir / f"chunk{i:02d}.wav"
+        if not path.exists():  # resumable: reuse audio from an earlier partial run
+            print(f"  TTS request {i + 1}/{len(chunks)}: {' / '.join(s.title for s in chunk)}")
+            path.write_bytes(_with_retries(lambda: _synthesize(client, chunk)))
         wavs.append(path)
 
     pause = seg_dir / "pause.wav"
