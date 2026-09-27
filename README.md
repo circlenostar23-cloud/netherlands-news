@@ -3,9 +3,9 @@
 A daily ~12-minute, two-host English podcast about news from the Netherlands, built for newcomers.
 
 ```
-RSS (NOS, NU.nl, Parool, NL Times, DutchNews) → cluster → Claude picks 6–9 stories
-  → Claude writes English briefing from full article text (briefing.md — NotebookLM-ready)
-  → Claude writes two-host script → Gemini multi-speaker TTS → episode.mp3
+RSS (NOS, NU.nl, Parool, NL Times, DutchNews) → cluster → LLM picks 6–9 stories
+  → LLM writes English briefing from full article text (briefing.md — NotebookLM-ready)
+  → LLM writes two-host script → Gemini multi-speaker TTS → episode.mp3
   → GitHub Release + private podcast feed (GitHub Pages) + email backup
 ```
 
@@ -27,8 +27,8 @@ Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`
 1. Create the repo on **circlenostar23-cloud** and push.
 2. Go to **Settings → Pages → Source: GitHub Actions**.
 3. Fill in the keys in `.env`, then run `./scripts/sync-secrets.sh` to push them as Actions secrets. The full list of **secrets** is:
-   - `ANTHROPIC_API_KEY`: from console.anthropic.com
-   - `GEMINI_API_KEY`: from aistudio.google.com/apikey
+   - `GEMINI_API_KEY`: from aistudio.google.com/apikey (free tier)
+   - `ANTHROPIC_API_KEY`: optional, only if you switch the writer to Claude
    - `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `EMAIL_TO`: create an app password at myaccount.google.com/apppasswords (2FA required)
    - `FEED_SECRET_PATH`: a random string, e.g. the output of `openssl rand -hex 12`
 4. Add a **variable** `SITE_BASE_URL` set to `https://circlenostar23-cloud.github.io/netherlands-news`.
@@ -43,6 +43,6 @@ The workflow runs daily at 04:30 UTC, which is 06:30 Amsterdam time in summer an
 
 - `sources.yaml`: add or remove feeds. `section` tags drive future segmenting.
 - `prompts/`: story selection, briefing style, and the hosts' voice and format.
-- `src/nlnews/config.py`: host names and voices (`HOSTS`) and the show title. Set `NLNEWS_MODEL` or `NLNEWS_TTS_MODEL` to swap models.
+- `src/nlnews/config.py`: host names and voices (`HOSTS`) and the show title. Set `NLNEWS_WRITER=claude` to write with Claude instead of Gemini (the Claude API is paid separately from a Claude Pro subscription, at about $0.10–0.30 per episode).
 
-Estimated cost is about $0.10–0.30 per episode (Claude Sonnet 5 plus Gemini TTS).
+**Cost:** $0 by default, since both writing (`gemini-3.8-flash`) and voices (`gemini-3.8-flash-tts`) run on the Gemini API free tier. On the free tier, Google may use your inputs to improve its products; that's fine here, because the inputs are published news articles.

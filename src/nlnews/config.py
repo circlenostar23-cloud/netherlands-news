@@ -15,7 +15,10 @@ TZ = ZoneInfo("Europe/Amsterdam")
 
 load_dotenv(ROOT / ".env")
 
-MODEL = os.environ.get("NLNEWS_MODEL", "claude-sonnet-5")
+# Which model writes the briefing + script: "gemini" (free tier) or "claude" (paid API)
+WRITER = os.environ.get("NLNEWS_WRITER", "gemini")
+GEMINI_TEXT_MODEL = os.environ.get("NLNEWS_GEMINI_MODEL", "gemini-3.8-flash")
+CLAUDE_MODEL = os.environ.get("NLNEWS_CLAUDE_MODEL", "claude-sonnet-5")
 TTS_MODEL = os.environ.get("NLNEWS_TTS_MODEL", "gemini-3.8-flash-tts")
 
 SHOW_TITLE = "Dutch Daily Briefing"
