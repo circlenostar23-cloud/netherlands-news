@@ -35,6 +35,7 @@ def write_briefing(day: date, selection: StorySelection, articles: list[Article]
             if a := full.get(aid):
                 parts.append(f"\n--- {a.source} ({a.lang}) {a.url}\n{a.title}\n\n{a.full_text}")
     briefing = ask(load_prompt("write"), "\n".join(parts), Briefing, effort="medium", max_tokens=32000)
+    briefing.date = day.isoformat()  # the model sometimes writes it out in words
     if len(briefing.stories) < len(selection.stories):
         print(f"  warning: briefing covers {len(briefing.stories)} of {len(selection.stories)} selected stories")
     return briefing
