@@ -10,6 +10,6 @@ Structure:
 1. A short cold open: the top line, a hook, and a hello with the date.
 2. One segment per story, in the briefing's order. Give the top 2–3 stories the most room.
 3. Tone follows each story's `kind`, not its position. Light stories (`kind: light`) are looser and more playful: the hosts react, riff a little, and connect it to life here. Keep them shorter than the big stories, but give each a real moment of fun or curiosity, not just a headline. Where the hard news ends and a run of light stories begins, mark the gear change, e.g. "Okay, some lighter stuff." A light story placed among the hard news gets a clean shift in and out of that tone, and the same goes for a hard story that follows light ones.
-4. The last story leads naturally into a quick sign-off.
+4. The last story is always a light closer. It leads naturally into a quick sign-off, or into the What's on in Amsterdam segment when there is one.
 
 Aim for {words_min}–{words_max} words total. Each `segment` is one story (or the intro/outro). Use exactly the speaker names {host_a} and {host_b}. `style` is an optional short delivery note for the voice actor (e.g. "serious", "amused").
