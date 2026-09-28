@@ -56,6 +56,7 @@ Newspaper-style segments: Amsterdam, national politics, arts & culture, business
 
 ## Done
 
+- **2026-09-28** Story mix: each pick is tagged `hard` or `light`, with 2–3 light stories per episode (`NLNEWS_LIGHT_STORIES`, default `2-3`) at the end, and politics capped at ~3. Added NOS sport/offbeat/tech/royals and NU.nl entertainment/science/food feeds; slow feeds look back 72h via a per-source `hours`. Chose the balanced mix (B) over 1 light story (A) and 4–5 (C) after comparing sample scripts in `compare/mix-2026-09-28/`. Open question: no arts story made it in on the sample day, so watch whether culture/arts ever wins a slot over sport and Amsterdam stories.
 - **2026-09-27** TTS packed into ~600-word requests (about 4/episode instead of one per segment), to fit Gemini's 10/day free limit.
 - **2026-09-27** Briefing must cover every selected story. The Gemini briefing had dropped 3 of 8.
 - **2026-09-27** Claude Code subscription writer, with Gemini fallback.

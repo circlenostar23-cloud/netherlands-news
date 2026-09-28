@@ -42,7 +42,7 @@ def run(args) -> None:
     selection = _cached(d / "selection.json", args.fresh,
                         lambda: curate.select_stories(cluster.cluster(articles)), StorySelection)
     for s in selection.stories:
-        print(f"  - [{s.section}] {s.working_title}")
+        print(f"  - [{s.kind}/{s.section}] {s.working_title}")
     briefing = _cached(d / "briefing.json", args.fresh,
                        lambda: curate.write_briefing(day, selection, articles), Briefing)
     briefing_md = d / "briefing.md"

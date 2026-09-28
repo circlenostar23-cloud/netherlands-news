@@ -35,7 +35,8 @@ def _published(entry) -> datetime | None:
         return None
 
 
-def _fetch_feed(src: Source, since: datetime) -> list[Article]:
+def _fetch_feed(src: Source, hours: int) -> list[Article]:
+    since = datetime.now(timezone.utc) - timedelta(hours=src.hours or hours)
     feed = feedparser.parse(src.url, agent=USER_AGENT)
     if feed.bozo and not feed.entries:
         log.warning("Feed failed: %s (%s)", src.url, feed.bozo_exception)
@@ -62,11 +63,10 @@ def _fetch_feed(src: Source, since: datetime) -> list[Article]:
 
 
 def fetch_all(hours: int = 26) -> list[Article]:
-    """All feed items from the last `hours`, deduplicated by URL."""
-    since = datetime.now(timezone.utc) - timedelta(hours=hours)
+    """All feed items from the last `hours` (or a source's own override), deduplicated by URL."""
     sources = load_sources()
     with ThreadPoolExecutor(max_workers=8) as pool:
-        batches = pool.map(lambda s: _fetch_feed(s, since), sources)
+        batches = pool.map(lambda s: _fetch_feed(s, hours), sources)
     seen: dict[str, Article] = {}
     for batch in batches:
         for a in batch:

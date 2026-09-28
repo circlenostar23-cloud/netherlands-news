@@ -6,12 +6,21 @@ sources:
   - {name: NOS, url: "https://feeds.nos.nl/nosnieuwsbinnenland", lang: nl, section: national, weight: 1.0}
   - {name: NOS, url: "https://feeds.nos.nl/nosnieuwspolitiek", lang: nl, section: politics, weight: 1.0}
   - {name: NOS, url: "https://feeds.nos.nl/nosnieuwseconomie", lang: nl, section: business, weight: 1.0}
-  - {name: NOS, url: "https://feeds.nos.nl/nosnieuwscultuurenmedia", lang: nl, section: culture, weight: 0.9}
+  - {name: NOS, url: "https://feeds.nos.nl/nosnieuwscultuurenmedia", lang: nl, section: culture, weight: 0.9, hours: 48}
   - {name: NOS, url: "https://feeds.nos.nl/nosnieuwsbuitenland", lang: nl, section: world, weight: 0.8}
+  # Lighter fare. The slow feeds (a few items a week) get a longer look-back via `hours`,
+  # since an offbeat or science story is still worth airing a few days later. Verified 2026-09-28.
+  - {name: NOS, url: "https://feeds.nos.nl/nossportalgemeen", lang: nl, section: sport, weight: 0.6}
+  - {name: NOS, url: "https://feeds.nos.nl/nosnieuwsopmerkelijk", lang: nl, section: offbeat, weight: 0.7, hours: 72}
+  - {name: NOS, url: "https://feeds.nos.nl/nosnieuwstech", lang: nl, section: tech, weight: 0.7, hours: 72}
+  - {name: NOS, url: "https://feeds.nos.nl/nosnieuwskoningshuis", lang: nl, section: culture, weight: 0.6, hours: 72}
   # NU.nl — largest Dutch news site.
   - {name: NU.nl, url: "https://www.nu.nl/rss/Algemeen", lang: nl, section: national, weight: 0.9}
   - {name: NU.nl, url: "https://www.nu.nl/rss/Politiek", lang: nl, section: politics, weight: 0.9}
   - {name: NU.nl, url: "https://www.nu.nl/rss/Economie", lang: nl, section: business, weight: 0.9}
+  - {name: NU.nl, url: "https://www.nu.nl/rss/Entertainment", lang: nl, section: culture, weight: 0.7}
+  - {name: NU.nl, url: "https://www.nu.nl/rss/Wetenschap", lang: nl, section: science, weight: 0.7, hours: 72}
+  - {name: NU.nl, url: "https://www.nu.nl/rss/Eten-en-drinken", lang: nl, section: culture, weight: 0.6, hours: 72}
   # Het Parool — Amsterdam's newspaper (paywalled; headlines + partial text).
   - {name: Het Parool, url: "https://www.parool.nl/amsterdam/rss.xml", lang: nl, section: amsterdam, weight: 0.8}
   # English-language outlets — useful for expat-relevant angles.

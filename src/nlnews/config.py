@@ -28,6 +28,8 @@ CLAUDE_MODEL = os.environ.get("NLNEWS_CLAUDE_MODEL", "claude-sonnet-5")
 TTS_MODEL = os.environ.get("NLNEWS_TTS_MODEL", "gemini-3.8-flash-tts")
 
 SHOW_TITLE = "Dutch Daily Briefing"
+# How many of each episode's stories are lighter fare (culture, sport, science, offbeat), as "min-max"
+LIGHT_STORIES = tuple(int(n) for n in os.environ.get("NLNEWS_LIGHT_STORIES", "2-3").split("-"))
 HOSTS = {
     # speaker name -> Gemini prebuilt voice
     "Maya": "Kore",
@@ -47,6 +49,7 @@ class Source:
     lang: str
     section: str
     weight: float = 1.0
+    hours: int | None = None  # look-back override for slow feeds whose stories stay fresh for days
 
 
 def load_sources() -> list[Source]:

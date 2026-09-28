@@ -8,7 +8,8 @@ Style: like NPR's Up First or The Daily, delivered by a well-matched pair. Keep 
 
 Structure:
 1. A short cold open: the top line, a hook, and a hello with the date.
-2. One segment per story, in the briefing's order. Give the top 2–3 stories more room and keep lighter stories brief.
-3. A quick sign-off.
+2. One segment per story, in the briefing's order. Give the top 2–3 hard-news stories the most room.
+3. After the hard news, a clear gear change into the lighter stories (`kind: light`), e.g. "Okay, some lighter stuff." These are looser and more playful: the hosts react, riff a little, and connect it to life here. Keep them shorter than the big stories, but give each a real moment of fun or curiosity, not just a headline.
+4. The last light story leads naturally into a quick sign-off.
 
 Aim for {words_min}–{words_max} words total. Each `segment` is one story (or the intro/outro). Use exactly the speaker names {host_a} and {host_b}. `style` is an optional short delivery note for the voice actor (e.g. "serious", "amused").

@@ -2,20 +2,25 @@
 
 from datetime import date
 
-from nlnews.config import load_prompt
+from nlnews.config import LIGHT_STORIES, load_prompt
 from nlnews.fetch import fetch_full_text
 from nlnews.llm import ask
 from nlnews.models import Article, Briefing, StorySelection
 
 
-def select_stories(groups: list[list[Article]], n_min: int = 6, n_max: int = 9) -> StorySelection:
+def select_stories(groups: list[list[Article]], n_min: int = 6, n_max: int = 9,
+                   light: tuple[int, int] = LIGHT_STORIES) -> StorySelection:
     lines = []
     for i, group in enumerate(groups):
         lines.append(f"## Cluster {i}")
         for a in group:
             lines.append(f"- [{a.id}] ({a.source}, {a.section}, {a.lang}) {a.title} — {a.summary[:200]}")
-    system = load_prompt("select").format(n_min=n_min, n_max=n_max)
-    return ask(system, "\n".join(lines), StorySelection, effort="medium")
+    system = load_prompt("select").format(n_min=n_min, n_max=n_max, light_min=light[0], light_max=light[1])
+    selection = ask(system, "\n".join(lines), StorySelection, effort="medium")
+    n_light = sum(s.kind == "light" for s in selection.stories)
+    if not light[0] <= n_light <= light[1]:
+        print(f"  warning: {n_light} light stories picked; wanted {light[0]}-{light[1]}")
+    return selection
 
 
 def write_briefing(day: date, selection: StorySelection, articles: list[Article]) -> Briefing:
@@ -25,7 +30,7 @@ def write_briefing(day: date, selection: StorySelection, articles: list[Article]
 
     parts = [f"Date: {day.strftime('%A %d %B %Y')}"]
     for n, story in enumerate(selection.stories, 1):
-        parts.append(f"\n# Story {n}: {story.working_title} (section: {story.section})")
+        parts.append(f"\n# Story {n}: {story.working_title} (section: {story.section}, kind: {story.kind})")
         for aid in story.article_ids:
             if a := full.get(aid):
                 parts.append(f"\n--- {a.source} ({a.lang}) {a.url}\n{a.title}\n\n{a.full_text}")
