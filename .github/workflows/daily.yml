@@ -2,8 +2,11 @@ name: Daily episode
 
 on:
   schedule:
-    # 04:30 UTC = 06:30 Amsterdam in summer (CEST), 05:30 in winter (CET)
-    - cron: "30 4 * * *"
+    # Target 04:13 Amsterdam year-round. Cron is UTC-only, so both slots are
+    # scheduled and the gate job keeps whichever matches the current offset:
+    # 02:13 UTC in summer (CEST, +02:00), 03:13 UTC in winter (CET, +01:00).
+    - cron: "13 2 * * *"
+    - cron: "13 3 * * *"
   workflow_dispatch:
     inputs:
       no_email:
@@ -21,7 +24,25 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.check.outputs.run }}
+    steps:
+      - id: check
+        run: |
+          offset=$(TZ=Europe/Amsterdam date +%z)
+          case "${{ github.event.schedule }}" in
+            "13 2 * * *") [ "$offset" = "+0200" ] && run=true || run=false ;;
+            "13 3 * * *") [ "$offset" = "+0100" ] && run=true || run=false ;;
+            *) run=true ;;  # manual dispatch
+          esac
+          echo "Amsterdam offset $offset, schedule '${{ github.event.schedule }}' -> run=$run"
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+
   episode:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment:

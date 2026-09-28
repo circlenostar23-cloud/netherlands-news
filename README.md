@@ -36,7 +36,7 @@ Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`
 5. Go to **Actions → Daily episode → Run workflow** to test it.
 6. Subscribe. In Apple Podcasts: **Library → ⋯ → Follow a Show by URL**, then paste `<SITE_BASE_URL>/<FEED_SECRET_PATH>/feed.xml`. Overcast and Pocket Casts support adding a feed by URL too.
 
-The workflow runs daily at 04:30 UTC, which is 06:30 Amsterdam time in summer and 05:30 in winter.
+The workflow runs daily at 04:13 Amsterdam time, all year round. Cron only supports UTC, so it has two UTC schedules, and a gate job skips whichever one does not match the current daylight-saving offset.
 
 **Privacy note:** the feed is *unlisted*, not private. Its URL is unguessable and `itunes:block` keeps it out of directories, but on a public repo the release MP3s are visible to anyone who browses it. It's fine for personal use; don't share it publicly.
 
