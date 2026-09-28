@@ -27,6 +27,7 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 - **Per-source caps:** today `weight` is only a hint to the model and doesn't limit how many items a source contributes.
 
 ### Full text for NU.nl and Het Parool
+*The research pass now fills the worst gaps (e.g. missing names) from other sites, but the writer would still do better with the full article.*
 *Logged 2026-09-27*
 
 Both are DPG Media sites that redirect to a cookie-consent wall (`myprivacy.dpgmedia.nl`), so the pipeline only gets their RSS summaries. Parool is also paywalled. NOS provides full text, so this is lower priority.
@@ -56,6 +57,7 @@ Newspaper-style segments: Amsterdam, national politics, arts & culture, business
 
 ## Done
 
+- **2026-09-28** Fact-check pass. The briefing writer lists each story's `open_questions` (missing facts, or where outlets disagree) instead of hedging in the text; `research.py` looks them up with web search (claude-code WebSearch/WebFetch) before the script is written, one call per story in parallel, and records cited answers as `findings` (shown as **Checked:** lines in `briefing.md`). The unresearched draft is cached as `briefing.draft.json`. Each lookup is capped at 4 min with no Gemini fallback, and a failed lookup keeps the story as written, so research can delay the run by ~4 min at most but never fail it. The script prompt now bans on-air talk about "the write-up"/"our sources" and gets the date spelled out (a test script had said 29 September on the 28th). Tested in `compare/mix-2026-09-28/research-test/`: 13 of 14 questions answered, including the Parool-only Bib Gourmand story and the NOS vs NL Times conflict over the Dutch Gaza-center staff. Watch: answers can vary between runs; some citations are Wikipedia or partisan outlets; scripts ran ~2,300 words. Untested: Gemini's search tool (hit a 429), and the first run in Actions.
 - **2026-09-28** Apple Podcasts "can't play on this device" fixed. The feed linked to GitHub release downloads, which redirect to signed URLs that expire (~40 min) and are served as `application/octet-stream` attachments; Apple caches the redirect, so playback failed until a restart. MP3s are now copied to Pages at `<secret>/episodes/<tag>.mp3` and the feed points there. Verified on the phone with a test episode. Manual runs gained a `feed_only` input to rebuild and redeploy the feed without a new episode.
 - **2026-09-28** Story mix: each pick is tagged `hard` or `light`, with 2–3 light stories per episode (`NLNEWS_LIGHT_STORIES`, default `2-3`) at the end, and politics capped at ~3. Added NOS sport/offbeat/tech/royals and NU.nl entertainment/science/food feeds; slow feeds look back 72h via a per-source `hours`. Chose the balanced mix (B) over 1 light story (A) and 4–5 (C) after comparing sample scripts in `compare/mix-2026-09-28/`. Open question: no arts story made it in on the sample day, so watch whether culture/arts ever wins a slot over sport and Amsterdam stories.
 - **2026-09-27** TTS packed into ~600-word requests (about 4/episode instead of one per segment), to fit Gemini's 10/day free limit.

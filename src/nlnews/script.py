@@ -1,5 +1,7 @@
 """Turn the briefing into a two-host episode script."""
 
+from datetime import date
+
 from nlnews.config import HOSTS, SHOW_TITLE, load_prompt
 from nlnews.llm import ask
 from nlnews.models import Briefing, EpisodeScript
@@ -9,6 +11,7 @@ def write_script(briefing: Briefing, words: tuple[int, int] = (1800, 2200)) -> E
     host_a, host_b = HOSTS
     system = load_prompt("script").format(
         show=SHOW_TITLE, host_a=host_a, host_b=host_b, words_min=words[0], words_max=words[1],
+        today=date.fromisoformat(briefing.date).strftime("%A %-d %B %Y"),
     )
     if briefing.agenda:
         system += load_prompt("agenda_segment")

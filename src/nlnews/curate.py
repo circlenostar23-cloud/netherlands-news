@@ -48,6 +48,9 @@ def render_markdown(b: Briefing) -> str:
                 s.summary, "", f"**Context for newcomers:** {s.context}", ""]
         if s.key_terms:
             out += ["**Key terms:** " + "; ".join(s.key_terms), ""]
+        for f in s.findings:
+            answer = f"{f.answer} ({', '.join(f.sources)})" if f.answer and f.sources else "not confirmed"
+            out += [f"**Checked:** {f.question} → {answer}", ""]
         out += [f"- {u}" for u in s.urls] + [""]
     if b.agenda:
         out += [f"## What's on in Amsterdam ({b.agenda.window})", ""]

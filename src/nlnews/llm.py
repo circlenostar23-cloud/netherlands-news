@@ -30,7 +30,8 @@ def _inline_refs(schema: dict) -> dict:
     return walk(schema)
 
 
-def _ask_gemini(system: str, user: str, schema: type[T], effort: str, max_tokens: int) -> T:
+def _ask_gemini(system: str, user: str, schema: type[T], effort: str, max_tokens: int, web: bool,
+                timeout: int) -> T:
     from google import genai
 
     client = _clients.setdefault("gemini", genai.Client(api_key=os.environ.get("GEMINI_API_KEY")))
@@ -41,13 +42,18 @@ def _ask_gemini(system: str, user: str, schema: type[T], effort: str, max_tokens
         response_format={"type": "text", "mime_type": "application/json",
                          "schema": _inline_refs(schema.model_json_schema())},
         generation_config={"thinking_level": effort, "max_output_tokens": max_tokens},
+        **({"tools": [{"type": "google_search"}]} if web else {}),
     )
     print(f"  [{GEMINI_TEXT_MODEL}]")
     return schema.model_validate_json(interaction.output_text)
 
 
-def _ask_claude(system: str, user: str, schema: type[T], effort: str, max_tokens: int) -> T:
+def _ask_claude(system: str, user: str, schema: type[T], effort: str, max_tokens: int, web: bool,
+                timeout: int) -> T:
     import anthropic
+
+    if web:
+        raise RuntimeError("web search isn't wired up for the Claude API backend")
 
     client = _clients.setdefault("claude", anthropic.Anthropic())
     response = client.messages.parse(
@@ -67,7 +73,8 @@ def _ask_claude(system: str, user: str, schema: type[T], effort: str, max_tokens
     return response.parsed_output
 
 
-def _ask_claude_code(system: str, user: str, schema: type[T], effort: str, max_tokens: int) -> T:
+def _ask_claude_code(system: str, user: str, schema: type[T], effort: str, max_tokens: int, web: bool,
+                     timeout: int) -> T:
     """Headless Claude Code (`claude -p`) — runs on a Claude subscription instead of API billing."""
     cmd = [
         "claude", "-p",
@@ -76,12 +83,12 @@ def _ask_claude_code(system: str, user: str, schema: type[T], effort: str, max_t
         "--system-prompt", system,
         "--json-schema", json.dumps(schema.model_json_schema()),
         "--output-format", "json",
-        "--tools", "",
+        *(["--tools", "WebSearch,WebFetch", "--allowedTools", "WebSearch,WebFetch"] if web else ["--tools", ""]),
         "--no-session-persistence",
     ]
     # Run from an empty dir so no project files or CLAUDE.md leak into the context
     with tempfile.TemporaryDirectory() as cwd:
-        proc = subprocess.run(cmd, input=user, capture_output=True, text=True, cwd=cwd, timeout=900)
+        proc = subprocess.run(cmd, input=user, capture_output=True, text=True, cwd=cwd, timeout=timeout)
     try:
         out = json.loads(proc.stdout)
     except json.JSONDecodeError:
@@ -97,12 +104,15 @@ def _ask_claude_code(system: str, user: str, schema: type[T], effort: str, max_t
 BACKENDS = {"claude-code": _ask_claude_code, "claude": _ask_claude, "gemini": _ask_gemini}
 
 
-def ask(system: str, user: str, schema: type[T], *, effort: str = "medium", max_tokens: int = 16000) -> T:
+def ask(system: str, user: str, schema: type[T], *, effort: str = "medium", max_tokens: int = 16000,
+        web: bool = False, timeout: int = 900, fallback: bool = True) -> T:
+    """`web=True` lets the model search and read the web before answering. `timeout` (seconds) only
+    bounds the claude-code backend; `fallback=False` skips the Gemini retry when a call fails."""
     try:
-        return BACKENDS[WRITER](system, user, schema, effort, max_tokens)
+        return BACKENDS[WRITER](system, user, schema, effort, max_tokens, web, timeout)
     except Exception as exc:
-        if WRITER == "gemini":
+        if WRITER == "gemini" or not fallback:
             raise
         # Subscription limits or an expired token shouldn't cost you the morning episode
         print(f"  {WRITER} failed ({exc}); falling back to Gemini")
-        return _ask_gemini(system, user, schema, effort, max_tokens)
+        return _ask_gemini(system, user, schema, effort, max_tokens, web, timeout)

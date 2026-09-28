@@ -28,7 +28,7 @@ def _cached(path: Path, fresh: bool, build, model):
 
 
 def run(args) -> None:
-    from nlnews import agenda as agendamod, cluster, curate, fetch, script as scriptmod
+    from nlnews import agenda as agendamod, cluster, curate, fetch, research, script as scriptmod
 
     day = date.fromisoformat(args.date) if args.date else datetime.now(TZ).date()
     d = day_dir(day)
@@ -43,8 +43,9 @@ def run(args) -> None:
                         lambda: curate.select_stories(cluster.cluster(articles)), StorySelection)
     for s in selection.stories:
         print(f"  - [{s.kind}/{s.section}] {s.working_title}")
-    briefing = _cached(d / "briefing.json", args.fresh,
-                       lambda: curate.write_briefing(day, selection, articles), Briefing)
+    draft = lambda: _cached(d / "briefing.draft.json", args.fresh,
+                            lambda: curate.write_briefing(day, selection, articles), Briefing)
+    briefing = _cached(d / "briefing.json", args.fresh, lambda: research.fill_gaps(day, draft()), Briefing)
     if not briefing.agenda:
         briefing.agenda = agendamod.build(day)
         (d / "briefing.json").write_text(briefing.model_dump_json(indent=2))

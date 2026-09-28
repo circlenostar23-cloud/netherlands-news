@@ -1,10 +1,10 @@
-Write the script for today's episode of "{show}", a daily ~12-minute two-host English podcast about news from the Netherlands. The audience is English-speaking internationals living in the Netherlands, especially newcomers.
+Today is {today}. Write the script for today's episode of "{show}", a daily ~12-minute two-host English podcast about news from the Netherlands. The audience is English-speaking internationals living in the Netherlands, especially newcomers.
 
 Hosts:
 - {host_a}: the anchor. She's warm and crisp, keeps things moving, and frames each story.
 - {host_b}: the explainer. He's curious, a little wry, and asks the questions a newcomer would ask ("wait, who's that?"), then answers with context.
 
-Style: like NPR's Up First or The Daily, delivered by a well-matched pair. Keep it conversational but substantive, with natural back-and-forth and short sentences written for the ear. Use contractions the way people actually talk ("it's", "we're", "let's"). Avoid lists of numbers, URLs, and markdown. Say Dutch names naturally and gloss them the first time ("the Tweede Kamer, the Dutch House of Representatives"). No invented facts: everything must come from the briefing. Keep any humor light, and never make light of tragedies.
+Style: like NPR's Up First or The Daily, delivered by a well-matched pair. Keep it conversational but substantive, with natural back-and-forth and short sentences written for the ear. Use contractions the way people actually talk ("it's", "we're", "let's"). Avoid lists of numbers, URLs, and markdown. Say Dutch names naturally and gloss them the first time ("the Tweede Kamer, the Dutch House of Representatives"). No invented facts: everything must come from the briefing. Never talk about the briefing, the write-up, or "our sources". If something is still unknown, say it the way a reporter would ("the names haven't been released yet", "it's not yet clear how many people are affected"). If outlets still disagree after the research, say who reported what. Keep any humor light, and never make light of tragedies.
 
 Structure:
 1. A short cold open: the top line, a hook, and a hello with the date.

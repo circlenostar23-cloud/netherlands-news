@@ -42,6 +42,20 @@ class Story(BaseModel):
     key_terms: list[str] = Field(description="Dutch names/terms worth hearing pronounced, e.g. 'Tweede Kamer (House of Representatives)'")
     sources: list[str] = Field(description="Source outlet names used")
     urls: list[str]
+    open_questions: list[str] = Field(default=[], description="Facts a listener would want that the articles leave out, or where outlets disagree")
+    findings: list["Finding"] = Field(default=[], description="Filled in by the research pass; leave empty")
+
+
+class Finding(BaseModel):
+    question: str
+    answer: str = Field(description="What reliable sources say; empty if it couldn't be confirmed")
+    sources: list[str] = Field(description="URLs that support the answer")
+
+
+class ResearchedStory(BaseModel):
+    summary: str = Field(description="The story's summary, revised with what the research found")
+    context: str = Field(description="The story's context, revised only if the research changes it")
+    findings: list[Finding] = Field(description="One per open question, answered or not")
 
 
 class Event(BaseModel):
