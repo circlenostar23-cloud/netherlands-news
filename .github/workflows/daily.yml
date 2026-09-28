@@ -13,6 +13,10 @@ on:
         description: "Skip email"
         type: boolean
         default: false
+      feed_only:
+        description: "Only rebuild the feed and redeploy Pages (no new episode)"
+        type: boolean
+        default: false
 
 permissions:
   actions: read     # download artifacts from earlier runs
@@ -77,6 +81,7 @@ jobs:
       # Stages are cached per day in data/<date>/, so restoring a failed run's
       # working files lets a rerun skip finished stages and audio chunks.
       - name: Resume from today's last failed run
+        if: ${{ !inputs.feed_only }}
         run: |
           day=$(TZ=Europe/Amsterdam date +%F)
           prev=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow daily.yml -L 10 \
@@ -92,10 +97,15 @@ jobs:
           fi
 
       - name: Run pipeline
+        if: ${{ !inputs.feed_only }}
         run: python -m nlnews run ${{ inputs.no_email && '--no-email' || '' }}
 
+      - name: Rebuild feed only
+        if: ${{ inputs.feed_only }}
+        run: python -m nlnews feed
+
       - name: Keep working files for debugging
-        if: always()
+        if: ${{ always() && !inputs.feed_only }}
         uses: actions/upload-artifact@v4
         with:
           name: episode-data

@@ -3,6 +3,10 @@
 Each episode MP3 is stored as a GitHub Release asset (tag `ep-YYYY-MM-DD`). The feed is
 rebuilt from the release list every run, so there's no state to keep in the repo; the
 workflow then deploys `site/` to GitHub Pages.
+
+The feed's enclosures point at copies of the MP3s on Pages, not at the release assets:
+release downloads redirect to signed URLs that expire within minutes, and Apple Podcasts
+caches the redirect target, so playback later fails with "can't play on this device".
 """
 
 import json
@@ -50,7 +54,9 @@ def feed_url() -> str | None:
 
 def build_feed(max_episodes: int = 30) -> Path:
     env = require_env("SITE_BASE_URL", "FEED_SECRET_PATH")
-    base = env["SITE_BASE_URL"].rstrip("/")
+    base, secret = env["SITE_BASE_URL"].rstrip("/"), env["FEED_SECRET_PATH"]
+    episodes_dir = SITE_DIR / secret / "episodes"
+    episodes_dir.mkdir(parents=True, exist_ok=True)
     releases = json.loads(_gh("api", f"repos/{_repo()}/releases?per_page={max_episodes}"))
 
     rss = ET.Element("rss", {"version": "2.0"})
@@ -74,6 +80,11 @@ def build_feed(max_episodes: int = 30) -> Path:
         asset = next((a for a in rel["assets"] if a["name"].endswith(".mp3")), None)
         if not asset:
             continue
+        # Pages deploys replace the whole site, so every episode in the feed is copied each run
+        mp3 = episodes_dir / f"{rel['tag_name']}.mp3"
+        if not mp3.exists() or mp3.stat().st_size != asset["size"]:
+            _gh("release", "download", rel["tag_name"], "--pattern", asset["name"],
+                "--output", str(mp3), "--clobber", "--repo", _repo())
         m = META.search(rel.get("body") or "")
         meta = json.loads(m.group(1)) if m else {}
         desc = META.sub("", rel.get("body") or "").strip()
@@ -83,12 +94,11 @@ def build_feed(max_episodes: int = 30) -> Path:
         ET.SubElement(item, "guid", {"isPermaLink": "false"}).text = rel["tag_name"]
         published = datetime.fromisoformat(rel["published_at"].replace("Z", "+00:00"))
         ET.SubElement(item, "pubDate").text = format_datetime(published)
-        ET.SubElement(item, "enclosure", {"url": asset["browser_download_url"],
-                                          "length": str(asset["size"]), "type": "audio/mpeg"})
+        ET.SubElement(item, "enclosure", {"url": f"{base}/{secret}/episodes/{mp3.name}",
+                                          "length": str(mp3.stat().st_size), "type": "audio/mpeg"})
         if "duration" in meta:
             ET.SubElement(item, f"{{{ITUNES}}}duration").text = str(meta["duration"])
 
-    out = SITE_DIR / env["FEED_SECRET_PATH"] / "feed.xml"
-    out.parent.mkdir(parents=True, exist_ok=True)
+    out = SITE_DIR / secret / "feed.xml"
     ET.ElementTree(rss).write(out, encoding="utf-8", xml_declaration=True)
     return out
