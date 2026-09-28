@@ -44,10 +44,30 @@ class Story(BaseModel):
     urls: list[str]
 
 
+class Event(BaseModel):
+    name: str = Field(description="Plain English name of the event or exhibition")
+    when: str = Field(description="Day(s) and time if known, e.g. 'Sunday 4 October, from 11:00'")
+    where: str = Field(description="Venue and neighbourhood, e.g. 'Hotel de Goudfazant, Amsterdam-Noord'")
+    price: str = Field(default="", description="e.g. 'free', 'from €10'; empty if the source doesn't say")
+    blurb: str = Field(description="1-2 sentences on what it is and why a newcomer might go")
+    note: str = Field(default="", description="Practical flag if any: 'free ticket required', 'mostly in Dutch', 'nearly sold out', 'final weekend'")
+    source: str
+
+
+class Agenda(BaseModel):
+    window: str = Field(description="The days covered, e.g. 'Thursday 1 to Sunday 4 October' or 'Wednesday 30 September'")
+    events: list[Event]
+
+
+class Shortlist(BaseModel):
+    ids: list[str] = Field(description="Bracketed IDs of the shortlisted events, best first")
+
+
 class Briefing(BaseModel):
     date: str
     top_line: str = Field(description="One-sentence summary of the day's biggest news")
     stories: list[Story]
+    agenda: Agenda | None = None  # "What's on in Amsterdam" picks, added after the briefing
 
 
 # --- Episode script ----------------------------------------------------------------

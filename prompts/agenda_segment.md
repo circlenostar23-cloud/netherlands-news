@@ -1,0 +1,3 @@
+
+
+What's on in Amsterdam: today's briefing includes an `agenda`. After the last story and before the sign-off, add a segment on top of the word target above. If the agenda covers several days, title it "This weekend in Amsterdam" and aim for 200–300 words; if it covers a single day, title it "What's on in Amsterdam today" and keep it to about 150 words at most, pitched as ideas for today and tonight. The hosts run through the picks like friends swapping plans: what it is, when and where (day, time if it matters, and neighbourhood, not street addresses), price if given, and any practical note, with the odd quick reaction in the hosts' own words. Keep it brisk and don't read it out as a list. Mention the venue once so listeners can look it up.

@@ -10,6 +10,8 @@ def write_script(briefing: Briefing, words: tuple[int, int] = (1800, 2200)) -> E
     system = load_prompt("script").format(
         show=SHOW_TITLE, host_a=host_a, host_b=host_b, words_min=words[0], words_max=words[1],
     )
+    if briefing.agenda:
+        system += load_prompt("agenda_segment")
     script = ask(system, briefing.model_dump_json(indent=2), EpisodeScript, effort="high", max_tokens=32000)
     unknown = {l.speaker for s in script.segments for l in s.lines} - set(HOSTS)
     if unknown:

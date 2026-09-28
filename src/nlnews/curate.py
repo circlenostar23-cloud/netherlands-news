@@ -49,4 +49,10 @@ def render_markdown(b: Briefing) -> str:
         if s.key_terms:
             out += ["**Key terms:** " + "; ".join(s.key_terms), ""]
         out += [f"- {u}" for u in s.urls] + [""]
+    if b.agenda:
+        out += [f"## What's on in Amsterdam ({b.agenda.window})", ""]
+        for e in b.agenda.events:
+            details = " · ".join(x for x in (e.when, e.where, e.price, e.note) if x)
+            out += [f"- **{e.name}** ({details}): {e.blurb} *[{e.source}]*"]
+        out.append("")
     return "\n".join(out)
