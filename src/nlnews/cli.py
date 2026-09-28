@@ -59,18 +59,23 @@ def run(args) -> None:
 
     from nlnews import tts
     title = f"{day.strftime('%a %d %b')}: {script.episode_title}"
-    mp3 = d / "episode.mp3"
+    mp3, voices_file = d / "episode.mp3", d / "voices.txt"
     if args.fresh or not mp3.exists():
-        tts.synthesize_episode(script, d, title)
+        _, voices = tts.synthesize_episode(script, d, title)
+        voices_file.write_text(voices)
+    voices = voices_file.read_text().strip() if voices_file.exists() else "gemini"
     duration = tts.duration_seconds(mp3)
-    print(f"  audio: {mp3} ({duration // 60}m{duration % 60:02d}s, {mp3.stat().st_size / 1e6:.1f} MB)")
+    print(f"  audio: {mp3} ({duration // 60}m{duration % 60:02d}s, {mp3.stat().st_size / 1e6:.1f} MB, {voices} voices)")
+    description = script.description
+    if voices == "fallback":
+        description += "\n\n(Voiced with backup Microsoft voices because Gemini's daily voice limit was reached.)"
     if args.stop_after == "audio":
         return
 
     from nlnews import deliver, publish
     feed = None
     if not args.no_publish:
-        publish.upload_episode(f"ep-{day.isoformat()}", title, script.description, mp3, duration, briefing_md)
+        publish.upload_episode(f"ep-{day.isoformat()}", title, description, mp3, duration, briefing_md)
         print(f"  feed written: {publish.build_feed()}")
         feed = publish.feed_url()
     if args.no_email or not deliver.configured():

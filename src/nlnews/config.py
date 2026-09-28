@@ -33,6 +33,11 @@ HOSTS = {
     "Maya": "Kore",
     "Sam": "Puck",
 }
+# Fallback voices (Microsoft neural, via edge-tts) when Gemini TTS fails, e.g. at its daily limit
+FALLBACK_VOICES = {
+    "Maya": "en-US-AvaMultilingualNeural",
+    "Sam": "en-US-AndrewMultilingualNeural",
+}
 
 
 @dataclass(frozen=True)

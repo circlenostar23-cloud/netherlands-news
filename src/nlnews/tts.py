@@ -1,9 +1,12 @@
 """Voice the script with Gemini multi-speaker TTS, then stitch to MP3.
 
 The Gemini TTS free tier allows only 10 requests/day, so segments are packed into
-a few larger requests (~4 per episode) rather than one request per segment.
+a few larger requests (~4 per episode) rather than one request per segment. If Gemini
+still fails (typically that daily limit), the whole episode is voiced line by line with
+Microsoft neural voices instead, so the hosts never change voice mid-episode.
 """
 
+import asyncio
 import base64
 import logging
 import os
@@ -11,9 +14,10 @@ import subprocess
 import time
 from pathlib import Path
 
+import edge_tts
 from google import genai
 
-from nlnews.config import HOSTS, TTS_MODEL
+from nlnews.config import FALLBACK_VOICES, HOSTS, TTS_MODEL
 from nlnews.models import EpisodeScript, Segment
 
 log = logging.getLogger(__name__)
@@ -62,7 +66,7 @@ def _with_retries(fn, attempts: int = 4):
         try:
             return fn()
         except Exception as exc:
-            if i == attempts - 1:
+            if i == attempts - 1 or "per day" in str(exc):  # a daily limit won't clear in seconds
                 raise
             wait = 2 ** (i + 2)
             log.warning("TTS attempt %d failed (%s); retrying in %ds", i + 1, exc, wait)
@@ -73,11 +77,14 @@ def _ffmpeg(*args: str) -> None:
     subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", *args], check=True)
 
 
-def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> Path:
-    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
-    seg_dir = out_dir / "segments"
-    seg_dir.mkdir(exist_ok=True)
+def _silence(path: Path, seconds: float) -> Path:
+    _ffmpeg("-f", "lavfi", "-i", f"anullsrc=r={SAMPLE_RATE}:cl=mono", "-t", str(seconds), "-c:a", "pcm_s16le", str(path))
+    return path
 
+
+def _gemini_wavs(script: EpisodeScript, seg_dir: Path) -> list[Path]:
+    """One WAV per request, with a pause between them."""
+    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
     chunks = _chunk(script.segments)
     wavs = []
     for i, chunk in enumerate(chunks):
@@ -86,22 +93,59 @@ def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> Path
             print(f"  TTS request {i + 1}/{len(chunks)}: {' / '.join(s.title for s in chunk)}")
             path.write_bytes(_with_retries(lambda: _synthesize(client, chunk)))
         wavs.append(path)
+    pause = _silence(seg_dir / "pause.wav", 0.7)
+    return [p for w in wavs for p in (w, pause)][:-1]
 
-    pause = seg_dir / "pause.wav"
-    _ffmpeg("-f", "lavfi", "-i", f"anullsrc=r={SAMPLE_RATE}:cl=mono", "-t", "0.7", "-c:a", "pcm_s16le", str(pause))
+
+async def _edge_line(text: str, voice: str, mp3: Path) -> None:
+    for i in range(4):
+        try:
+            return await edge_tts.Communicate(text, voice).save(str(mp3))
+        except Exception as exc:
+            if i == 3:
+                raise
+            log.warning("Fallback TTS attempt %d failed (%s); retrying", i + 1, exc)
+            await asyncio.sleep(2 ** (i + 1))
+
+
+def _fallback_wavs(script: EpisodeScript, seg_dir: Path) -> list[Path]:
+    """One WAV per line: a short gap between lines, a longer pause between segments."""
+    line_dir = seg_dir / "fallback"
+    line_dir.mkdir(exist_ok=True)
+    gap, pause = _silence(line_dir / "gap.wav", 0.25), _silence(line_dir / "pause.wav", 0.7)
+    out, n = [], 0
+    for si, seg in enumerate(script.segments):
+        print(f"  fallback TTS {si + 1}/{len(script.segments)}: {seg.title}")
+        for li, line in enumerate(seg.lines):
+            wav = line_dir / f"{n:03d}.wav"
+            if not wav.exists():  # resumable
+                mp3 = line_dir / f"{n:03d}.mp3"
+                asyncio.run(_edge_line(line.text, FALLBACK_VOICES[line.speaker], mp3))
+                _ffmpeg("-i", str(mp3), "-ar", str(SAMPLE_RATE), "-ac", "1", "-c:a", "pcm_s16le", str(wav))
+            out += [wav, gap if li < len(seg.lines) - 1 else pause]
+            n += 1
+    return out[:-1]
+
+
+def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> tuple[Path, str]:
+    """Returns the MP3 and which voices were used: "gemini" or "fallback"."""
+    seg_dir = out_dir / "segments"
+    seg_dir.mkdir(exist_ok=True)
+    try:
+        parts, voices = _gemini_wavs(script, seg_dir), "gemini"
+    except Exception as exc:
+        print(f"  Gemini TTS failed ({exc}); falling back to Microsoft voices")
+        parts, voices = _fallback_wavs(script, seg_dir), "fallback"
 
     listing = out_dir / "concat.txt"
-    entries = []
-    for w in wavs:
-        entries += [f"file '{w.resolve()}'", f"file '{pause.resolve()}'"]
-    listing.write_text("\n".join(entries[:-1]) + "\n")
+    listing.write_text("".join(f"file '{p.resolve()}'\n" for p in parts))
 
     mp3 = out_dir / "episode.mp3"
     _ffmpeg("-f", "concat", "-safe", "0", "-i", str(listing),
             "-ac", "1", "-ar", "44100", "-b:a", "64k",
             "-metadata", f"title={title}", "-metadata", "artist=Dutch Daily Briefing",
             str(mp3))
-    return mp3
+    return mp3, voices
 
 
 def duration_seconds(path: Path) -> int:

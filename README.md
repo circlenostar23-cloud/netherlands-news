@@ -46,4 +46,4 @@ The workflow runs daily at 04:13 Amsterdam time, all year round. Cron only suppo
 - `prompts/`: story selection, briefing style, and the hosts' voice and format.
 - `src/nlnews/config.py`: host names and voices (`HOSTS`) and the show title. Set `NLNEWS_WRITER=claude` to write with Claude instead of Gemini (the Claude API is paid separately from a Claude Pro subscription, at about $0.10–0.30 per episode).
 
-**Cost:** $0 by default, since both writing (`gemini-3.8-flash`) and voices (`gemini-3.8-flash-tts`) run on the Gemini API free tier. On the free tier, Google may use your inputs to improve its products; that's fine here, because the inputs are published news articles.
+**Cost:** $0 by default, since both writing (`gemini-3.8-flash`) and voices (`gemini-3.8-flash-tts`) run on the Gemini API free tier. The voices free tier allows 10 requests a day. If Gemini TTS fails (usually that limit), the episode is voiced with free Microsoft neural voices instead (`FALLBACK_VOICES` in `config.py`, via edge-tts) and the show notes say so. On the free tier, Google may use your inputs to improve its products; that's fine here, because the inputs are published news articles.
