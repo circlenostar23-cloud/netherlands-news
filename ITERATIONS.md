@@ -4,24 +4,6 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 ## Backlog
 
-### Mixed-voice fallback: keep finished Gemini chunks, fill the rest with Microsoft
-*Logged 2026-10-01. On hold until checked against the local chat of 2026-09-27/28.*
-
-**Open question:** a local Claude Code chat on 2026-09-27 or 09-28 (the one that added the Microsoft fallback, commit `fe2312b`) may have discussed or agreed a mixed-voice fallback. Nothing in the repo reflects it: the commit message, the docstring at the top of `src/nlnews/tts.py`, and [docs/shorter-sunday-quality-episodes.md](docs/shorter-sunday-quality-episodes.md) all describe whole-episode fallback. The cloud sessions of 09-29 and 09-30 don't mention mixing either. The only "mix" decision on record is the story mix (2026-09-28 in **Done**). Check the local chat (`claude --resume` in the project folder on that machine) before building anything.
-
-**How it works today:** `synthesize_episode()` wraps all Gemini work in one `try`. Any failure (daily-limit 429, the 3-minute request timeout, the 20-minute `GEMINI_BUDGET`, connection resets) throws away the Gemini chunks already made and voices the **whole** episode line by line with edge-tts (Ava / Andrew), so the hosts never change voice mid-episode. On 2026-10-01 the failed 04:13 run had finished 4 of 6 Gemini chunks; a rerun picked them up only because Gemini recovered.
-
-**Proposed change (not built):**
-- In the fallback, reuse every `chunkNN.wav` that exists and voice only the missing chunks' segments with edge-tts. Chunks are whole segments, so the switch always falls between stories, never mid-sentence.
-- Add a short spoken handoff where the voices change (e.g. "our backup voices take it from here") so it doesn't sound like a glitch.
-- Return a third value from `synthesize_episode()`, e.g. `"mixed"`, alongside `"gemini"` and `"fallback"`, and handle it in `src/nlnews/cli.py`.
-
-**Trade-offs:**
-- **For:** more of the episode in the better Gemini voices, and a faster fallback (fewer lines to voice), which leaves more slack in the 45-minute job limit.
-- **Against:** the hosts audibly change partway through. That was the reason for whole-episode fallback in `fe2312b`.
-
-**Fix either way:** the show-notes line in `src/nlnews/cli.py` says the Microsoft voices were used "because Gemini's daily voice limit was reached". Since 2026-10-01 the fallback can also be triggered by timeouts, so that wording can now be wrong. Make it generic ("because Gemini's voices were unavailable"), plus a "partly voiced" variant if mixing ships.
-
 ### Gemini voices sound worse in packed TTS requests
 *Logged 2026-09-29*
 
@@ -51,6 +33,15 @@ Only the 04:13 job exists, so when that run fails (as on 2026-10-01) nothing ret
 *Logged 2026-09-29*
 
 The fine-grained PAT that cron-job.org uses to start `episode.yml` was created on 2026-09-29 with a 90-day expiry, so it stops working on **2026-12-28**. Once it lapses, the daily trigger (and the backup, once set up) gets `401` and no episode is made, with no error on the GitHub side. Renew it a week or so early: create a new fine-grained PAT (**Actions: read and write** on this repo only), paste it into the `Authorization: Bearer` header of every cron-job.org job, check that a test run returns `204`, then revoke the old token. Setup details are in the README under **Scheduling**.
+
+### Match loudness when an episode mixes Gemini and Microsoft voices
+*Logged 2026-09-28*
+
+**Context:** when Gemini TTS fails partway through (daily limit, timeout or the 20-minute budget), the rest of the episode is voiced with Microsoft voices (edge-tts), so one episode can contain both engines. In a test with a stand-in for Gemini (macOS `say`), the two halves came out 1.5 LUFS apart (-16.6 vs -18.1), about the threshold where most listeners notice. The gap with real Gemini audio is unmeasured.
+
+**Proposed fix (tested, not shipped):** add `"-af", "loudnorm=I=-16:TP=-1.5:LRA=11"` to the final ffmpeg call in `tts.synthesize_episode`. That brings every episode to the podcast standard of -16 LUFS and evens out the two engines. It also changes all-Gemini episodes, which is why it was held back.
+
+**Trigger:** ship it if a real mixed episode has an audible volume jump at the switch.
 
 ### Test voicing the whole episode in one TTS request
 *Logged 2026-09-27*
@@ -105,6 +96,7 @@ Newspaper-style segments: Amsterdam, national politics, arts & culture, business
 
 ## Done
 
+- **2026-10-01** Mixed-voice fallback. When Gemini TTS fails partway, the episode keeps the Gemini chunks already made and only the remaining segments are voiced with Microsoft voices (Ava / Andrew); before, any failure re-voiced the whole episode. Decided on 2026-09-28 in a local chat: David preferred the better Gemini voices for as long as they last over hosts that never change voice. It was built that day on the local branch `tts-partial-fallback`, but the scheduled merge of 2026-09-29 stopped before merging and the branch was never pushed, which is why a cloud session on 2026-10-01 logged it as an open question. Rebased on 2026-10-01 onto the timeout work: a daily-limit error, a request that fails 3 times (180 s timeout each) or the 20-minute `GEMINI_BUDGET` all stop further Gemini requests, and the rest goes to Microsoft. Chunks end on segment boundaries, so the switch falls in the 0.7 s pause between stories. `synthesize_episode()` returns `gemini`, `mixed` or `fallback`; the show notes say "Partly voiced" or "Voiced with backup Microsoft voices because Gemini's voices were unavailable" (the old wording blamed the daily limit, which is wrong for timeouts). Tested on the 09-28 script (5 chunks) with macOS `say` standing in for Gemini, so no real Gemini requests: no failure gives `gemini`; daily limit on chunk 3 gives `mixed` after 3 requests; daily limit on chunk 1 gives `fallback` after 1; connection resets from chunk 3 give `mixed` after 3 tries on that chunk; budget used up after chunk 2 gives `mixed` with no further requests. A rerun over a mixed episode re-voices nothing while Gemini is still down, and replaces the Microsoft part with Gemini once it recovers. Not built: a spoken handoff line at the switch (a cloud-session idea, never requested) and loudness matching (backlog item above). Watch: how the first real mixed episode sounds at the switch, and that an episode can go Gemini, Microsoft, Gemini if a rerun finds later chunks saved.
 - **2026-10-01** Gemini TTS requests time out after 3 min. The 04:13 run was cancelled at the 30-minute job limit: Gemini requests hung ~4 min each before failing with "Connection reset by peer" (not the daily quota, which raises at once), and 4 tries per chunk used up the clock. Each request now has a 180 s client timeout and 3 tries, so a stuck chunk gives up in ~9.5 min and the Microsoft fallback voices the episode. All Gemini requests together also get a 20-minute budget (`GEMINI_BUDGET`): a run where every chunk fails twice and then succeeds would otherwise take ~45 min for 6 chunks and still miss the job limit. No Google status page or outage report covered the 02:14–02:43 UTC window; two hours later the same requests took ~40 s each. Job limit raised to 45 min, and `PYTHONUNBUFFERED=1` so the pipeline's progress lines show in the Actions log (they were missing). The 06:00 cron-job.org backup didn't fire because it was never set up (see the open item above); the episode was published by a manual rerun at 04:26 UTC that resumed from the failed run's audio.
 - **2026-09-29** Scheduling moved to cron-job.org. GitHub's `schedule` trigger never fired, not once since the repo was created. That included the original `30 4` cron, the `13 2`/`13 3` pair, the same cron re-saved under the account's noreply email, and a bare `*/5` probe workflow. On the same morning, `workflow_dispatch` runs from 05:09 UTC sat queued with no jobs (GitHub reported one as both completed and queued) while githubstatus.com showed no incident. Now cron-job.org POSTs to the dispatches API at 04:13 Amsterdam time (setup in README); the planned 06:00 backup job was not created. The gate skips when today's release already exists, and a `force` input overrides that. The concurrency group was renamed to `daily-episode-v2` while testing the stuck queue; that didn't help. What fixed it was copying the workflow to a new file, `episode.yml`: its runs start straight away, while `daily.yml`'s stuck runs couldn't even be force-cancelled. `daily.yml` is deleted. Watch: whether the 2026-09-30 04:13 run gets a runner.
 - **2026-09-29** Follow-ups instead of repeats. The 09-29 episode re-told the Ramallah expulsion and re-ran the same electricity and fuel-tourism figures from 09-28. `previous.py` now loads the last 2 days' published briefings (the `briefing.md` release asset; `data/` doesn't survive between Actions runs), cached as `previous.json`. Articles those episodes already used are dropped before clustering. The selector sees what was covered, and an old story comes back only with a real development (`follow_up_of`). The writer gets the earlier summary and writes just the new part, plus a one-line `previously` recap; the hosts frame it as an update and keep it short. Tested on 09-29's news in the scratchpad: the petrol/electricity rehash was dropped, the Ramallah and budget stories came back as updates (250 and 464 words), and a youth-prisons and an Amsterdam-debt story filled the freed room. Watch: whether "real development" is judged too loosely (the German ICC visit counted as a follow-up), and whether a story from 3+ days ago slips back in.

@@ -79,8 +79,9 @@ def run(args) -> None:
     duration = tts.duration_seconds(mp3)
     print(f"  audio: {mp3} ({duration // 60}m{duration % 60:02d}s, {mp3.stat().st_size / 1e6:.1f} MB, {voices} voices)")
     description = script.description
-    if voices == "fallback":
-        description += "\n\n(Voiced with backup Microsoft voices because Gemini's daily voice limit was reached.)"
+    if voices in ("fallback", "mixed"):
+        part = "Partly voiced" if voices == "mixed" else "Voiced"
+        description += f"\n\n({part} with backup Microsoft voices because Gemini's voices were unavailable.)"
     if args.stop_after == "audio":
         return
 
