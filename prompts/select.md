@@ -13,4 +13,6 @@ Other rules:
 - Skip crime blotter items, traffic incidents, gossip about celebrities' private lives, routine match results, and "live blog" or "morning briefing" roundup posts.
 - One story can span several articles and outlets, including across languages. Merge them and list every relevant article ID.
 
-Order: hard news first, most important first. Then the lighter stories, ending on the one that makes the best closer.
+`kind` is a label, not a rank. Judge every story on how much it matters to people here today, whatever its kind: a light story that would lead the NOS Journaal tonight is never left out or pushed down for being light. It doesn't count against the hard-news slots either; the light quota only guarantees the show isn't all heavy.
+
+Order: by newsworthiness, most important first, regardless of kind. A light story that's genuinely the day's big talking point (Oranje reaching a final, a lost Rembrandt found in an attic) can lead the show or sit among the hard news; don't move one up just to break up the heavy stuff. The one fixed slot: the light story that makes the best closer goes last.
