@@ -15,6 +15,7 @@ on:
         default: false
 
 permissions:
+  actions: read     # download artifacts from earlier runs
   contents: write   # create releases
   pages: write
   id-token: write
@@ -72,6 +73,23 @@ jobs:
         run: |
           pip install -e .
           npm install -g @anthropic-ai/claude-code
+
+      # Stages are cached per day in data/<date>/, so restoring a failed run's
+      # working files lets a rerun skip finished stages and audio chunks.
+      - name: Resume from today's last failed run
+        run: |
+          day=$(TZ=Europe/Amsterdam date +%F)
+          prev=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow daily.yml -L 10 \
+            --json databaseId,conclusion \
+            --jq "[.[] | select(.databaseId != $GITHUB_RUN_ID and (.conclusion == \"failure\" or .conclusion == \"cancelled\"))][0].databaseId // empty")
+          [ -n "$prev" ] || { echo "No earlier failed run"; exit 0; }
+          gh run download "$prev" --repo "$GITHUB_REPOSITORY" -n episode-data -D restored || { echo "Run $prev has no working files"; exit 0; }
+          if [ -d "restored/$day" ]; then
+            mkdir -p data && mv "restored/$day" data/
+            echo "Resuming $day from run $prev:"; ls -R "data/$day"
+          else
+            echo "Run $prev was for a different day; starting fresh"
+          fi
 
       - name: Run pipeline
         run: python -m nlnews run ${{ inputs.no_email && '--no-email' || '' }}
