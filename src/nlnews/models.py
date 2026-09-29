@@ -17,6 +17,16 @@ class Article(BaseModel):
     full_text: str | None = None
 
 
+# --- What recent episodes already covered ------------------------------------------
+
+class PriorStory(BaseModel):
+    date: str
+    headline: str
+    summary: str
+    checked: list[str] = []  # research findings that made it into that episode
+    urls: list[str] = []
+
+
 # --- Curation pass 1: pick stories from headlines ---------------------------------
 
 class StoryPick(BaseModel):
@@ -25,6 +35,7 @@ class StoryPick(BaseModel):
     kind: Literal["hard", "light"] = Field(description="hard = consequential news; light = culture, pop culture, sport, science, or offbeat")
     article_ids: list[str] = Field(description="IDs of every article covering this story")
     rationale: str = Field(description="One sentence on why it made the cut")
+    follow_up_of: str = Field(default="", description="For an update to a story from a recent episode: that story's headline, copied exactly. Empty for a new story")
 
 
 class StorySelection(BaseModel):
@@ -37,6 +48,7 @@ class Story(BaseModel):
     headline: str
     section: str
     kind: Literal["hard", "light"] = Field(default="hard", description="Copied from the story's header")
+    previously: str = Field(default="", description="Follow-ups only: one sentence on what the earlier episode already reported. Empty for a new story")
     summary: str = Field(description="3-6 sentence English summary of what happened")
     context: str = Field(description="Background a newcomer to the Netherlands needs: who the people/parties/institutions are, why it matters")
     key_terms: list[str] = Field(description="Dutch names/terms worth hearing pronounced, e.g. 'Tweede Kamer (House of Representatives)'")

@@ -11,4 +11,5 @@ How to research:
 How to revise:
 - `summary`: fold the answers into the story as normal news copy, and fix anything the research shows was wrong or out of date. Keep the length and neutral tone. Never mention the research, the briefing, or "our sources".
 - `context`: return it unchanged unless the research changes it.
+- If the story has a `previously` line, an earlier episode already reported that part. Keep the summary on what's new.
 - `findings`: one entry per open question, in order, with the answer and supporting URLs.

@@ -34,7 +34,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: daily-episode
+  group: daily-episode-v2  # renamed: runs queued behind a stuck lock on 2026-09-29
   cancel-in-progress: false
 
 jobs:

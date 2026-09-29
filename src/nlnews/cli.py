@@ -9,7 +9,7 @@ from pathlib import Path
 from pydantic import BaseModel, TypeAdapter
 
 from nlnews.config import TZ, day_dir
-from nlnews.models import Article, Briefing, EpisodeScript, StorySelection
+from nlnews.models import Article, Briefing, EpisodeScript, PriorStory, StorySelection
 
 STAGES = ["fetch", "briefing", "script", "audio", "all"]
 
@@ -28,7 +28,7 @@ def _cached(path: Path, fresh: bool, build, model):
 
 
 def run(args) -> None:
-    from nlnews import agenda as agendamod, cluster, curate, fetch, research, script as scriptmod
+    from nlnews import agenda as agendamod, cluster, curate, fetch, previous, research, script as scriptmod
 
     day = date.fromisoformat(args.date) if args.date else datetime.now(TZ).date()
     d = day_dir(day)
@@ -39,12 +39,17 @@ def run(args) -> None:
     if args.stop_after == "fetch":
         return
 
+    # What the last couple of episodes covered, so repeats come back only as real updates
+    prior = _cached(d / "previous.json", args.fresh, lambda: previous.load(day), list[PriorStory])
+    fresh_articles = previous.drop_covered(articles, prior)
+    print(f"  {len(prior)} stories in recent episodes; {len(articles) - len(fresh_articles)} articles already used")
+
     selection = _cached(d / "selection.json", args.fresh,
-                        lambda: curate.select_stories(cluster.cluster(articles)), StorySelection)
+                        lambda: curate.select_stories(cluster.cluster(fresh_articles), prior), StorySelection)
     for s in selection.stories:
-        print(f"  - [{s.kind}/{s.section}] {s.working_title}")
+        print(f"  - [{s.kind}/{s.section}] {s.working_title}" + (" (follow-up)" if s.follow_up_of else ""))
     draft = lambda: _cached(d / "briefing.draft.json", args.fresh,
-                            lambda: curate.write_briefing(day, selection, articles), Briefing)
+                            lambda: curate.write_briefing(day, selection, articles, prior), Briefing)
     briefing = _cached(d / "briefing.json", args.fresh, lambda: research.fill_gaps(day, draft()), Briefing)
     if not briefing.agenda:
         try:
