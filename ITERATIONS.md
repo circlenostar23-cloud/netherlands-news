@@ -22,7 +22,7 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 2. Enable billing on the Gemini key, which removes the daily cap so small chunks work. TTS is cheap.
 3. Split at story boundaries only, with a cap around 400 words.
 
-**Next step:** regenerate one story-sized chunk and one 600-word chunk from the same script (the `episode-data` artifact of run 36521945724 has the script) and compare them by ear before choosing. Related item below: "Test voicing the whole episode in one TTS request" (same drift question, opposite direction).
+**Plan:** [docs/shorter-sunday-quality-episodes.md](docs/shorter-sunday-quality-episodes.md). Cut to 6–7 stories and Sunday-sized chunks (~320 words, 8 requests max) so the voices stay inside the free tier. Do not run Gemini TTS to A/B this; that quota is for the next episode. The side-by-side listen (story-sized chunk vs a 600-word chunk, script in the `episode-data` artifact of run 36521945724) stays optional. Related item below: "Test voicing the whole episode in one TTS request" (same drift question, opposite direction).
 
 ### Renew the cron-job.org GitHub token by Monday 28 December 2026
 *Logged 2026-09-29*
