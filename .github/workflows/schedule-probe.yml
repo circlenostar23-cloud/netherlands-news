@@ -1,0 +1,15 @@
+# TEMPORARY: a bare workflow with nothing but a cron, to tell whether GitHub's
+# scheduler fires for this repo at all. Delete once that's answered.
+name: Schedule probe
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+
+permissions: {}
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "scheduler fired at $(date -u)"

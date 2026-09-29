@@ -10,10 +10,14 @@ on:
     # Watchdog: GitHub sometimes drops scheduled runs, so check again ~2h
     # later and build the episode only if today's release is still missing.
     - cron: "7 4 * * *"
-    # TEMPORARY: proves the scheduler fires; the gate never builds for it.
-    - cron: "*/10 * * * *"
+  # Also started by an external cron via the workflow_dispatch API, because
+  # GitHub's scheduler has never fired for this repo (see ITERATIONS.md).
   workflow_dispatch:
     inputs:
+      force:
+        description: "Build even if today's episode is already published"
+        type: boolean
+        default: false
       no_email:
         description: "Skip email"
         type: boolean
@@ -42,24 +46,27 @@ jobs:
       - id: check
         env:
           SCHEDULE: ${{ github.event.schedule }}
+          FORCE: ${{ inputs.force || inputs.feed_only }}
           GH_TOKEN: ${{ github.token }}
         run: |
+          # Several triggers can fire on the same day (GitHub cron, the external
+          # cron, the watchdog), so every one skips once today's episode is out.
+          # This keeps a duplicate trigger from spending Gemini TTS quota.
           offset=$(TZ=Europe/Amsterdam date +%z)
           day=$(TZ=Europe/Amsterdam date +%F)
-          case "$SCHEDULE" in
-            "13 2 * * *") [ "$offset" = "+0200" ] && run=true || run=false ;;
-            "13 3 * * *") [ "$offset" = "+0100" ] && run=true || run=false ;;
-            "7 4 * * *")
-              if gh release view "ep-$day" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-                run=false
-              else
-                echo "::warning::No ep-$day release yet; the watchdog is building it"
-                run=true
-              fi ;;
-            "") run=true ;;  # manual dispatch
-            *) run=false ;;  # any other schedule (e.g. a test cron) never builds
-          esac
-          echo "Amsterdam offset $offset, schedule '$SCHEDULE' -> run=$run"
+          if [ "$FORCE" = true ]; then
+            run=true
+          elif gh release view "ep-$day" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "ep-$day is already published"
+            run=false
+          else
+            case "$SCHEDULE" in
+              "13 2 * * *") [ "$offset" = "+0200" ] && run=true || run=false ;;
+              "13 3 * * *") [ "$offset" = "+0100" ] && run=true || run=false ;;
+              *) run=true ;;  # watchdog, manual or external dispatch
+            esac
+          fi
+          echo "Amsterdam offset $offset, schedule '$SCHEDULE', force '$FORCE' -> run=$run"
           echo "run=$run" >> "$GITHUB_OUTPUT"
 
   episode:
