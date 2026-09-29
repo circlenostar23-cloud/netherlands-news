@@ -1,10 +1,11 @@
-name: Daily episode (old, replaced by episode.yml)
+name: Daily episode
 
 on:
   # Started daily at 04:13 and 06:00 Europe/Amsterdam by cron-job.org, which
   # POSTs to this workflow's dispatches API with a fine-grained PAT (Actions
   # read/write on this repo only). GitHub's own `schedule` trigger never fired
-  # for this repo, so it isn't used.
+  # for this repo, so it isn't used. This replaces daily.yml, whose runs got
+  # stuck in the queue on 2026-09-29 and couldn't be cancelled.
   workflow_dispatch:
     inputs:
       force:
@@ -27,7 +28,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: daily-episode-v2
+  group: episode
   cancel-in-progress: false
 
 jobs:
@@ -94,7 +95,7 @@ jobs:
         if: ${{ !inputs.feed_only }}
         run: |
           day=$(TZ=Europe/Amsterdam date +%F)
-          prev=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow daily.yml -L 10 \
+          prev=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow episode.yml -L 10 \
             --json databaseId,conclusion \
             --jq "[.[] | select(.databaseId != $GITHUB_RUN_ID and (.conclusion == \"failure\" or .conclusion == \"cancelled\"))][0].databaseId // empty")
           [ -n "$prev" ] || { echo "No earlier failed run"; exit 0; }
