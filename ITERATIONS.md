@@ -4,6 +4,11 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 ## Backlog
 
+### Renew the cron-job.org GitHub token by Monday 28 December 2026
+*Logged 2026-09-29*
+
+The fine-grained PAT that cron-job.org uses to start `episode.yml` was created on 2026-09-29 with a 90-day expiry, so it stops working on **2026-12-28**. Once it lapses, both daily triggers get `401` and no episode is made, with no error on the GitHub side. Renew it a week or so early: create a new fine-grained PAT (**Actions: read and write** on this repo only), paste it into the `Authorization: Bearer` header of both cron-job.org jobs, check that a test run returns `204`, then revoke the old token. Setup details are in the README under **Scheduling**.
+
 ### Test voicing the whole episode in one TTS request
 *Logged 2026-09-27*
 
