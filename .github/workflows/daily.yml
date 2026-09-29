@@ -7,6 +7,11 @@ on:
     # 02:13 UTC in summer (CEST, +02:00), 03:13 UTC in winter (CET, +01:00).
     - cron: "13 2 * * *"
     - cron: "13 3 * * *"
+    # Watchdog: GitHub sometimes drops scheduled runs, so check again ~2h
+    # later and build the episode only if today's release is still missing.
+    - cron: "7 4 * * *"
+    # TEMPORARY: proves the scheduler fires; the gate never builds for it.
+    - cron: "*/10 * * * *"
   workflow_dispatch:
     inputs:
       no_email:
@@ -35,14 +40,26 @@ jobs:
       run: ${{ steps.check.outputs.run }}
     steps:
       - id: check
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           offset=$(TZ=Europe/Amsterdam date +%z)
-          case "${{ github.event.schedule }}" in
+          day=$(TZ=Europe/Amsterdam date +%F)
+          case "$SCHEDULE" in
             "13 2 * * *") [ "$offset" = "+0200" ] && run=true || run=false ;;
             "13 3 * * *") [ "$offset" = "+0100" ] && run=true || run=false ;;
-            *) run=true ;;  # manual dispatch
+            "7 4 * * *")
+              if gh release view "ep-$day" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+                run=false
+              else
+                echo "::warning::No ep-$day release yet; the watchdog is building it"
+                run=true
+              fi ;;
+            "") run=true ;;  # manual dispatch
+            *) run=false ;;  # any other schedule (e.g. a test cron) never builds
           esac
-          echo "Amsterdam offset $offset, schedule '${{ github.event.schedule }}' -> run=$run"
+          echo "Amsterdam offset $offset, schedule '$SCHEDULE' -> run=$run"
           echo "run=$run" >> "$GITHUB_OUTPUT"
 
   episode:
