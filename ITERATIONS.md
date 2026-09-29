@@ -4,6 +4,26 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 ## Backlog
 
+### Gemini voices sound worse in packed TTS requests
+*Logged 2026-09-29*
+
+**Problem:** the 2026-09-29 episode (`ep-2026-09-29`, Gemini voices) sounded noticeably worse than Sunday's (`ep-2026-09-27`), which used the same voices. This is a listener report; nobody has yet compared the audio side by side.
+
+**What was checked (CI logs and code):**
+- **Same:** model (`gemini-3.8-flash-tts`), voices (Maya = Kore, Sam = Puck), `conversational` mode and per-line style hints. None changed between the two episodes.
+- **Different:** Sunday made one TTS call per story segment (7 calls, about 2 minutes of audio each, 2,259-word script, 14m18s). Today's run made 7 calls packed to the 600-word cap by `_chunk()` (about 2.5–4 minutes each, 3,165-word script, 18m36s). Sunday's run predates the packing commit `48fc17c`.
+- **Ruled out:** today's episode fell back to neither Microsoft voices (the log says `gemini voices`) nor the later `ep-2026-09-29-ms` rebuild.
+- **Not checked:** today's run restored working files from an earlier failed run ("Resume from today's last failed run"). Check whether any reused TTS chunks came from that run.
+
+**Hypothesis:** long single generations drift toward flatter, faster delivery, and Sunday's short calls kept resetting that. Unconfirmed for Gemini TTS.
+
+**Options:**
+1. Lower `MAX_WORDS_PER_REQUEST` in `src/nlnews/tts.py` from 600 to about 300 (roughly one call per story). A 3,000-word script then needs 10+ calls, which hits the free tier's 10/day limit and triggers the Microsoft fallback.
+2. Enable billing on the Gemini key, which removes the daily cap so small chunks work. TTS is cheap.
+3. Split at story boundaries only, with a cap around 400 words.
+
+**Next step:** regenerate one story-sized chunk and one 600-word chunk from the same script (the `episode-data` artifact of run 36521945724 has the script) and compare them by ear before choosing. Related item below: "Test voicing the whole episode in one TTS request" (same drift question, opposite direction).
+
 ### Renew the cron-job.org GitHub token by Monday 28 December 2026
 *Logged 2026-09-29*
 
