@@ -36,7 +36,7 @@ Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`
 5. Go to **Actions → Daily episode → Run workflow** to test it.
 6. Subscribe. In Apple Podcasts: **Library → ⋯ → Follow a Show by URL**, then paste `<SITE_BASE_URL>/<FEED_SECRET_PATH>/feed.xml`. Overcast and Pocket Casts support adding a feed by URL too.
 
-**Scheduling:** GitHub's own `schedule` trigger never fired for this repo, so a free [cron-job.org](https://cron-job.org) account starts the workflow instead. Two jobs, both in the Europe/Amsterdam time zone, run daily at **04:13** and at **06:00** as a backup. Each sends a `POST` to `https://api.github.com/repos/circlenostar23-cloud/netherlands-news/actions/workflows/daily.yml/dispatches` with body `{"ref":"main"}` and these headers:
+**Scheduling:** GitHub's own `schedule` trigger never fired for this repo, so a free [cron-job.org](https://cron-job.org) account starts the workflow instead. Two jobs, both in the Europe/Amsterdam time zone, run daily at **04:13** and at **06:00** as a backup. Each sends a `POST` to `https://api.github.com/repos/circlenostar23-cloud/netherlands-news/actions/workflows/episode.yml/dispatches` with body `{"ref":"main"}` and these headers:
 - `Authorization: Bearer <token>`
 - `Accept: application/vnd.github+json`
 - `X-GitHub-Api-Version: 2022-11-28`
