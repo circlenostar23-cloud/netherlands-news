@@ -36,7 +36,13 @@ Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`
 5. Go to **Actions → Daily episode → Run workflow** to test it.
 6. Subscribe. In Apple Podcasts: **Library → ⋯ → Follow a Show by URL**, then paste `<SITE_BASE_URL>/<FEED_SECRET_PATH>/feed.xml`. Overcast and Pocket Casts support adding a feed by URL too.
 
-The workflow runs daily at 04:13 Amsterdam time, all year round. Cron only supports UTC, so it has two UTC schedules, and a gate job skips whichever one does not match the current daylight-saving offset.
+**Scheduling:** GitHub's own `schedule` trigger never fired for this repo, so a free [cron-job.org](https://cron-job.org) account starts the workflow instead. Two jobs, both in the Europe/Amsterdam time zone, run daily at **04:13** and at **06:00** as a backup. Each sends a `POST` to `https://api.github.com/repos/circlenostar23-cloud/netherlands-news/actions/workflows/daily.yml/dispatches` with body `{"ref":"main"}` and these headers:
+- `Authorization: Bearer <token>`
+- `Accept: application/vnd.github+json`
+- `X-GitHub-Api-Version: 2022-11-28`
+- `Content-Type: application/json`
+
+The token is a fine-grained PAT with **Actions: read and write** on this repo only. It expires, so renew it before then. A successful request returns `204`. The gate job skips any trigger once today's `ep-<date>` release exists, so the backup never spends TTS quota. To rebuild anyway, run the workflow manually with **force** ticked.
 
 **Privacy note:** the feed is *unlisted*, not private. Its URL is unguessable and `itunes:block` keeps it out of directories, but on a public repo the release MP3s are visible to anyone who browses it. It's fine for personal use; don't share it publicly.
 

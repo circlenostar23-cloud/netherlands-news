@@ -1,17 +1,10 @@
 name: Daily episode
 
 on:
-  schedule:
-    # Target 04:13 Amsterdam year-round. Cron is UTC-only, so both slots are
-    # scheduled and the gate job keeps whichever matches the current offset:
-    # 02:13 UTC in summer (CEST, +02:00), 03:13 UTC in winter (CET, +01:00).
-    - cron: "13 2 * * *"
-    - cron: "13 3 * * *"
-    # Watchdog: GitHub sometimes drops scheduled runs, so check again ~2h
-    # later and build the episode only if today's release is still missing.
-    - cron: "7 4 * * *"
-  # Also started by an external cron via the workflow_dispatch API, because
-  # GitHub's scheduler has never fired for this repo (see ITERATIONS.md).
+  # Started daily at 04:13 and 06:00 Europe/Amsterdam by cron-job.org, which
+  # POSTs to this workflow's dispatches API with a fine-grained PAT (Actions
+  # read/write on this repo only). GitHub's own `schedule` trigger never fired
+  # for this repo, so it isn't used.
   workflow_dispatch:
     inputs:
       force:
@@ -34,7 +27,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: daily-episode-v2  # renamed: runs queued behind a stuck lock on 2026-09-29
+  group: daily-episode-v2
   cancel-in-progress: false
 
 jobs:
@@ -45,14 +38,11 @@ jobs:
     steps:
       - id: check
         env:
-          SCHEDULE: ${{ github.event.schedule }}
           FORCE: ${{ inputs.force || inputs.feed_only }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Several triggers can fire on the same day (GitHub cron, the external
-          # cron, the watchdog), so every one skips once today's episode is out.
-          # This keeps a duplicate trigger from spending Gemini TTS quota.
-          offset=$(TZ=Europe/Amsterdam date +%z)
+          # The 06:00 backup trigger (and any manual rerun) skips once today's
+          # episode is out, so a second trigger never spends Gemini TTS quota.
           day=$(TZ=Europe/Amsterdam date +%F)
           if [ "$FORCE" = true ]; then
             run=true
@@ -60,13 +50,9 @@ jobs:
             echo "ep-$day is already published"
             run=false
           else
-            case "$SCHEDULE" in
-              "13 2 * * *") [ "$offset" = "+0200" ] && run=true || run=false ;;
-              "13 3 * * *") [ "$offset" = "+0100" ] && run=true || run=false ;;
-              *) run=true ;;  # watchdog, manual or external dispatch
-            esac
+            run=true
           fi
-          echo "Amsterdam offset $offset, schedule '$SCHEDULE', force '$FORCE' -> run=$run"
+          echo "day $day, force '$FORCE' -> run=$run"
           echo "run=$run" >> "$GITHUB_OUTPUT"
 
   episode:
