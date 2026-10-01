@@ -1,7 +1,8 @@
 name: Daily episode
 
 on:
-  # Started daily at 04:13 and 06:00 Europe/Amsterdam by cron-job.org, which
+  # Started daily at 04:13 Europe/Amsterdam by cron-job.org (a 06:00 backup
+  # job is planned but not set up yet; see README), which
   # POSTs to this workflow's dispatches API with a fine-grained PAT (Actions
   # read/write on this repo only). GitHub's own `schedule` trigger never fired
   # for this repo, so it isn't used. This replaces daily.yml, whose runs got
@@ -42,7 +43,7 @@ jobs:
           FORCE: ${{ inputs.force || inputs.feed_only }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          # The 06:00 backup trigger (and any manual rerun) skips once today's
+          # A backup trigger (and any manual rerun) skips once today's
           # episode is out, so a second trigger never spends Gemini TTS quota.
           day=$(TZ=Europe/Amsterdam date +%F)
           if [ "$FORCE" = true ]; then
