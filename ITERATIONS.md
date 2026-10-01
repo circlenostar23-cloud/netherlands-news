@@ -4,6 +4,24 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 ## Backlog
 
+### Mixed-voice fallback: keep finished Gemini chunks, fill the rest with Microsoft
+*Logged 2026-10-01. On hold until checked against the local chat of 2026-09-27/28.*
+
+**Open question:** a local Claude Code chat on 2026-09-27 or 09-28 (the one that added the Microsoft fallback, commit `fe2312b`) may have discussed or agreed a mixed-voice fallback. Nothing in the repo reflects it: the commit message, the docstring at the top of `src/nlnews/tts.py`, and [docs/shorter-sunday-quality-episodes.md](docs/shorter-sunday-quality-episodes.md) all describe whole-episode fallback. The cloud sessions of 09-29 and 09-30 don't mention mixing either. The only "mix" decision on record is the story mix (2026-09-28 in **Done**). Check the local chat (`claude --resume` in the project folder on that machine) before building anything.
+
+**How it works today:** `synthesize_episode()` wraps all Gemini work in one `try`. Any failure (daily-limit 429, the 3-minute request timeout, the 20-minute `GEMINI_BUDGET`, connection resets) throws away the Gemini chunks already made and voices the **whole** episode line by line with edge-tts (Ava / Andrew), so the hosts never change voice mid-episode. On 2026-10-01 the failed 04:13 run had finished 4 of 6 Gemini chunks; a rerun picked them up only because Gemini recovered.
+
+**Proposed change (not built):**
+- In the fallback, reuse every `chunkNN.wav` that exists and voice only the missing chunks' segments with edge-tts. Chunks are whole segments, so the switch always falls between stories, never mid-sentence.
+- Add a short spoken handoff where the voices change (e.g. "our backup voices take it from here") so it doesn't sound like a glitch.
+- Return a third value from `synthesize_episode()`, e.g. `"mixed"`, alongside `"gemini"` and `"fallback"`, and handle it in `src/nlnews/cli.py`.
+
+**Trade-offs:**
+- **For:** more of the episode in the better Gemini voices, and a faster fallback (fewer lines to voice), which leaves more slack in the 45-minute job limit.
+- **Against:** the hosts audibly change partway through. That was the reason for whole-episode fallback in `fe2312b`.
+
+**Fix either way:** the show-notes line in `src/nlnews/cli.py` says the Microsoft voices were used "because Gemini's daily voice limit was reached". Since 2026-10-01 the fallback can also be triggered by timeouts, so that wording can now be wrong. Make it generic ("because Gemini's voices were unavailable"), plus a "partly voiced" variant if mixing ships.
+
 ### Gemini voices sound worse in packed TTS requests
 *Logged 2026-09-29*
 
