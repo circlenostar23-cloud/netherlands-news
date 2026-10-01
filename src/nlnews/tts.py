@@ -24,6 +24,7 @@ log = logging.getLogger(__name__)
 SAMPLE_RATE = 24000  # Gemini TTS returns 16-bit mono PCM WAV at 24 kHz
 MAX_WORDS_PER_REQUEST = 600  # ~4 minutes of audio per request
 REQUEST_TIMEOUT = 180  # seconds; a healthy request takes well under this, a stuck one hangs ~4 min
+GEMINI_BUDGET = 20 * 60  # seconds for all Gemini requests, leaving room for the fallback in the job limit
 
 
 def _words(seg: Segment) -> int:
@@ -63,13 +64,15 @@ def _synthesize(client: genai.Client, segments: list[Segment]) -> bytes:
     return base64.b64decode(interaction.output_audio.data)
 
 
-def _with_retries(fn, attempts: int = 3):
+def _with_retries(fn, deadline: float, attempts: int = 3):
     for i in range(attempts):
         try:
             return fn()
         except Exception as exc:
             if i == attempts - 1 or "per day" in str(exc):  # a daily limit won't clear in seconds
                 raise
+            if time.monotonic() > deadline:
+                raise TimeoutError(f"Gemini TTS budget of {GEMINI_BUDGET // 60} min used up") from exc
             wait = 2 ** (i + 2)
             log.warning("TTS attempt %d failed (%s); retrying in %ds", i + 1, exc, wait)
             time.sleep(wait)
@@ -88,12 +91,15 @@ def _gemini_wavs(script: EpisodeScript, seg_dir: Path) -> list[Path]:
     """One WAV per request, with a pause between them."""
     client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
     chunks = _chunk(script.segments)
+    deadline = time.monotonic() + GEMINI_BUDGET
     wavs = []
     for i, chunk in enumerate(chunks):
         path = seg_dir / f"chunk{i:02d}.wav"
         if not path.exists():  # resumable: reuse audio from an earlier partial run
+            if time.monotonic() > deadline:
+                raise TimeoutError(f"Gemini TTS budget of {GEMINI_BUDGET // 60} min used up")
             print(f"  TTS request {i + 1}/{len(chunks)}: {' / '.join(s.title for s in chunk)}")
-            path.write_bytes(_with_retries(lambda: _synthesize(client, chunk)))
+            path.write_bytes(_with_retries(lambda: _synthesize(client, chunk), deadline))
         wavs.append(path)
     pause = _silence(seg_dir / "pause.wav", 0.7)
     return [p for w in wavs for p in (w, pause)][:-1]
