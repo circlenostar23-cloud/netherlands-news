@@ -60,7 +60,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     environment:
       name: github-pages
     env:
@@ -73,6 +73,7 @@ jobs:
       FEED_SECRET_PATH: ${{ secrets.FEED_SECRET_PATH }}
       SITE_BASE_URL: ${{ vars.SITE_BASE_URL }}
       GH_TOKEN: ${{ github.token }}
+      PYTHONUNBUFFERED: "1"  # show pipeline progress in the log as it happens
     steps:
       - uses: actions/checkout@v4
 
