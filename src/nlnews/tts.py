@@ -7,12 +7,15 @@ out), the remaining segments are voiced line by line with Microsoft neural voice
 episode keeps Gemini's voices for as long as it can.
 """
 
+import array
 import asyncio
 import base64
+import io
 import logging
 import os
 import subprocess
 import time
+import wave
 from pathlib import Path
 
 import edge_tts
@@ -63,6 +66,33 @@ def _synthesize(client: genai.Client, segments: list[Segment]) -> bytes:
         timeout=REQUEST_TIMEOUT,
     )
     return base64.b64decode(interaction.output_audio.data)
+
+
+def _cap_pauses(wav: bytes, longest: float = 1.0, keep: float = 0.7, floor_db: float = -55) -> bytes:
+    """Shorten silences longer than `longest` seconds to `keep` seconds. Gemini sometimes leaves
+    ~2 s of dead air mid-line (2026-10-02, before the last sentence of the Ebola story)."""
+    with wave.open(io.BytesIO(wav)) as w:
+        params, samples = w.getparams(), array.array("h", w.readframes(w.getnframes()))
+    win = params.framerate // 50  # 20 ms
+    floor = (32768 * 10 ** (floor_db / 20)) ** 2 * win
+    quiet = [sum(s * s for s in samples[i:i + win]) < floor for i in range(0, len(samples), win)]
+    out, start, run = array.array("h"), 0, 0  # run = consecutive quiet windows
+    for i, q in enumerate(quiet + [False]):
+        if q:
+            run += 1
+            continue
+        if run * win > longest * params.framerate:  # cut the middle of the silence, keep its edges
+            a, b = (i - run) * win, i * win
+            half = int(keep * params.framerate) // 2
+            out += samples[start:a + half]
+            start = b - half
+        run = 0
+    out += samples[start:]
+    buf = io.BytesIO()
+    with wave.open(buf, "wb") as w:
+        w.setparams(params)
+        w.writeframes(out.tobytes())
+    return buf.getvalue()
 
 
 def _with_retries(fn, deadline: float, attempts: int = 3):
@@ -134,7 +164,7 @@ def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> tupl
                     raise TimeoutError(f"Gemini TTS budget of {GEMINI_BUDGET // 60} min used up")
                 print(f"  TTS request {i + 1}/{len(chunks)}: {' / '.join(s.title for s in chunk)}")
                 client = client or genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
-                path.write_bytes(_with_retries(lambda: _synthesize(client, chunk), deadline))
+                path.write_bytes(_cap_pauses(_with_retries(lambda: _synthesize(client, chunk), deadline)))
             except Exception as exc:
                 print(f"  Gemini TTS failed ({exc}); voicing the rest with Microsoft voices")
                 gemini_ok = False
