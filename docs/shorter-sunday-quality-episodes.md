@@ -1,6 +1,6 @@
 # Shorter episodes for Sunday-quality voices
 
-Parked 2026-09-29. Main is already up to date with the iterations note. Do not call Gemini TTS while implementing this: that quota is for tomorrow's episode.
+Parked 2026-09-29. **2026-10-03:** the per-segment word caps under *Cuts* have shipped as prompt changes (see ITERATIONS.md Done); the story count, TTS and writer-guard parts are still open. Main is already up to date with the iterations note. Do not call Gemini TTS while implementing this: that quota is for tomorrow's episode.
 
 Shrink the episode so Gemini voices stay in Sunday-sized chunks (about 320 words, one request per story) and still finish in 8 requests, under the 10/day free-tier cap.
 
