@@ -8,4 +8,4 @@ Shortlist up to {n} events worth a closer look, best first, and return their bra
 - For a single day, evening events: the listener hears this in the morning and can go that night.
 - A varied mix: music, talks, film, theatre and comedy, art, food, nightlife, family, across different neighbourhoods. Don't shortlist five screenings from the same film festival.
 
-Skip events that look primarily in Dutch (Dutch titles for talks, theatre, or comedy), niche workshops, and kids-only events.
+Skip anything on an "Already recommended" line: earlier episodes already pitched it. Also skip events that look primarily in Dutch (Dutch titles for talks, theatre, or comedy), niche workshops, and kids-only events.

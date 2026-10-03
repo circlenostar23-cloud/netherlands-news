@@ -53,7 +53,7 @@ def run(args) -> None:
     briefing = _cached(d / "briefing.json", args.fresh, lambda: research.fill_gaps(day, draft()), Briefing)
     if not briefing.agenda:
         try:
-            briefing.agenda = agendamod.build(day)
+            briefing.agenda = agendamod.build(day, previous.agenda_picks(day))
         except Exception as exc:  # the What's on segment is optional; don't lose the episode over it
             print(f"  agenda failed ({exc}); skipping What's on")
         (d / "briefing.json").write_text(briefing.model_dump_json(indent=2))

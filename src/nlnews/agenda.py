@@ -1,7 +1,8 @@
 """'What's on in Amsterdam': a few event picks for the end of each episode.
 
 Most days cover just that day, since the listener hears the episode in the morning. Thursday
-is the weekend edition (Thursday to Sunday), which also draws on two curated weekend guides.
+and Friday are weekend editions (through Sunday), which also draw on two curated weekend guides.
+Picks from the last few episodes are passed along so Friday doesn't repeat Thursday's.
 Candidates come from I amsterdam's cultural calendar, whose events are all marked
 "language no problem". Its pages embed the listing as JSON, so no scraping of markup is needed.
 """
@@ -25,14 +26,14 @@ log = logging.getLogger(__name__)
 IAMSTERDAM = "https://www.iamsterdam.com/en/"
 WEEKEND_GUIDE = IAMSTERDAM + "whats-on/weekend-guide"
 YLBB_FEED = "https://www.yourlittleblackbook.me/feed/"
-WEEKEND_EDITION = 3  # Thursday
+WEEKEND_EDITIONS = (3, 4)  # Thursday and Friday, each through Sunday
 HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh) AppleWebKit/537.36 Chrome/128 Safari/537.36"}
 _RSC = re.compile(r'self\.__next_f\.push\(\[1,"(.*?)"\]\)', re.S)
 
 
 def window(day: date) -> list[date]:
-    if day.weekday() == WEEKEND_EDITION:
-        return [day + timedelta(days=i) for i in range(4)]
+    if day.weekday() in WEEKEND_EDITIONS:
+        return [day + timedelta(days=i) for i in range(7 - day.weekday())]
     return [day]
 
 
@@ -106,7 +107,8 @@ def _weekend_guides(day: date) -> list[tuple[str, str]]:
     return [(name, text) for name, text in guides if text]
 
 
-def build(day: date) -> Agenda | None:
+def build(day: date, recent: list[str] = ()) -> Agenda | None:
+    """`recent` names the picks of the last few episodes, which aren't pitched again."""
     days = window(day)
     weekend = len(days) > 1
     span = f"{days[0].strftime('%A %d %B %Y')}" + (f" to {days[-1].strftime('%A %d %B %Y')}" if weekend else "")
@@ -121,7 +123,8 @@ def build(day: date) -> Agenda | None:
     sources = []
     if candidates:
         shortlist = ask(load_prompt("agenda_shortlist").format(n=10 if weekend else 8),
-                        f"Window: {span}\n\n" + "\n".join(_line(k, ev) for k, ev in candidates.items()),
+                        f"Window: {span}\n\n" + "\n".join(_line(k, ev) for k, ev in candidates.items())
+                        + "".join(f"\nAlready recommended: {r}" for r in recent),
                         Shortlist, effort="low")
         picked = [k for k in shortlist.ids if k in candidates]
         page = lambda k: _text(IAMSTERDAM + candidates[k]["slug"]) if candidates[k].get("slug") else ""
@@ -137,6 +140,8 @@ def build(day: date) -> Agenda | None:
     n = (4, 5) if weekend else (2, 3)
     system = load_prompt("agenda").format(n_min=n[0], n_max=n[1])
     body = f"Window: {span}\n" + "\n".join(f"\n# {name}\n\n{text}" for name, text in sources)
+    if recent:
+        body += "\n\n# Already recommended in the last few episodes\n\n" + "\n".join(f"- {r}" for r in recent)
     agenda = ask(system, body, Agenda, effort="medium")
     print(f"  agenda: {len(agenda.events)} picks for {agenda.window}")
     return agenda if agenda.events else None

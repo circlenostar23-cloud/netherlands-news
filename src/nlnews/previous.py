@@ -17,6 +17,7 @@ from nlnews.config import DATA_DIR
 from nlnews.models import Article, PriorStory
 
 _STORY = re.compile(r"^## \d+\. (.+)$", re.M)
+_PICK = re.compile(r"^- \*\*(.+?)\*\*", re.M)
 _CHECKED = re.compile(r"^\*\*Checked:\*\* (.+ → (?!not confirmed).+)$", re.M)
 
 
@@ -59,6 +60,16 @@ def load(day: date, days: int = 2) -> list[PriorStory]:
         if md := _briefing_md(d):
             out += parse(d, md)
     return out
+
+
+def agenda_picks(day: date, days: int = 3) -> list[str]:
+    """Names of the What's on picks from the episodes of the last `days` days."""
+    picks = []
+    for back in range(1, days + 1):
+        if md := _briefing_md(day - timedelta(days=back)):
+            section = md.split("\n## What's on in Amsterdam", 1)[1:]
+            picks += _PICK.findall(section[0]) if section else []
+    return list(dict.fromkeys(picks))
 
 
 def _norm(url: str) -> str:
