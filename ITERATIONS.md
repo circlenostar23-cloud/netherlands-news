@@ -4,14 +4,19 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 ## Backlog
 
-### Gemini swapped the hosts' voices in the 2026-10-02 intro
-*Logged 2026-10-02*
+### Gemini swaps the hosts' voices or drops lines at story breaks
+*Logged 2026-10-02, updated 2026-10-03*
 
-**Problem:** in `ep-2026-10-02`, Sam's voice (Puck) said "It's Friday, October second. I'm Maya." and Maya's voice (Kore) said "And I'm Sam." The script attributes the lines correctly, and the request sends `speaker: Maya` / `speaker: Sam` per line, so Gemini slipped at a turn boundary. Pitch per line (Kore ~160–290 Hz, Puck ~80–140 Hz) shows the rest of that chunk was voiced correctly from "This is Dutch Daily Briefing" on. The 09-30 and 10-01 intros were checked the same way and were correct.
+**Problem:** in `ep-2026-10-02`, Sam's voice (Puck) said "It's Friday, October second. I'm Maya." and Maya's voice (Kore) said "And I'm Sam." The script attributes the lines correctly, and the request sends `speaker: Maya` / `speaker: Sam` per line, so Gemini slipped at a turn boundary. In `ep-2026-10-03` the intro was fine, but per-line pitch and spectral checks (lines aligned to the audio with faster-whisper) found:
+- ~8:37–9:42: the first four lines of the mortgage story in swapped voices (Maya's lines ~117 Hz, Sam's ~150 Hz), back to normal from the fifth line.
+- ~6:04–6:56: possibly the end of the inflation/G7 story too; the evidence there is weak.
+- ~14:04: Maya's opening line of the Hans Anders story was never voiced. The audio goes straight from the Golden Calf story into Sam's second line.
 
-**Decision:** no code change for a first occurrence. A cheap guard doesn't exist: re-voicing a chunk costs a request from the 10/day free tier (today used 9), and a pitch check per line needs a speech model in CI.
+Both clear failures sit at a story break where the same host speaks the last line of one segment and the first line of the next, inside one TTS request. The scripts had 3–5 such breaks a day (10-01 to 10-03), because Maya both closed and opened stories.
 
-**Trigger:** if it happens again, consider (a) voicing the cold open as its own small request and checking the "I'm Maya" / "I'm Sam" lines' pitch with a stdlib autocorrelation, re-requesting once on a swap; or (b) writing the intro so each host's self-introduction is a longer line rather than a 3-word one.
+**Change (2026-10-03):** `prompts/script.md` now asks for a host change at every story break, plus a clear one-line topic intro and a closing beat for each story (listeners also found transitions hard to follow). It also bans the stock "Okay, some lighter stuff" gear change. `script.py` checks for same-speaker breaks after writing and asks for one quick rewrite of just those lines if any remain.
+
+**Trigger:** if a swap or dropped line still turns up at a break that has a host change, consider (a) voicing the cold open as its own small request and checking the "I'm Maya" / "I'm Sam" lines' pitch with a stdlib autocorrelation, re-requesting once on a swap; or (b) a per-line pitch check on every chunk (Kore ~145–290 Hz, Puck ~95–135 Hz) that re-requests a chunk once on a clear mismatch.
 
 ### Gemini voices sound worse in packed TTS requests
 *Logged 2026-09-29*
