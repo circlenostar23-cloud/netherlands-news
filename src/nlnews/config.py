@@ -26,6 +26,8 @@ CLAUDE_CODE_MODEL = os.environ.get("NLNEWS_CLAUDE_CODE_MODEL", "opus")
 GEMINI_TEXT_MODEL = os.environ.get("NLNEWS_GEMINI_MODEL", "gemini-3.8-flash")
 CLAUDE_MODEL = os.environ.get("NLNEWS_CLAUDE_MODEL", "claude-sonnet-5")
 TTS_MODEL = os.environ.get("NLNEWS_TTS_MODEL", "gemini-3.8-flash-tts")
+# Backup when Gemini TTS fails: the same voices through OpenRouter (needs OPENROUTER_API_KEY), one line per request
+OPENROUTER_TTS_MODEL = os.environ.get("NLNEWS_OPENROUTER_TTS_MODEL", "google/gemini-3.8-flash-tts")
 
 SHOW_TITLE = "Dutch Daily Briefing"
 # How many of each episode's stories are lighter fare (culture, sport, science, offbeat), as "min-max"
@@ -35,7 +37,7 @@ HOSTS = {
     "Maya": "Kore",
     "Sam": "Puck",
 }
-# Fallback voices (Microsoft neural, via edge-tts) when Gemini TTS fails, e.g. at its daily limit
+# Last-resort voices (Microsoft neural, via edge-tts) when both Gemini and OpenRouter fail
 FALLBACK_VOICES = {
     "Maya": "en-US-AvaMultilingualNeural",
     "Sam": "en-US-AndrewMultilingualNeural",
