@@ -1,0 +1,696 @@
+{
+  "episode_title": "The Finance Minister Blinks",
+  "description": "After a day of criticism in parliament, Finance Minister Eelco Heinen says he'll change the box 3 plan so it spares small savers. Also today: an aid worker with Ebola is being treated in Leiden, the EU has stopped aid to Sierra Leone in a row over drug lord Bolle Jos, and Katwijk has approved Eli Lilly's pill factory. Plus a draft freelancer law, rivers too shallow to measure, a surgical first in Nijmegen and the Batavia's last voyage.",
+  "segments": [
+    {
+      "title": "Cold open",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "The finance minister blinks. MPs from across the Tweede Kamer, the Dutch House of Representatives, criticised his wealth-tax plan, and now Eelco Heinen says he'll change it to spare small savers.",
+          "style": "crisp"
+        },
+        {
+          "speaker": "Sam",
+          "text": "Plus an aid worker with Ebola is being treated in Leiden. And a fugitive drug lord is at the centre of a very awkward row between The Hague, Brussels and Sierra Leone.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "It's Friday, October second. I'm Maya.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And I'm Sam. This is Dutch Daily Briefing.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "Ebola patient treated in Leiden",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "We start in Leiden. Last night at around a quarter to eight, a French private plane landed at Schiphol after a flight of about nine and a half hours from Congo. On board was an aid worker for Médecins Sans Frontières, Doctors Without Borders, who's infected with Ebola.",
+          "style": "serious"
+        },
+        {
+          "speaker": "Sam",
+          "text": "The patient was then driven to the LUMC, Leiden University Medical Center. The Koninklijke Marechaussee escorted them. That's the Royal Military Police, who also police Schiphol and the borders.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "What do we know about the patient?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Very little. Their identity, sex, nationality and condition haven't been released. The RIVM, the national public health institute and roughly the Dutch version of America's CDC, says the patient is in strict isolation.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And if you live near Leiden, or you've got a hospital appointment there?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "The hospital and MSF both say there's no risk to other patients, visitors or the public, and visiting hours haven't changed. It's worth remembering that Ebola spreads through direct contact with the bodily fluids of someone who's sick. It doesn't spread through the air. Health Minister Sophie Hermans says the LUMC is prepared to receive, screen and treat Ebola patients. It's one of the academic hospitals with high-level isolation units, and it runs regular drills.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Has the Netherlands done this before?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Once. In December 2014, a Nigerian UN peacekeeper who'd been serving in Liberia was treated at UMC Utrecht. He recovered and flew home just before Christmas. Western countries bring infected aid workers home fairly regularly. The US did it at Emory in Atlanta that same year.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Tell us about the outbreak itself.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "It was declared in May in Ituri province, in north-eastern Congo, which is still the worst-hit area. Since then it's spread to North Kivu and several other provinces. It's the largest Ebola outbreak Congo has ever recorded, with more than eight thousand two hundred confirmed cases and nearly four thousand deaths. MSF says the real toll is probably higher.",
+          "style": "serious"
+        },
+        {
+          "speaker": "Maya",
+          "text": "And this strain is a particular problem.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "It is. It's the Bundibugyo strain, which is rare, and there's no approved vaccine or treatment for it. Three cases have turned up in Germany and France, and all three patients recovered.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "Heinen backs down on box 3",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "Now to The Hague. Yesterday we told you that on day one of the budget debate, opposition MPs and even the coalition's own MPs lined up against a plan to make more small savers pay tax in box 3, the tax on savings and investments.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "On day two, the finance minister moved.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Eelco Heinen called the criticism a \"clear signal\" from the House. In his words: \"We are prepared to set a different threshold.\"",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "A quick reminder of the plan. From 2028, the tax-free return would drop from eighteen hundred euros to one thousand. Heinen says he picked a thousand because a couple with up to about a hundred thousand euros in savings would still pay nothing.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "But he admitted he'd got something wrong.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "He says he underestimated how many people who pay nothing now would start paying. Estimates put it at around eight hundred and fifty thousand extra taxpayers.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "So what's the new number?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "He hasn't given one, and he hasn't said how he'd pay for it. That's the hard part, because this measure was meant to raise four hundred and seventy-three million euros. Heinen says finding that money elsewhere is \"enormously complicated\", and that the cabinet has \"not many dials to turn.\"",
+          "style": "wry"
+        },
+        {
+          "speaker": "Maya",
+          "text": "There was also a separate, temporary measure for next year.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Right. For 2027, the plan roughly halves the tax-free allowance, from about fifty-nine thousand euros per person to about thirty-one thousand. It also raises the return the tax office assumes you make on investments. Heinen says he'll look at that again, but he didn't promise anything. He wants clarity by the debate on the Belastingplan, the annual Tax Plan, in two weeks.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And the education cut that worried a lot of people?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "That's a fallback cut that could reach one point two billion euros a year from 2031. Heinen says it's \"technically booked\", but it'll never happen if employers and unions reach a social accord. That's a deal made in the polder, the Dutch habit of settling economic policy through consensus talks. He expects that kind of deal to save more on unemployment and disability benefits than the cabinet's original cuts would have.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "On Wednesday, Education Minister Letschert said there's no coalition agreement to cut education. And the cabinet still has to find about three billion euros in savings.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And since it's a minority government, it needs opposition votes to pass any of this. That's exactly why Heinen is listening.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "EU halts aid to Sierra Leone amid Bolle Jos row",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "Next, a story with a drug lord, a frozen aid budget and two very different explanations. The European Commission has stopped budget support payments to Sierra Leone, with immediate effect.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Budget support is aid paid straight into a government's budget. Sierra Leone was due to get eighteen million euros this year for food programmes, education and infrastructure.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And the Dutch justice minister says he knows why.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "That's David van Weel, from the centre-right VVD. After the newspaper De Telegraaf reported the move, he confirmed it. He presented it as a response to Sierra Leone refusing to extradite Jos Leijdekkers, better known as Bolle Jos. That's roughly \"Chubby Jos.\"",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Who is he, for newcomers?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "He's often called the most wanted criminal in the Low Countries. A Dutch court sentenced him in absentia to twenty-four years for cocaine trafficking and an attempted murder. In Belgium his sentences add up to more than a hundred years. He's reported to have a child with the daughter of Sierra Leone's president, Julius Maada Bio, and to have close ties to the government there.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Van Weel said Sierra Leone \"can solve this within 24 hours\" by arresting and extraditing him. The Netherlands also wants a further twenty-two and a half million euro payment due next year stopped, and EU countries are still negotiating over that.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "But Brussels is telling a different story. NOS reports that Van Weel's comments irritated the Commission. Officially, it says the suspension is purely technical and was caused by \"administrative errors\". Some people there called the minister's framing misleading.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Why does that distinction matter so much?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Because budget support agreements are binding contracts, and extradition isn't one of the conditions. So stopping payments over Bolle Jos wouldn't be legally allowed. Magnus Brunner, the EU commissioner for internal affairs and migration, said the reasons were technical. He didn't elaborate and said it falls outside his portfolio. But he did add: \"We need Sierra Leone's cooperation. That is what this is about.\"",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Which leaves some room for interpretation. What's Sierra Leone saying?",
+          "style": "dry"
+        },
+        {
+          "speaker": "Sam",
+          "text": "Information Minister Chernor Bah says this year's money was delayed by procedural issues with an amended financing agreement. Payments are now proposed for 2027 and 2028. The government says EU officials told it the suspension wasn't about any specific person. And it called public pressure and media campaigns \"not conducive\" to judicial cooperation.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Is there even a legal route to extradition?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "There's no extradition treaty between the two countries. But both have signed the UN convention against transnational organised crime, which includes an extradition provision. The Dutch government treats the cocaine trade as a national security issue. Pressure has grown since last month's deadly armed attack on a farm in Overasselt, in Gelderland, which is believed to be linked to the drug trade.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Meanwhile, EU justice ministers meeting in Luxembourg discussed tougher sanctions, like entry bans and asset freezes, for criminals hiding outside Europe.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "Katwijk approves Eli Lilly factory",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "Staying near Leiden, there's a big business decision. Last night the council in Katwijk, a coastal town next door, voted twenty-eight to four to grant a building permit for a three-billion-dollar factory by the US drugmaker Eli Lilly.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Lilly makes some of the world's best-selling diabetes and weight-loss drugs. This plant, by a lake called the Valkenburgse Meer, would make pills, including its GLP-1 pill, orforglipron. It's expected to employ about five hundred people.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Not everyone's thrilled.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "No. The local parties KiesKatwijk and GemeenteBelangen were among those who voted against. Earlier the same evening, the council turned down a request from hundreds of residents for an advisory referendum, partly because it had to decide on the permit this week.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "What are residents worried about?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Water and energy use, safety, and what the plant does to the views and recreation at the lake. It's expected to use about eight hundred thousand litres of drinking water a day. That's roughly what all the households in the neighbouring village of Valkenburg use.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And energy?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Here's a very Dutch twist. The grid has no spare capacity for years. Grid congestion, or netcongestie, means new businesses across much of the country wait years for a connection. So at first, Lilly will make its own electricity with gas turbines.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Why Katwijk?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "CEO David Ricks pointed to the nearby airports and the Leiden Bio Science Park. Lilly still needs permits to start production and to discharge wastewater. When it announced the plan eleven months ago, it was aiming to start building this year and start production in 2030.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "A clear test for freelancers",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "If you freelance here, or hire freelancers, this one's for you. Thierry Aartsen, the minister of work and participation, has published a draft Zelfstandigenwet, a Self-Employed Persons Act.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Freelancers here are called zzp'ers. It stands for zelfstandige zonder personeel, self-employed without staff. That's about one in eight Dutch workers, and more than a million people.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And it's been murky for years.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "The tax authority, the Belastingdienst, has been cracking down on schijnzelfstandigheid, or false self-employment. That's when you work like an employee but you're hired as a freelancer, so nobody pays payroll taxes and benefits. Clients risk back-tax claims, so many of them simply stopped hiring freelancers. Think of California's fights over gig workers.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "So what's in the draft?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Two tests: one for self-employment and one for the working relationship. You count as an entrepreneur if you work independently, carry business risk and organise your own work. In practice, that means being registered with the KvK, the Chamber of Commerce, having a VAT number and a business bank account, and sending invoices. You also need at least three different clients over two years, and you have to be actively looking for new ones.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And you need freedom over how you work.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "In principle you decide where, when and how, unless the job can only be done in one place, like a building site, or at a set time. Freelancers will also have to spend a minimum amount on things employees don't need, like disability insurance, a pension or liability cover. That amount is still being discussed with business groups. Aartsen says it mustn't be too high, but it can't be a \"wassen neus\" either.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "A wax nose?",
+          "style": "amused"
+        },
+        {
+          "speaker": "Sam",
+          "text": "Literally, yes. It means an empty gesture. He calls the criteria \"not unreasonable\". He thinks two-thirds to three-quarters of freelancers already meet them or could do so fairly easily.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "So for now, maybe a quarter to a third don't. What's the upside?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "If you meet the criteria, you no longer have to fear back-tax claims. The rules would cover existing and new arrangements, with no transition period. ZZP Nederland supports the goals, but it's warned that the criteria have to be clear and workable. It doesn't want clients shutting out freelancers anyway just to be safe. And earlier this year, the union FNV Zelfstandigen said it saw \"no added value\" in a law like this.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "You can comment on the draft online until October twenty-ninth. It won't take effect before January 2028.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "Rivers too low to measure",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "Next, the rivers. In the east of the country the water is now so low that Rijkswaterstaat, the national roads and waterways agency, can't properly measure whether ships can pass safely.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "That's on the IJssel, the Nederrijn, the Pannerdensch Kanaal and much of the Waal. They're the Dutch branches of the Rhine, the freight route between the port of Rotterdam and Germany.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "How can you not measure a river?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "It's a bit absurd, honestly. In places the water's less than a metre and a quarter deep, and most of the agency's survey boats sit deeper than that. Only three shallower boats are left, and they're needed elsewhere too.",
+          "style": "wry"
+        },
+        {
+          "speaker": "Maya",
+          "text": "So the measuring boats would run aground.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Pretty much. That means the agency can't find the shallowest point in the channel. Skippers rely on that to work out how much cargo they can carry, so now they have to judge for themselves, unless they pay for commercial data. Since late September, ships on the upper IJssel can only go one way at a time, and some are making detours of up to three hundred kilometres.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "What's it doing to costs?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "The port of Rotterdam says about half as much cargo is moving to and from Rhine destinations as a year ago. Ships are sailing partly loaded, and freight prices have soared. Shipping a tonne from Rotterdam to Cologne went from about seventeen euros in mid-June to eighty in early August. Fiona Oomen of the inland shipping association called the situation \"very worrying\".",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Any relief coming?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "At Lobith, where the Rhine enters the country, the flow is now below even August's record low. Rijkswaterstaat says the rain has to fall in the river basin, mostly outside the Netherlands, and it expects things to get neither much worse nor much better. There's a twist, though. An unusually warm sea could bring a very wet autumn, and high water after that.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "Young Amsterdammers: less drink, more ketamine",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "Here in Amsterdam, there's a new snapshot of how young people go out. The annual Antenne Amsterdam monitor was done for the addiction organisation Jellinek and published by the HvA, the Amsterdam University of Applied Sciences. It finds that young Amsterdammers are drinking less.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "But ketamine use in nightlife has risen sharply since 2024.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Who did they ask?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "They surveyed nearly twelve hundred MBO students. MBO is the vocational track, a bit like community or trade college. They also interviewed nightlife insiders and youth workers, and looked at nearly five thousand drug samples handed in for testing. The Netherlands runs anonymous drug testing, and that data feeds into studies like this one.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "What did they find?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Ketamine, MDMA and other powders sell for about twenty-five to thirty euros a gram, and they're easy to get delivered to your home. Then there's 3-MMC, a synthetic stimulant. It was banned in July last year, but demand has barely moved. Pills sold as 3-MMC often contain other substances, and Jellinek says 3-MMC carries a higher risk of dependence than ecstasy.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Did any ban actually work?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "The one on laughing gas did. It's nearly disappeared since it was banned in 2023.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And the MBO students?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Fifty-nine percent drank alcohol in the past year, and about half have ever vaped. Online gambling is becoming normal too. Eighteen percent gambled online in the past year, compared with six percent in 2021. The researchers say the question was worded differently this time, though, so that's only a rough comparison.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "So are young people swapping beer for cheaper drugs?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Jellinek's Jacqueline Krouwel says the study doesn't show that. Gen Z is simply drinking less overall.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And if any of this hits close to home, Jellinek runs a helpline in English on weekday afternoons.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "Nijmegen surgeons pioneer clitoris reconstruction",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "Okay, time for some lighter stuff, starting with a medical first that's genuinely good news.",
+          "style": "warmer, lighter"
+        },
+        {
+          "speaker": "Sam",
+          "text": "Doctors at Radboudumc, the university hospital in Nijmegen, have developed an operation to rebuild the clitoris after part of it is removed because of vulvar cancer.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "What happened before this?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "The wound was simply closed, and the clitoris disappeared under a layer of skin. And that was that.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And the new way?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "While they're removing the tumour, surgeons free up the clitoral nerve bundles and move them to form a new tip. Then they cover it with tissue from the inside of the cheek.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "The cheek! Okay. Bodies are amazing.",
+          "style": "amused"
+        },
+        {
+          "speaker": "Sam",
+          "text": "It only adds about fifteen minutes to the operation, so there's no second surgery.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Does it work?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "In a first study of twenty-three women, published in the journal Gynecologic Oncology, ninety percent could have a clitoral orgasm again three to six months after surgery.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "That's remarkable. How did it come about?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "This is my favourite part. A patient asked whether reconstruction was possible. Gynaecological oncologist Mieke ten Eikelder and plastic surgeon Tim Nijhuis, who specialises in gender surgery, went and developed it.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "One woman who had the operation is an eighty-year-old artist, Hanni Braspenning. She said losing her clitoris would have meant losing part of her womanhood.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And here's a footnote: a comparable reconstruction for men with penile cancer has been around for almost forty years.",
+          "style": "wry"
+        },
+        {
+          "speaker": "Maya",
+          "text": "Forty years. That feeds into a bigger conversation here about the gender gap in medicine. Judith Huirne, a gynaecology professor at Amsterdam UMC, says around twenty times more research money worldwide goes into erectile dysfunction than into endometriosis.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Priorities. Anyway, all nine Dutch hospitals that treat vulvar cancer will now learn the technique in a national study co-funded by KWF, the Dutch Cancer Society. The first operation has also been done in London.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Around four hundred and fifty women here get vulvar cancer each year, and roughly a quarter to a third of them have a tumour in or near the clitoris. So this could help a lot of people.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "The Batavia's last voyage",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "Finally, a ship that's about to stop being a ship. Sort of.",
+          "style": "playful"
+        },
+        {
+          "speaker": "Sam",
+          "text": "The Batavia is a full-size replica of a seventeenth-century VOC ship. The VOC was the Dutch East India Company, the powerful trading company at the heart of the Golden Age. Its legacy is celebrated, but it's increasingly debated too, because of the company's role in colonialism and slavery.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And yesterday it crossed the IJ.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "It spent a week and a half at the NDSM wharf in Amsterdam-Noord, where it was fitted into a steel support frame on a pontoon. Then tugboats towed it across the IJ while crowds watched from the shore. It carried on across the Markermeer to Museum Batavialand in Lelystad.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And today?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Today it gets driven off the pontoon, over the dike and set down next to the museum. For good.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Driving a ship over a dike. Only in this country.",
+          "style": "amused"
+        },
+        {
+          "speaker": "Sam",
+          "text": "Why bring it ashore? Wood rot. After about thirty years in the water, experts decided it couldn't stay afloat. It'll be restored in stages, and the museum plans to let visitors back on board when the renovated Batavialand reopens in 2028.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "The original didn't have much luck either.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "No. It sailed from Texel for Java in 1628 on its maiden voyage, overshot its course and was wrecked on reefs off Australia. What followed among the survivors was a mutiny and a massacre. The replica's had a much happier life. Volunteers and apprentices started building it in 1985, and Queen Beatrix christened it ten years later.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Thirty years afloat, then retirement on dry land. Honestly, that sounds pretty nice.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "What's on in Amsterdam today",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "And if you're staying on dry land tonight too, here's what's on in Amsterdam.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Camera Japan is on at LAB111 in Oud-West. It's the biggest Japanese film festival in the Benelux, with nineteen films ranging from anime and arthouse to LGBTQ+ titles and classics, plus Japanese food, music and dance. Today it runs from half past twelve until ten, so you can just drop in. Check their website first, though, because times could still change.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "For jazz, saxophonist Benjamin Herman's European Alto Festival is at the Bimhuis in Oost at half past eight. It's a tribute to Piet Noordijk, with alto players Irene Reig from Spain and Rachael Cohen from Scotland. One night only.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And you don't need a word of Dutch. Then there's Afrovibes at De Brakke Grond in the city centre, at half past seven. It's dance, theatre, music and spoken word from African and diaspora artists, on the theme of land, ancestry and belonging. It's there through Saturday, then moves to the Bijlmer Parktheater and Framer Framed for the weekend.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "Sign-off",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "That's it for today. Have a lovely weekend.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "I'm Sam.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And I'm Maya. This was Dutch Daily Briefing. Talk to you next time.",
+          "style": ""
+        }
+      ]
+    }
+  ]
+}
