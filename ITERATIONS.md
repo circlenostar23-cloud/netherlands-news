@@ -4,6 +4,28 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 ## Backlog
 
+### OpenRouter as the paid voice provider
+*Logged 2026-10-04*
+
+**Why:** Gemini TTS has been slow or stuck on several mornings, and the free tier caps us at 10 requests a day. David has OpenRouter credit, and OpenRouter also offers speech models we never tried because they aren't free. The key is the `OPENROUTER_API_KEY` Actions secret.
+
+**Test (2026-10-04):** `scripts/tts_test.py`, run by hand from `tts-test.yml` (runs 37181889516 and 37182034915). It voices 12 lines (290 words, 1,662 characters) of the 10-04 cleaners' story; the MP3s are in each run's `tts-test` artifact. Total cost about $0.35.
+- **Gemini can't voice both hosts in one request on OpenRouter.** The speech endpoint takes one `input` and one `voice`. With Google's `speechConfig.multiSpeakerVoiceConfig` passed as a provider option, the whole excerpt came out in Kore's voice (~140–170 Hz throughout) and the first "Sam:" label was read aloud. The interactions-style `speech_config` got a 400, a request without `voice` is refused, and Gemini only returns `pcm`, not `mp3`.
+- **One request per line works with every model tried except Sesame CSM-1B** (a 400 from the provider). Each host keeps their own voice, so a swap like 10-04's can't happen. The catch: the hosts no longer hear each other, so the Gemini back-and-forth (timing, reactions) is gone.
+
+| Model (Maya, Sam) | 290 words took | Full episode (~17,700 characters, 138 lines) |
+| - | - | - |
+| Gemini 3.8 Flash TTS (Kore, Puck) | 49 s | ~$0.25 |
+| Microsoft MAI-Voice 2.1 (Harper, Grant) | 16 s | ~$0.39 |
+| MiniMax Speech 2.8 HD | 13 s | ~$1.77 |
+| Grok Voice (eve, rex) | 21 s | ~$0.27 |
+| Mistral Voxtral (Jane, Paul) | 32 s | ~$0.28 |
+| Deepgram Aura-2 (Thalia, Apollo) | 61 s | ~$0.53; Apollo's voice sits high (~150–180 Hz), so the hosts are less distinct |
+
+Times are for requests one after another; an episode's 138 lines can run several at once.
+
+**Next:** David listens to the samples and picks. Options: a per-line OpenRouter voice as the main engine; OpenRouter as a better fallback than edge-tts when Gemini fails (it runs per line already); or keep Gemini direct and enable billing on that key instead, which keeps the two-host requests.
+
 ### Gemini repeats a word
 *Logged 2026-10-04*
 
