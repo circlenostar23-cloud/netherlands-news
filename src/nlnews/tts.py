@@ -3,8 +3,9 @@
 The Gemini TTS free tier allows only 10 requests/day, so segments are packed into
 a few larger requests (~4 per episode) rather than one request per segment. If Gemini
 fails partway (that daily limit, a request that times out, or the GEMINI_BUDGET running
-out), the remaining segments are voiced line by line with Microsoft neural voices, so the
-episode keeps Gemini's voices for as long as it can.
+out), the remaining segments are voiced line by line with the same Gemini voices through
+OpenRouter (paid, and it can't do two speakers in one request). If OpenRouter fails too, or
+isn't set up, the rest is voiced line by line with Microsoft neural voices.
 """
 
 import array
@@ -16,19 +17,24 @@ import os
 import subprocess
 import time
 import wave
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import edge_tts
+import httpx
 from google import genai
 
-from nlnews.config import FALLBACK_VOICES, HOSTS, TTS_MODEL
+from nlnews.config import FALLBACK_VOICES, HOSTS, OPENROUTER_TTS_MODEL, TTS_MODEL
 from nlnews.models import EpisodeScript, Segment
 
 log = logging.getLogger(__name__)
 SAMPLE_RATE = 24000  # Gemini TTS returns 16-bit mono PCM WAV at 24 kHz
 MAX_WORDS_PER_REQUEST = 600  # ~4 minutes of audio per request
 REQUEST_TIMEOUT = 180  # seconds; a healthy request takes well under this, a stuck one hangs ~4 min
-GEMINI_BUDGET = 20 * 60  # seconds for all Gemini requests, leaving room for the fallback in the job limit
+GEMINI_BUDGET = 30 * 60  # seconds for all Gemini requests, leaving room for the fallback in the job limit
+OPENROUTER_BUDGET = 8 * 60  # seconds for the OpenRouter backup; a full episode takes ~2-3 min
+OPENROUTER_TIMEOUT = 60  # seconds per line; a line takes ~4 s
+OPENROUTER_PARALLEL = 6  # lines voiced at once
 
 
 def _words(seg: Segment) -> int:
@@ -129,31 +135,74 @@ async def _edge_line(text: str, voice: str, mp3: Path) -> None:
             await asyncio.sleep(2 ** (i + 1))
 
 
-def _fallback_wavs(segments: list[tuple[int, Segment]], line_dir: Path, gap: Path, pause: Path) -> list[Path]:
-    """One WAV per line: a short gap between lines, a longer pause between segments."""
-    out = []
-    for si, seg in segments:
-        print(f"  fallback TTS: {seg.title}")
-        for li, line in enumerate(seg.lines):
-            wav = line_dir / f"{si:02d}-{li:03d}.wav"
-            if not wav.exists():  # resumable
-                mp3 = wav.with_suffix(".mp3")
-                asyncio.run(_edge_line(line.text, FALLBACK_VOICES[line.speaker], mp3))
-                _ffmpeg("-i", str(mp3), "-ar", str(SAMPLE_RATE), "-ac", "1", "-c:a", "pcm_s16le", str(wav))
-            out += [wav, gap if li < len(seg.lines) - 1 else pause]
-    return out[:-1]
+def _edge_wavs(si: int, seg: Segment, line_dir: Path) -> list[Path]:
+    """One WAV per line, voiced with Microsoft voices."""
+    print(f"  Microsoft TTS: {seg.title}")
+    wavs = []
+    for li, line in enumerate(seg.lines):
+        wav = line_dir / f"{si:02d}-{li:03d}.wav"
+        if not wav.exists():  # resumable
+            mp3 = wav.with_suffix(".mp3")
+            asyncio.run(_edge_line(line.text, FALLBACK_VOICES[line.speaker], mp3))
+            _ffmpeg("-i", str(mp3), "-ar", str(SAMPLE_RATE), "-ac", "1", "-c:a", "pcm_s16le", str(wav))
+        wavs.append(wav)
+    return wavs
+
+
+def _openrouter_line(client: httpx.Client, line, wav: Path, deadline: float) -> None:
+    """Voice one line with the host's Gemini voice through OpenRouter; two tries."""
+    body = {"model": OPENROUTER_TTS_MODEL, "input": line.text, "voice": HOSTS[line.speaker], "response_format": "pcm"}
+    if line.style:
+        body["provider"] = {"options": {"google-ai-studio": {"speech_metadata": {"style": line.style}}}}
+    for i in range(2):
+        if time.monotonic() > deadline:
+            raise TimeoutError(f"OpenRouter TTS budget of {OPENROUTER_BUDGET // 60} min used up")
+        try:
+            r = client.post("https://openrouter.ai/api/v1/audio/speech", json=body)
+            if r.status_code == 200 and r.content:
+                tmp = wav.with_suffix(".part")  # never leave a half-written WAV for a rerun to reuse
+                with wave.open(str(tmp), "wb") as w:  # 24 kHz 16-bit mono PCM, like Gemini direct
+                    w.setnchannels(1), w.setsampwidth(2), w.setframerate(SAMPLE_RATE)
+                    w.writeframes(r.content)
+                tmp.replace(wav)
+                return
+            err = RuntimeError(f"HTTP {r.status_code}: {r.text[:200]}")
+            if r.status_code in (401, 402, 403):  # bad key or out of credit: retrying won't help
+                raise err
+        except httpx.HTTPError as exc:
+            err = exc
+        if i == 0:
+            log.warning("OpenRouter TTS line failed (%s); retrying", err)
+            time.sleep(2)
+    raise err
+
+
+def _openrouter_wavs(client: httpx.Client, si: int, seg: Segment, line_dir: Path, deadline: float) -> list[Path]:
+    """One WAV per line, several lines at once. Raises if any line fails, so the whole segment
+    can go to Microsoft voices instead of switching voices mid-story."""
+    print(f"  OpenRouter TTS: {seg.title}")
+    wavs = [line_dir / f"{si:02d}-{li:03d}.wav" for li in range(len(seg.lines))]
+    todo = [(line, wav) for line, wav in zip(seg.lines, wavs) if not wav.exists()]  # resumable
+    with ThreadPoolExecutor(OPENROUTER_PARALLEL) as pool:
+        for f in [pool.submit(_openrouter_line, client, line, wav, deadline) for line, wav in todo]:
+            f.result()
+    return wavs
 
 
 def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> tuple[Path, str]:
-    """Voice each chunk with Gemini until a request fails for good, then voice the rest line by line
-    with Microsoft voices. Chunks end on segment boundaries, so any switch falls in the pause
-    between stories. Returns the MP3 and which voices were used: "gemini", "mixed" or "fallback"."""
+    """Voice each chunk with Gemini until a request fails for good. The rest is voiced line by line,
+    a segment at a time: through OpenRouter (same Gemini voices) until that fails, then with
+    Microsoft voices. Switches fall in the pause between stories. Returns the MP3 and which
+    engines were used, e.g. "gemini", "gemini+openrouter" or "gemini+openrouter+microsoft"."""
     seg_dir = out_dir / "segments"
-    line_dir = seg_dir / "fallback"
-    line_dir.mkdir(parents=True, exist_ok=True)
+    or_dir, ms_dir = seg_dir / "openrouter", seg_dir / "fallback"
+    for d in (or_dir, ms_dir):
+        d.mkdir(parents=True, exist_ok=True)
     gap, pause = _silence(seg_dir / "gap.wav", 0.25), _silence(seg_dir / "pause.wav", 0.7)
 
     client, gemini_ok, used, parts, si = None, True, set(), [], 0
+    or_key = os.environ.get("OPENROUTER_API_KEY")
+    or_client, or_deadline = None, None
     chunks = _chunk(script.segments)
     deadline = time.monotonic() + GEMINI_BUDGET
     for i, chunk in enumerate(chunks):
@@ -166,16 +215,35 @@ def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> tupl
                 client = client or genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
                 path.write_bytes(_cap_pauses(_with_retries(lambda: _synthesize(client, chunk), deadline)))
             except Exception as exc:
-                print(f"  Gemini TTS failed ({exc}); voicing the rest with Microsoft voices")
+                backup = "OpenRouter" if or_key else "Microsoft voices"
+                print(f"  Gemini TTS failed ({exc}); voicing the rest line by line with {backup}")
                 gemini_ok = False
         if path.exists():
-            parts.append(path)
+            parts += [path, pause]
             used.add("gemini")
-        else:
-            parts += _fallback_wavs(list(enumerate(chunk, si)), line_dir, gap, pause)
-            used.add("fallback")
-        parts.append(pause)
-        si += len(chunk)
+            si += len(chunk)
+            continue
+        for seg in chunk:
+            wavs = None
+            if or_key:
+                try:
+                    if or_client is None:
+                        or_client = httpx.Client(headers={"Authorization": f"Bearer {or_key}"}, timeout=OPENROUTER_TIMEOUT)
+                        or_deadline = time.monotonic() + OPENROUTER_BUDGET
+                    wavs = _openrouter_wavs(or_client, si, seg, or_dir, or_deadline)
+                    used.add("openrouter")
+                except Exception as exc:
+                    print(f"  OpenRouter TTS failed ({exc}); voicing the rest with Microsoft voices")
+                    or_key = None
+            if wavs is None:
+                wavs = _edge_wavs(si, seg, ms_dir)
+                used.add("microsoft")
+            for wav in wavs:
+                parts += [wav, gap]
+            parts[-1] = pause
+            si += 1
+    if or_client:
+        or_client.close()
 
     listing = out_dir / "concat.txt"
     listing.write_text("".join(f"file '{p.resolve()}'\n" for p in parts[:-1]))
@@ -185,7 +253,7 @@ def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> tupl
             "-ac", "1", "-ar", "44100", "-b:a", "64k",
             "-metadata", f"title={title}", "-metadata", "artist=Dutch Daily Briefing",
             str(mp3))
-    return mp3, "mixed" if len(used) > 1 else used.pop()
+    return mp3, "+".join(e for e in ("gemini", "openrouter", "microsoft") if e in used)
 
 
 def duration_seconds(path: Path) -> int:

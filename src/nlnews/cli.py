@@ -79,9 +79,12 @@ def run(args) -> None:
     duration = tts.duration_seconds(mp3)
     print(f"  audio: {mp3} ({duration // 60}m{duration % 60:02d}s, {mp3.stat().st_size / 1e6:.1f} MB, {voices} voices)")
     description = script.description
-    if voices in ("fallback", "mixed"):
-        part = "Partly voiced" if voices == "mixed" else "Voiced"
+    voices = {"mixed": "gemini+microsoft", "fallback": "microsoft"}.get(voices, voices)  # older voices.txt
+    part = "Partly voiced" if voices.startswith("gemini") else "Voiced"
+    if "microsoft" in voices:
         description += f"\n\n({part} with backup Microsoft voices because Gemini's voices were unavailable.)"
+    elif "openrouter" in voices:
+        description += f"\n\n({part} line by line through a backup service because Gemini's two-host voicing was unavailable.)"
     if args.stop_after == "audio":
         return
 
