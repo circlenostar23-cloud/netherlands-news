@@ -4,6 +4,27 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 ## Backlog
 
+### Gemini ran out of its 20-minute TTS budget on a slow morning
+*Logged 2026-10-04*
+
+**What happened:** `ep-2026-10-04` switched to Microsoft voices at ~11:24, for the last five segments (University of Amsterdam apology onwards), and the show notes say "Partly voiced". Not the daily limit: run 37170374188 made 8 of its 10 requests. Gemini was slow and twice stuck that morning:
+- Request 1 took 2.5 min and request 2 took 1.3 min (they're often ~40 s).
+- Request 3 (budget story) timed out twice at 180 s before succeeding: ~11.5 min for that one chunk.
+- Request 6 started at 02:39, ~2 min before the budget ran out at 02:41, and timed out at 02:42. The budget was already spent, so it wasn't retried and the remaining 3 chunks went to Microsoft.
+
+The run took 32 min of the 45-minute job limit (TTS started 7 min in; the Microsoft part took under 3 min).
+
+**Options:**
+1. Raise `GEMINI_BUDGET` to ~25 min. Today that would have allowed request 6's retry. The worst case still fits: ~10 min before TTS (research can add 4), 25 min Gemini, ~8 min if Microsoft voices the whole episode.
+2. Leave it. The fallback did its job, and a slow Gemini morning may just be a slow morning.
+
+**Trigger:** decide if it happens again within a week or so.
+
+### Gemini repeats a word
+*Logged 2026-10-04*
+
+In `ep-2026-10-04`, at ~0:57 in the Centraal story, Maya says "Yesterday — yesterday people were sent to the metro". The script has the word once, so Gemini doubled it (two word-length bursts at 57.1 and 57.8 s in chunk 1; Whisper hears only one). One-off so far; there's no cheap way to catch it short of transcribing every chunk and diffing it against the script. Note it if it comes back.
+
 ### Gemini swaps the hosts' voices or drops lines at story breaks
 *Logged 2026-10-02, updated 2026-10-03*
 
@@ -15,6 +36,8 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 Both clear failures sit at a story break where the same host speaks the last line of one segment and the first line of the next, inside one TTS request. The scripts had 3–5 such breaks a day (10-01 to 10-03), because Maya both closed and opened stories.
 
 **Change (2026-10-03):** `prompts/script.md` now asks for a host change at every story break, plus a clear one-line topic intro and a closing beat for each story (listeners also found transitions hard to follow). It also bans the stock "Okay, some lighter stuff" gear change. `script.py` checks for same-speaker breaks after writing and asks for one quick rewrite of just those lines if any remain.
+
+**2026-10-04, after the change:** no swap at a story break this time, but one mid-story. In `ep-2026-10-04` (chunk 2, the cleaners' strike story), Maya's line "That doesn't sound terrible. So why did FNV members say no?" at ~3:07 came out in Puck's voice (~111 Hz; Maya's other lines in that chunk sit at 140–158 Hz, Sam's at 102–124 Hz). It follows a long Sam line and Sam answers it, so it sounds like Sam asking himself a question (listener note: "around 3:25 a male voice asked himself a question"). So host changes at breaks don't stop swaps on their own; they can happen at any turn.
 
 **Trigger:** if a swap or dropped line still turns up at a break that has a host change, consider (a) voicing the cold open as its own small request and checking the "I'm Maya" / "I'm Sam" lines' pitch with a stdlib autocorrelation, re-requesting once on a swap; or (b) a per-line pitch check on every chunk (Kore ~145–290 Hz, Puck ~95–135 Hz) that re-requests a chunk once on a clear mismatch.
 
