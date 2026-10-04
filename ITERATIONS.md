@@ -4,6 +4,13 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 ## Backlog
 
+### Story lengths vary on purpose (parked on a branch)
+*Logged 2026-10-04*
+
+Work in progress lives on the branch `claude/story-length-caps`, not merged. Start there: `git fetch origin claude/story-length-caps && git checkout claude/story-length-caps`, merge `main` in, then read `docs/story-length-caps.md` on that branch. It has the goal, the caps, test results, open questions, saved test data and how to resume.
+
+Scripts run 2,980–3,406 words against a 1,800–2,200 target, and follow-ups are as long as new stories. The branch adds prompt-only word caps per segment type: lead ≤320, other hard stories 220–260, follow-ups under 200, light stories 140–180. In a first test, totals dropped 18–27% and follow-ups to 170–200 words. Totals are still a little over 2,200, and one lead went to 343. Not shipped yet; David wants more iteration first. When it merges, this item becomes the branch's own backlog entry, which moves to Done.
+
 ### OpenRouter as the paid voice provider
 *Logged 2026-10-04*
 
