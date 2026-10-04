@@ -4,22 +4,6 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 ## Backlog
 
-### Gemini ran out of its 20-minute TTS budget on a slow morning
-*Logged 2026-10-04*
-
-**What happened:** `ep-2026-10-04` switched to Microsoft voices at ~11:24, for the last five segments (University of Amsterdam apology onwards), and the show notes say "Partly voiced". Not the daily limit: run 37170374188 made 8 of its 10 requests. Gemini was slow and twice stuck that morning:
-- Request 1 took 2.5 min and request 2 took 1.3 min (they're often ~40 s).
-- Request 3 (budget story) timed out twice at 180 s before succeeding: ~11.5 min for that one chunk.
-- Request 6 started at 02:39, ~2 min before the budget ran out at 02:41, and timed out at 02:42. The budget was already spent, so it wasn't retried and the remaining 3 chunks went to Microsoft.
-
-The run took 32 min of the 45-minute job limit (TTS started 7 min in; the Microsoft part took under 3 min).
-
-**Options:**
-1. Raise `GEMINI_BUDGET` to ~25 min. Today that would have allowed request 6's retry. The worst case still fits: ~10 min before TTS (research can add 4), 25 min Gemini, ~8 min if Microsoft voices the whole episode.
-2. Leave it. The fallback did its job, and a slow Gemini morning may just be a slow morning.
-
-**Trigger:** decide if it happens again within a week or so.
-
 ### Gemini repeats a word
 *Logged 2026-10-04*
 
@@ -38,6 +22,8 @@ Both clear failures sit at a story break where the same host speaks the last lin
 **Change (2026-10-03):** `prompts/script.md` now asks for a host change at every story break, plus a clear one-line topic intro and a closing beat for each story (listeners also found transitions hard to follow). It also bans the stock "Okay, some lighter stuff" gear change. `script.py` checks for same-speaker breaks after writing and asks for one quick rewrite of just those lines if any remain.
 
 **2026-10-04, after the change:** no swap at a story break this time, but one mid-story. In `ep-2026-10-04` (chunk 2, the cleaners' strike story), Maya's line "That doesn't sound terrible. So why did FNV members say no?" at ~3:07 came out in Puck's voice (~111 Hz; Maya's other lines in that chunk sit at 140–158 Hz, Sam's at 102–124 Hz). It follows a long Sam line and Sam answers it, so it sounds like Sam asking himself a question (listener note: "around 3:25 a male voice asked himself a question"). So host changes at breaks don't stop swaps on their own; they can happen at any turn.
+
+**Decision (2026-10-04):** don't build the pitch check yet. Re-requesting chunks could push a slow morning past the job limit. If swaps become a daily issue, first look for what's causing them (chunk size, style hints, line length, how turns are marked) before re-requesting chunks until the voices come out right.
 
 **Trigger:** if a swap or dropped line still turns up at a break that has a host change, consider (a) voicing the cold open as its own small request and checking the "I'm Maya" / "I'm Sam" lines' pitch with a stdlib autocorrelation, re-requesting once on a swap; or (b) a per-line pitch check on every chunk (Kore ~145–290 Hz, Puck ~95–135 Hz) that re-requests a chunk once on a clear mismatch.
 
@@ -64,7 +50,7 @@ Both clear failures sit at a story break where the same host speaks the last lin
 ### Set up the 06:00 backup trigger on cron-job.org
 *Logged 2026-10-01*
 
-Only the 04:13 job exists, so when that run fails (as on 2026-10-01) nothing retries it. In cron-job.org, copy the 04:13 job and set the time to 06:00 Europe/Amsterdam; everything else (URL, body, headers, token) stays the same. Check that a test run returns `204` and that the workflow's gate job then logs `ep-<date> is already published`. 06:00 leaves room for a 04:13 run that uses the full 45-minute limit; if the first run is still going, the backup waits in the `episode` concurrency queue and then skips at the gate. Afterwards, update the README **Scheduling** section and the comment at the top of `episode.yml`.
+Only the 04:13 job exists, so when that run fails (as on 2026-10-01) nothing retries it. In cron-job.org, copy the 04:13 job and set the time to 06:00 Europe/Amsterdam; everything else (URL, body, headers, token) stays the same. Check that a test run returns `204` and that the workflow's gate job then logs `ep-<date> is already published`. 06:00 leaves room for a 04:13 run that uses the full 55-minute limit; if the first run is still going, the backup waits in the `episode` concurrency queue and then skips at the gate. Afterwards, update the README **Scheduling** section and the comment at the top of `episode.yml`.
 
 ### Renew the cron-job.org GitHub token by Monday 28 December 2026
 *Logged 2026-09-29*
@@ -74,7 +60,7 @@ The fine-grained PAT that cron-job.org uses to start `episode.yml` was created o
 ### Match loudness when an episode mixes Gemini and Microsoft voices
 *Logged 2026-09-28*
 
-**Context:** when Gemini TTS fails partway through (daily limit, timeout or the 20-minute budget), the rest of the episode is voiced with Microsoft voices (edge-tts), so one episode can contain both engines. In a test with a stand-in for Gemini (macOS `say`), the two halves came out 1.5 LUFS apart (-16.6 vs -18.1), about the threshold where most listeners notice. The gap with real Gemini audio is unmeasured.
+**Context:** when Gemini TTS fails partway through (daily limit, timeout or the 30-minute budget), the rest of the episode is voiced with Microsoft voices (edge-tts), so one episode can contain both engines. In a test with a stand-in for Gemini (macOS `say`), the two halves came out 1.5 LUFS apart (-16.6 vs -18.1), about the threshold where most listeners notice. The gap with real Gemini audio is unmeasured.
 
 **Proposed fix (tested, not shipped):** add `"-af", "loudnorm=I=-16:TP=-1.5:LRA=11"` to the final ffmpeg call in `tts.synthesize_episode`. That brings every episode to the podcast standard of -16 LUFS and evens out the two engines. It also changes all-Gemini episodes, which is why it was held back.
 
@@ -133,6 +119,7 @@ Newspaper-style segments: Amsterdam, national politics, arts & culture, business
 
 ## Done
 
+- **2026-10-04** Gemini's TTS budget raised from 20 to 30 min, and the job limit from 45 to 55 min to keep room for it. `ep-2026-10-04` switched to Microsoft voices at ~11:24 for its last five segments (UvA apology onwards). Not the daily limit: run 37170374188 made 8 of its 10 requests. Gemini was slow (request 1 took 2.5 min, request 2 1.3 min; they're often ~40 s), request 3 timed out twice at 180 s before succeeding (~11.5 min for that chunk), and request 6, started ~2 min before the budget ran out, timed out after it and wasn't retried. The run took 32 min. New worst case: ~11 min before TTS (research can add 4), 30 min of Gemini plus up to 3 min for a request that starts just before the budget ends, ~7 min if Microsoft voices the whole episode, and ~1 min to publish: about 52 min.
 - **2026-10-02** Long dead air inside Gemini audio is cut down. `ep-2026-10-02` had 1.8 s of silence and then a breath mid-line, before "Three cases have turned up in Germany and France" at the end of the Ebola story (~2:33). It was in Gemini's own output for chunk 1, not at a chunk boundary. `tts._cap_pauses()` now shortens any silence over 1.0 s (below -55 dBFS, 20 ms windows) in each Gemini chunk to 0.7 s, using only the stdlib (`ffmpeg`'s `silenceremove` in 6.1 left these gaps untouched in testing). On today's 9 chunks it changed only that one gap (chunk 1: 160.04 s to 158.98 s); every other pause, including the normal 0.6–1.0 s ones between lines, is left as is. Microsoft fallback audio isn't touched. Watch: a dramatic pause the model meant to leave would also get trimmed to 0.7 s.
 - **2026-10-01** Mixed-voice fallback. When Gemini TTS fails partway, the episode keeps the Gemini chunks already made and only the remaining segments are voiced with Microsoft voices (Ava / Andrew); before, any failure re-voiced the whole episode. Decided on 2026-09-28 in a local chat: David preferred the better Gemini voices for as long as they last over hosts that never change voice. It was built that day on the local branch `tts-partial-fallback`, but the scheduled merge of 2026-09-29 stopped before merging and the branch was never pushed, which is why a cloud session on 2026-10-01 logged it as an open question. Rebased on 2026-10-01 onto the timeout work: a daily-limit error, a request that fails 3 times (180 s timeout each) or the 20-minute `GEMINI_BUDGET` all stop further Gemini requests, and the rest goes to Microsoft. Chunks end on segment boundaries, so the switch falls in the 0.7 s pause between stories. `synthesize_episode()` returns `gemini`, `mixed` or `fallback`; the show notes say "Partly voiced" or "Voiced with backup Microsoft voices because Gemini's voices were unavailable" (the old wording blamed the daily limit, which is wrong for timeouts). Tested on the 09-28 script (5 chunks) with macOS `say` standing in for Gemini, so no real Gemini requests: no failure gives `gemini`; daily limit on chunk 3 gives `mixed` after 3 requests; daily limit on chunk 1 gives `fallback` after 1; connection resets from chunk 3 give `mixed` after 3 tries on that chunk; budget used up after chunk 2 gives `mixed` with no further requests. A rerun over a mixed episode re-voices nothing while Gemini is still down, and replaces the Microsoft part with Gemini once it recovers. Not built: a spoken handoff line at the switch (a cloud-session idea, never requested) and loudness matching (backlog item above). Watch: how the first real mixed episode sounds at the switch, and that an episode can go Gemini, Microsoft, Gemini if a rerun finds later chunks saved.
 - **2026-10-01** Gemini TTS requests time out after 3 min. The 04:13 run was cancelled at the 30-minute job limit: Gemini requests hung ~4 min each before failing with "Connection reset by peer" (not the daily quota, which raises at once), and 4 tries per chunk used up the clock. Each request now has a 180 s client timeout and 3 tries, so a stuck chunk gives up in ~9.5 min and the Microsoft fallback voices the episode. All Gemini requests together also get a 20-minute budget (`GEMINI_BUDGET`): a run where every chunk fails twice and then succeeds would otherwise take ~45 min for 6 chunks and still miss the job limit. No Google status page or outage report covered the 02:14–02:43 UTC window; two hours later the same requests took ~40 s each. Job limit raised to 45 min, and `PYTHONUNBUFFERED=1` so the pipeline's progress lines show in the Actions log (they were missing). The 06:00 cron-job.org backup didn't fire because it was never set up (see the open item above); the episode was published by a manual rerun at 04:26 UTC that resumed from the failed run's audio.

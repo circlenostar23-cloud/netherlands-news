@@ -28,7 +28,7 @@ log = logging.getLogger(__name__)
 SAMPLE_RATE = 24000  # Gemini TTS returns 16-bit mono PCM WAV at 24 kHz
 MAX_WORDS_PER_REQUEST = 600  # ~4 minutes of audio per request
 REQUEST_TIMEOUT = 180  # seconds; a healthy request takes well under this, a stuck one hangs ~4 min
-GEMINI_BUDGET = 20 * 60  # seconds for all Gemini requests, leaving room for the fallback in the job limit
+GEMINI_BUDGET = 30 * 60  # seconds for all Gemini requests, leaving room for the fallback in the job limit
 
 
 def _words(seg: Segment) -> int:
