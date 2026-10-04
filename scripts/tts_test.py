@@ -5,7 +5,7 @@ Checks whether Gemini 3.8 Flash TTS on OpenRouter can voice both hosts in one re
 Google options as generation config), and voices the same excerpt line by line with other
 speech models to compare. Writes one MP3 per variant and results.md to the output folder.
 
-    OPENROUTER_API_KEY=... python scripts/tts_test.py out/
+    OPENROUTER_API_KEY=... python scripts/tts_test.py out/ [only]
 """
 
 import io
@@ -68,7 +68,8 @@ PER_LINE = {
 
 
 def speak(client: httpx.Client, model: str, text: str, voice: str | None, options: dict | None = None) -> tuple[bytes, str]:
-    body = {"model": model, "input": text, "response_format": "mp3"}
+    """Returns the audio as 24 kHz 16-bit mono PCM, and the generation id."""
+    body = {"model": model, "input": text, "response_format": "pcm" if model.startswith("google/") else "mp3"}
     if voice:
         body["voice"] = voice
     if options:
@@ -76,7 +77,8 @@ def speak(client: httpx.Client, model: str, text: str, voice: str | None, option
     r = client.post(f"{API}/audio/speech", json=body)
     if r.status_code != 200:
         raise RuntimeError(f"HTTP {r.status_code}: {r.text[:300]}")
-    return r.content, r.headers.get("x-generation-id", "")
+    audio = r.content if "pcm" in r.headers.get("content-type", "") else to_pcm(r.content)  # pcm: 24 kHz 16-bit mono
+    return audio, r.headers.get("x-generation-id", "")
 
 
 def to_pcm(mp3: bytes) -> bytes:
@@ -114,15 +116,14 @@ def run(client: httpx.Client, name: str, out: Path) -> dict:
     try:
         if name in ONE_REQUEST:
             v = ONE_REQUEST[name]
-            mp3, gid = speak(client, GEMINI, DIALOGUE, v["voice"], v["options"])
+            pcm, gid = speak(client, GEMINI, DIALOGUE, v["voice"], v["options"])
             gen_ids.append(gid)
-            pcm = to_pcm(mp3)
         else:
             gap, pcm = b"\0\0" * int(0.25 * SAMPLE_RATE), b""
             for who, text in LINES:
-                mp3, gid = speak(client, name, text, PER_LINE[name][who != "Maya"])
+                audio, gid = speak(client, name, text, PER_LINE[name][who != "Maya"])
                 gen_ids.append(gid)
-                pcm += to_pcm(mp3) + gap
+                pcm += audio + gap
         seconds = save_mp3(pcm, out / f"{name.replace('/', '_')}.mp3")
         return {"name": name, "ok": True, "wall": time.monotonic() - start, "audio": seconds,
                 "cost": cost(client, gen_ids)}
@@ -132,10 +133,11 @@ def run(client: httpx.Client, name: str, out: Path) -> dict:
 
 def main() -> None:
     out = Path(sys.argv[1] if len(sys.argv) > 1 else "tts-test")
+    only = sys.argv[2] if len(sys.argv) > 2 else ""  # e.g. "gemini" runs only variants with that in the name
     out.mkdir(parents=True, exist_ok=True)
     headers = {"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"}
     with httpx.Client(headers=headers, timeout=180) as client, ThreadPoolExecutor(6) as pool:
-        results = list(pool.map(lambda n: run(client, n, out), [*ONE_REQUEST, *PER_LINE]))
+        results = list(pool.map(lambda n: run(client, n, out), [n for n in [*ONE_REQUEST, *PER_LINE] if only in n]))
     words = sum(len(t.split()) for _, t in LINES)
     rows = [f"Excerpt: {len(LINES)} lines, {words} words.\n",
             "| Variant | Result | Wall time | Audio | Cost |", "| - | - | - | - | - |"]

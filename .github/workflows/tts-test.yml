@@ -4,6 +4,11 @@ name: OpenRouter TTS test
 # (scripts/tts_test.py) and keeps the MP3s and results.md as the `tts-test` artifact.
 on:
   workflow_dispatch:
+    inputs:
+      only:
+        description: "Only run variants whose name contains this (e.g. gemini)"
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -25,7 +30,8 @@ jobs:
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           PYTHONUNBUFFERED: 1
-        run: python scripts/tts_test.py tts-test
+          ONLY: ${{ inputs.only }}
+        run: python scripts/tts_test.py tts-test "$ONLY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
