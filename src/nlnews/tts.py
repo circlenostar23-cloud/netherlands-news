@@ -1,11 +1,12 @@
 """Voice the script with Gemini multi-speaker TTS, then stitch to MP3.
 
 The Gemini TTS free tier allows only 10 requests/day, so segments are packed into
-a few larger requests (~4 per episode) rather than one request per segment. If Gemini
-fails partway (that daily limit, a request that times out, or the GEMINI_BUDGET running
-out), the remaining segments are voiced line by line with the same Gemini voices through
-OpenRouter (paid, and it can't do two speakers in one request). If OpenRouter fails too, or
-isn't set up, the rest is voiced line by line with Microsoft neural voices.
+a few larger requests (~4 per episode) rather than one request per segment. If a request
+fails for good (it times out, say), its segments are voiced line by line with the same Gemini
+voices through OpenRouter (paid, and it can't do two speakers in one request), and Gemini
+carries on with the next request. Gemini is dropped for the rest of the episode on the daily
+limit, when the GEMINI_BUDGET runs out, or after two failed requests in a row. If OpenRouter
+fails too, or isn't set up, the rest is voiced line by line with Microsoft neural voices.
 """
 
 import array
@@ -30,7 +31,8 @@ from nlnews.models import EpisodeScript, Segment
 log = logging.getLogger(__name__)
 SAMPLE_RATE = 24000  # Gemini TTS returns 16-bit mono PCM WAV at 24 kHz
 MAX_WORDS_PER_REQUEST = 600  # ~4 minutes of audio per request
-REQUEST_TIMEOUT = 180  # seconds; a healthy request takes well under this, a stuck one hangs ~4 min
+REQUEST_TIMEOUT = 180  # seconds, at least; a healthy request takes ~30 s, a stuck one hangs ~4 min
+TIMEOUT_PER_WORD = 0.5  # seconds; on a slow morning a 557-word request outran 180 s (2026-10-05)
 GEMINI_BUDGET = 30 * 60  # seconds for all Gemini requests, leaving room for the fallback in the job limit
 OPENROUTER_BUDGET = 8 * 60  # seconds for the OpenRouter backup; a full episode takes ~2-3 min
 OPENROUTER_TIMEOUT = 60  # seconds per line; a line takes ~4 s
@@ -52,6 +54,11 @@ def _chunk(segments: list[Segment]) -> list[list[Segment]]:
     return chunks
 
 
+def _timeout(segments: list[Segment]) -> float:
+    """Bigger requests get longer: 180 s up to 360 words, 300 s at the 600-word cap."""
+    return max(REQUEST_TIMEOUT, TIMEOUT_PER_WORD * sum(map(_words, segments)))
+
+
 def _synthesize(client: genai.Client, segments: list[Segment]) -> bytes:
     content = []
     for line in (l for seg in segments for l in seg.lines):
@@ -69,7 +76,7 @@ def _synthesize(client: genai.Client, segments: list[Segment]) -> bytes:
                 "speakers": [{"speaker": name, "voice": voice} for name, voice in HOSTS.items()],
             }
         },
-        timeout=REQUEST_TIMEOUT,
+        timeout=_timeout(segments),
     )
     return base64.b64decode(interaction.output_audio.data)
 
@@ -190,9 +197,11 @@ def _openrouter_wavs(client: httpx.Client, si: int, seg: Segment, line_dir: Path
 
 
 def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> tuple[Path, str]:
-    """Voice each chunk with Gemini until a request fails for good. The rest is voiced line by line,
+    """Voice each chunk with Gemini. A chunk whose request fails for good is voiced line by line,
     a segment at a time: through OpenRouter (same Gemini voices) until that fails, then with
-    Microsoft voices. Switches fall in the pause between stories. Returns the MP3 and which
+    Microsoft voices. Gemini is tried again on the next chunk, unless it hit the daily limit, ran
+    out of budget or failed two chunks in a row. Switches fall in the pause between stories, and
+    once Microsoft voices are in use Gemini isn't tried again. Returns the MP3 and which
     engines were used, e.g. "gemini", "gemini+openrouter" or "gemini+openrouter+microsoft"."""
     seg_dir = out_dir / "segments"
     or_dir, ms_dir = seg_dir / "openrouter", seg_dir / "fallback"
@@ -200,7 +209,7 @@ def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> tupl
         d.mkdir(parents=True, exist_ok=True)
     gap, pause = _silence(seg_dir / "gap.wav", 0.25), _silence(seg_dir / "pause.wav", 0.7)
 
-    client, gemini_ok, used, parts, si = None, True, set(), [], 0
+    client, gemini_ok, failed, used, parts, si = None, True, 0, set(), [], 0
     or_key = os.environ.get("OPENROUTER_API_KEY")
     or_client, or_deadline = None, None
     chunks = _chunk(script.segments)
@@ -214,10 +223,13 @@ def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> tupl
                 print(f"  TTS request {i + 1}/{len(chunks)}: {' / '.join(s.title for s in chunk)}")
                 client = client or genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
                 path.write_bytes(_cap_pauses(_with_retries(lambda: _synthesize(client, chunk), deadline)))
+                failed = 0
             except Exception as exc:
+                failed += 1
+                # without OpenRouter the backup is Microsoft voices, and the hosts shouldn't change back
+                gemini_ok = bool(or_key) and failed < 2 and "per day" not in str(exc) and time.monotonic() < deadline
                 backup = "OpenRouter" if or_key else "Microsoft voices"
-                print(f"  Gemini TTS failed ({exc}); voicing the rest line by line with {backup}")
-                gemini_ok = False
+                print(f"  Gemini TTS failed ({exc}); voicing {'this part' if gemini_ok else 'the rest'} line by line with {backup}")
         if path.exists():
             parts += [path, pause]
             used.add("gemini")
@@ -234,7 +246,7 @@ def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> tupl
                     used.add("openrouter")
                 except Exception as exc:
                     print(f"  OpenRouter TTS failed ({exc}); voicing the rest with Microsoft voices")
-                    or_key = None
+                    or_key, gemini_ok = None, False
             if wavs is None:
                 wavs = _edge_wavs(si, seg, ms_dir)
                 used.add("microsoft")
