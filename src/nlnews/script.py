@@ -14,12 +14,17 @@ def plan_airtime(briefing: Briefing, words: tuple[int, int] = (1800, 2200)) -> B
     """Split the episode's story words across the stories by how much each one has to say."""
     pool = sum(words) // 2 - OPEN_AND_CLOSE
     system = load_prompt("airtime").format(pool=pool, floor=AIRTIME_FLOOR, ceiling=AIRTIME_CEILING)
-    plan = ask(system, briefing.model_dump_json(indent=2, exclude={"agenda"}), AirtimePlan, effort="low")
-    if len(plan.stories) != len(briefing.stories):
-        raise RuntimeError(f"Airtime plan has {len(plan.stories)} entries for {len(briefing.stories)} stories")
-    budgets = _fit(pool, [a.words for a in plan.stories])
-    stories = [s.model_copy(update={"airtime": w, "airtime_reason": a.reason})
-               for s, a, w in zip(briefing.stories, plan.stories, budgets)]
+    n = len(briefing.stories)
+    try:
+        plan = ask(system, briefing.model_dump_json(indent=2, exclude={"agenda"}), AirtimePlan, effort="low")
+        if len(plan.stories) != n:
+            raise RuntimeError(f"{len(plan.stories)} entries for {n} stories")
+        asked, reasons = [a.words for a in plan.stories], [a.reason for a in plan.stories]
+    except Exception as exc:  # equal shares still give the script a sensible length; don't lose the episode
+        print(f"  airtime plan failed ({exc}); splitting the words evenly")
+        asked, reasons = [1] * n, [""] * n
+    stories = [s.model_copy(update={"airtime": w, "airtime_reason": r})
+               for s, w, r in zip(briefing.stories, _fit(pool, asked), reasons)]
     for s in stories:
         print(f"  airtime {s.airtime:>3}  {s.headline[:60]}  ({s.airtime_reason})")
     return briefing.model_copy(update={"stories": stories})
@@ -27,8 +32,9 @@ def plan_airtime(briefing: Briefing, words: tuple[int, int] = (1800, 2200)) -> B
 
 def _fit(pool: int, asked: list[int]) -> list[int]:
     """Scale the asked-for counts to add up to about `pool`, within the floor and ceiling, in steps of 10."""
+    asked = [max(w, 1) for w in asked]
     fit = lambda k: [min(max(w * k, AIRTIME_FLOOR), AIRTIME_CEILING) for w in asked]
-    lo, hi = 0.0, 10.0
+    lo, hi = 0.0, AIRTIME_CEILING / min(asked)  # at hi every story is at the ceiling
     for _ in range(40):  # the clamped total grows with k, so bisect for the scale that hits the pool
         k = (lo + hi) / 2
         lo, hi = (k, hi) if sum(fit(k)) < pool else (lo, k)
