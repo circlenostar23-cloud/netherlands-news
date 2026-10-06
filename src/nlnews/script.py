@@ -4,10 +4,46 @@ from datetime import date
 
 from nlnews.config import HOSTS, SHOW_TITLE, load_prompt
 from nlnews.llm import ask
-from nlnews.models import Briefing, EpisodeScript
+from nlnews.models import AirtimePlan, Briefing, EpisodeScript
+
+# Words per story, whatever its kind. The cold open and sign-off take ~120 of the episode's target.
+AIRTIME_FLOOR, AIRTIME_CEILING, OPEN_AND_CLOSE = 90, 340, 120
+
+
+def plan_airtime(briefing: Briefing, words: tuple[int, int] = (1800, 2200)) -> Briefing:
+    """Split the episode's story words across the stories by how much each one has to say."""
+    pool = sum(words) // 2 - OPEN_AND_CLOSE
+    system = load_prompt("airtime").format(pool=pool, floor=AIRTIME_FLOOR, ceiling=AIRTIME_CEILING)
+    n = len(briefing.stories)
+    try:
+        plan = ask(system, briefing.model_dump_json(indent=2, exclude={"agenda"}), AirtimePlan, effort="low")
+        if len(plan.stories) != n:
+            raise RuntimeError(f"{len(plan.stories)} entries for {n} stories")
+        asked, reasons = [a.words for a in plan.stories], [a.reason for a in plan.stories]
+    except Exception as exc:  # equal shares still give the script a sensible length; don't lose the episode
+        print(f"  airtime plan failed ({exc}); splitting the words evenly")
+        asked, reasons = [1] * n, [""] * n
+    stories = [s.model_copy(update={"airtime": w, "airtime_reason": r})
+               for s, w, r in zip(briefing.stories, _fit(pool, asked), reasons)]
+    for s in stories:
+        print(f"  airtime {s.airtime:>3}  {s.headline[:60]}  ({s.airtime_reason})")
+    return briefing.model_copy(update={"stories": stories})
+
+
+def _fit(pool: int, asked: list[int]) -> list[int]:
+    """Scale the asked-for counts to add up to about `pool`, within the floor and ceiling, in steps of 10."""
+    asked = [max(w, 1) for w in asked]
+    fit = lambda k: [min(max(w * k, AIRTIME_FLOOR), AIRTIME_CEILING) for w in asked]
+    lo, hi = 0.0, AIRTIME_CEILING / min(asked)  # at hi every story is at the ceiling
+    for _ in range(40):  # the clamped total grows with k, so bisect for the scale that hits the pool
+        k = (lo + hi) / 2
+        lo, hi = (k, hi) if sum(fit(k)) < pool else (lo, k)
+    return [int(round(w / 10) * 10) for w in fit((lo + hi) / 2)]
 
 
 def write_script(briefing: Briefing, words: tuple[int, int] = (1800, 2200)) -> EpisodeScript:
+    if not all(s.airtime for s in briefing.stories):
+        briefing = plan_airtime(briefing, words)
     host_a, host_b = HOSTS
     system = load_prompt("script").format(
         show=SHOW_TITLE, host_a=host_a, host_b=host_b, words_min=words[0], words_max=words[1],
@@ -19,7 +55,15 @@ def write_script(briefing: Briefing, words: tuple[int, int] = (1800, 2200)) -> E
     unknown = {l.speaker for s in script.segments for l in s.lines} - set(HOSTS)
     if unknown:
         raise RuntimeError(f"Script used unknown speakers: {unknown}")
+    _report_lengths(briefing, script)
     return _fix_handoffs(script)
+
+
+def _report_lengths(briefing: Briefing, script: EpisodeScript) -> None:
+    """Print each story's words against its airtime, assuming one segment per story after the cold open."""
+    segs = script.segments[1:1 + len(briefing.stories)]
+    print("  story words vs airtime: " + ", ".join(
+        f"{sum(len(l.text.split()) for l in seg.lines)}/{s.airtime}" for s, seg in zip(briefing.stories, segs)))
 
 
 def same_speaker_breaks(script: EpisodeScript) -> list[int]:
