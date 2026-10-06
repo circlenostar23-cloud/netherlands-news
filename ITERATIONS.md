@@ -9,7 +9,7 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 Work in progress lives on the branch `claude/story-length-caps`, not merged. Start there: `git fetch origin claude/story-length-caps && git checkout claude/story-length-caps`, merge `main` in, then read `docs/story-length-caps.md` on that branch. It has the goal, the caps, test results, open questions, saved test data and how to resume.
 
-Scripts run 2,980–3,406 words against a 1,800–2,200 target, and follow-ups are as long as new stories. The branch adds prompt-only word caps per segment type: lead ≤320, other hard stories 220–260, follow-ups under 200, light stories 140–180. In a first test, totals dropped 18–27% and follow-ups to 170–200 words. Totals are still a little over 2,200, and one lead went to 343. Not shipped yet; David wants more iteration first. When it merges, this item becomes the branch's own backlog entry, which moves to Done.
+Scripts run 2,980–3,406 words against a 1,800–2,200 target, and follow-ups are as long as new stories. The branch adds prompt-only word caps per segment type: lead ≤320, other hard stories 220–260, follow-ups under 200, light stories 140–180. In a first test, totals dropped 18–27% and follow-ups to 170–200 words. Totals are still a little over 2,200, and one lead went to 343. Not shipped yet; David wants more iteration first. Still a problem on 2026-10-06: 3,229 words, a 536-word lead story and a 19m20s episode. When it merges, this item becomes the branch's own backlog entry, which moves to Done.
 
 ### OpenRouter as the paid voice provider
 *Logged 2026-10-04*
@@ -35,6 +35,11 @@ Times are for requests one after another; an episode's 138 lines can run several
 
 **Two hosts in one request elsewhere (checked 2026-10-04):** Fish Audio S2.1 Pro does this natively (`<|speaker:0|>` / `<|speaker:1|>` tags, a voice per index), but OpenRouter gives it a single voice and no multiple reference clips, so not there. ElevenLabs Text to Dialogue isn't on OpenRouter. Seed Audio 1.0 on OpenRouter takes up to three reference clips and switches between them (`@Audio1`, `@Audio2`) in one request, but caps each request at 120 s of audio and costs $0.0025/s, ~$2.90 an episode. It would need short Kore and Puck reference clips. Untested; worth one ~$0.25 request only if the line-by-line backup turns out to be used often.
 
+### Tiny TTS requests eat the 10-a-day quota
+*Logged 2026-10-06*
+
+`ep-2026-10-06` (run 37403057992, 12m56s, all Gemini voices) used 9 of the 10 daily Gemini TTS requests. Two of them were only just over the 600-word cap: the 83-word cold open didn't fit with the 536-word lead (619), and the 19-word sign-off, 5 words over, got a request to itself (586 + 19 = 605). With one request to spare, a single retry would leave no room before the daily limit. Option: let `_chunk()` go a little over the cap (say up to ~40 words) to absorb the cold open or sign-off, or always pack those two with their neighbour. The story-length caps above would also shrink the request count. Not urgent while requests are fast, as they were today (11–30 s each).
+
 ### Gemini repeats a word
 *Logged 2026-10-04*
 
@@ -53,6 +58,8 @@ Both clear failures sit at a story break where the same host speaks the last lin
 **Change (2026-10-03):** `prompts/script.md` now asks for a host change at every story break, plus a clear one-line topic intro and a closing beat for each story (listeners also found transitions hard to follow). It also bans the stock "Okay, some lighter stuff" gear change. `script.py` checks for same-speaker breaks after writing and asks for one quick rewrite of just those lines if any remain.
 
 **2026-10-04, after the change:** no swap at a story break this time, but one mid-story. In `ep-2026-10-04` (chunk 2, the cleaners' strike story), Maya's line "That doesn't sound terrible. So why did FNV members say no?" at ~3:07 came out in Puck's voice (~111 Hz; Maya's other lines in that chunk sit at 140–158 Hz, Sam's at 102–124 Hz). It follows a long Sam line and Sam answers it, so it sounds like Sam asking himself a question (listener note: "around 3:25 a male voice asked himself a question"). So host changes at breaks don't stop swaps on their own; they can happen at any turn.
+
+**2026-10-06:** one clear mid-story swap again, and no swap at a story break. In `ep-2026-10-06` (chunk 2, the UWV story), Maya's 15-second line "The newspaper AD and the current affairs programme EenVandaag looked into…" at ~3:59 came out in Puck's voice: median pitch 116 Hz, and its timbre (MFCC distance to each host's clean lines) also matches Sam. Sam has the two lines before it (the story intro and the next line) and the line after, so it sounds like ~35 s of Sam asking himself "Where do those figures come from?". Two short lines are borderline: Sam's sign-off "That's it for today. I'm Sam." at ~19:13 (~197 Hz, but Sam's timbre) and Sam's bridges intro at ~6:55 (~192 Hz, timbre only weakly Sam). Both are 1–3 s, too short to call; nobody has listened to them yet. Method: lines aligned to each chunk with faster-whisper `small.en`, then pitch with librosa `pyin` and timbre against reference lines whose pitch clearly fits their host. A plain pitch threshold (~135 Hz) flagged ~15 more lines that turned out to have the right timbre, so pitch alone gives false alarms. Possible pattern, weak: this swap and the 10-04 one both came right after Sam had spoken at length (here two Sam lines in a row), but most stories open with two same-host lines and only one swapped.
 
 **Decision (2026-10-04):** don't build the pitch check yet. Re-requesting chunks could push a slow morning past the job limit. If swaps become a daily issue, first look for what's causing them (chunk size, style hints, line length, how turns are marked) before re-requesting chunks until the voices come out right.
 
