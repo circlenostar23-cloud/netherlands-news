@@ -5,4 +5,5 @@ from nlnews import script
 from nlnews.models import Briefing
 b = script.plan_airtime(Briefing.model_validate_json(open(sys.argv[1]).read()))
 open(sys.argv[2] + ".plan.json", "w").write(b.model_dump_json(indent=2))
-open(sys.argv[2] + ".json", "w").write(script.write_script(b).model_dump_json(indent=2))
+sc = script.write_script(b)  # written only once done, so an empty file never looks finished
+open(sys.argv[2] + ".json", "w").write(sc.model_dump_json(indent=2))
