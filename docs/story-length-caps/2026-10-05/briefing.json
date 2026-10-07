@@ -1,0 +1,584 @@
+{
+  "date": "2026-10-05",
+  "top_line": "Animal welfare state secretary Silvio Erkens says the Netherlands should follow Belgium and ban slaughter without stunning, reopening a debate about religious freedom that has run for 15 years, while on the weekend's sports front Max Verstappen won his first race of the season and Virgil van Dijk played his 100th game for the Dutch national team.",
+  "stories": [
+    {
+      "headline": "Animal welfare state secretary wants a ban on slaughter without stunning",
+      "section": "politics",
+      "kind": "hard",
+      "previously": "",
+      "summary": "Silvio Erkens, the state secretary for agriculture who is responsible for animal welfare, says the Netherlands should ban slaughtering animals without first stunning them, as the Belgian regions of Flanders and Wallonia have done. He used World Animal Day on Sunday to make the case, saying on the TV programme WNL op Zondag that the practice 'does not belong in the Netherlands' and that the taboo around the subject should be lifted. In an RTL Nieuws interview he said 'personally' that unstunned ritual slaughter fits poorly with the cabinet's goal of improving animal welfare. Under current Dutch rules, a certified slaughterer cuts the animal's throat with a razor-sharp knife. If the animal is not dead within 40 seconds, it must be stunned, and Erkens called those 'forty seconds of animal suffering.' According to De Telegraaf, about 26,000 animals were slaughtered without stunning in 2024, mostly sheep and goats; at this year's Festival of Sacrifice, food safety authority NVWA figures show about 30,500 sheep and goats and some 1,400 cattle were slaughtered, 30 percent of them without stunning. Erkens will not write a law himself. Instead he signalled that the cabinet looks favourably on a bill the Party for the Animals is filing this month, and stressed that any law must hold up legally because it touches on freedom of religion. The bill goes further than ritual slaughter: it would also ban CO2 stunning of pigs, electric water baths for poultry and the tipping of poultry crates, and bar the slaughter of animals beyond 40 percent of pregnancy. When the Council of State gave its largely positive advice last year, the PVV, VVD, D66, GroenLinks-PvdA and SP all backed a ban; the CDA has been sceptical. Erkens rejected the idea that the ban targets Muslims. He said ritual slaughter with stunning would still be allowed, that about half of ritual slaughter in the Netherlands already happens that way, and that Denmark, Belgium, Greece and Austria already ban slaughter without stunning. The Central Jewish Council (CJO) reacted angrily, with vice-chairman Hans Weijel calling it 'another blow against Jews' and saying it would coordinate opposition with Muslim organisations. European courts have backed Belgium's regional bans: the EU Court of Justice in 2020 and the European Court of Human Rights in 2024.",
+      "context": "Some Islamic and Jewish religious rules require that an animal be alive and conscious when it is slaughtered. Some religious groups accept a temporary, reversible stun, because the animal is not dead when it is cut. The Party for the Animals (Partij voor de Dieren) is a small party focused on animal rights. It first proposed a ban in 2011. That bill passed the House of Representatives but was voted down in the Senate, where a majority found it violated freedom of religion. The party has since written a revised bill, which the Council of State, the government's top legal adviser, received positively. Erkens belongs to the VVD, the center-right liberal party. A state secretary is a junior minister, roughly like a US deputy secretary, with his own policy area. The far-right PVV has also long pushed for a ban, while the SGP, a small orthodox Protestant party, and DENK, a party with a largely Muslim base, defend religious freedom. Research from Wageningen University found that sheep lose consciousness after about 15 seconds and cattle after about 140.",
+      "key_terms": [
+        "onverdoofd slachten (slaughter without stunning)",
+        "ritueel slachten (ritual slaughter)",
+        "Partij voor de Dieren (Party for the Animals)",
+        "Esther Ouwehand (Party for the Animals MP and author of the bill)",
+        "Silvio Erkens (state secretary, VVD)",
+        "staatssecretaris (state secretary, a junior minister)",
+        "Werelddierendag (World Animal Day)",
+        "Eerste Kamer (Senate)",
+        "Tweede Kamer (House of Representatives)",
+        "Raad van State (Council of State)",
+        "NVWA (Netherlands Food and Consumer Product Safety Authority)",
+        "initiatiefwetsvoorstel (private member's bill)",
+        "bedwelmen / verdoven (to stun)"
+      ],
+      "sources": [
+        "NOS",
+        "NL Times"
+      ],
+      "urls": [
+        "https://nos.nl/l/2633601",
+        "https://nltimes.nl/2026/10/04/lawmakers-weigh-ban-animal-slaughter-without-prior-stunning",
+        "https://www.hartvannederland.nl/politiek/beleid/artikelen/onverdoofd-ritueel-slachten-erkens-dierenbescherming-verbod",
+        "https://www.wakkerdier.nl/persberichten/vorig-jaar-bijna-67-000-dieren-onverdoofd-geslacht/",
+        "https://www.nvwa.nl/onderwerpen/dier/onbedwelmd-ritueel-slachten/offerfeest-cijfers",
+        "https://nos.nl/artikel/2587149-raad-van-state-overwegend-positief-over-verbod-op-onverdoofd-slachten",
+        "https://www.nieuweoogst.nl/nieuws/2025/06/14/pvdd-komt-met-wetsvoorstel-voor-verbod-rituele-onverdoofde-slacht",
+        "https://www.raadvanstate.nl/@151785/w11-25-00148-iv/",
+        "https://nos.nl/artikel/2587149-raad-van-state-overwegend-positief-over-verbod-op-onverdoofd-slachten",
+        "https://tpo.nl/2026/10/04/onverdoofd-slachten-erkens-verbod-ouwehand/",
+        "https://jonet.nl/cjo-verbod-rituele-slacht-is-opnieuw-tegenwerking/",
+        "https://islamomroep.nl/2026/10/04/kabinet-wil-rituele-slacht-volledig-verbieden/",
+        "https://www.vrt.be/vrtnws/nl/2020/12/17/verbod-op-onverdoofd-slachten-toegestaan/",
+        "https://www.vrt.be/vrtnws/nl/2021/09/30/grondwettelijk-hof-bevestigt-verbod-op-onverdoofd-slachten/",
+        "https://www.vrt.be/vrtnws/nl/2024/02/13/verbod-op-onverdoofd-slachten-kan-wel-degelijk-oordeelt-europee/"
+      ],
+      "open_questions": [],
+      "findings": [
+        {
+          "question": "How many animals are slaughtered without stunning in the Netherlands each year, and what share are sheep versus cattle?",
+          "answer": "De Telegraaf, as cited by Hart van Nederland, reports about 26,000 animals were slaughtered without stunning in 2024; other reporting of the same figures breaks this into just over 2,000 cattle and nearly 24,000 sheep and goats, so the vast majority are sheep and goats. The most recent full-year NVWA breakdown found (2018) was 66,858 animals: 47,154 sheep, 5,547 lambs, 10,849 cattle, 1,283 calves and 2,025 goats. For the 2026 Festival of Sacrifice, the NVWA reports 30,528 sheep/goats and 1,421 cattle slaughtered, 30% without stunning (32% in 2025).",
+          "sources": [
+            "https://www.hartvannederland.nl/politiek/beleid/artikelen/onverdoofd-ritueel-slachten-erkens-dierenbescherming-verbod",
+            "https://www.wakkerdier.nl/persberichten/vorig-jaar-bijna-67-000-dieren-onverdoofd-geslacht/",
+            "https://www.nvwa.nl/onderwerpen/dier/onbedwelmd-ritueel-slachten/offerfeest-cijfers"
+          ]
+        },
+        {
+          "question": "What exactly does the revised Party for the Animals bill change from the 2011 version, and does it also cover conventional slaughter, as Ouwehand suggests?",
+          "answer": "Yes. The 2011 bill dealt only with unstunned ritual slaughter. The new Ouwehand bill (which replaces a 2018 version) is broader, 'to limit animal suffering at slaughter': besides a stunning requirement for ritual slaughter, it bans CO2 stunning of pigs, electric water-bath stunning of poultry and tipping poultry crates, and bans trading pregnant mammals for slaughter from 40% of gestation (currently 90%). The Council of State's advice of 15 October 2025 was largely positive, saying recent European case law gives 'more room than before' to put animal welfare ahead of religious freedom, but it asked for better justification of the pregnant-animals provision's feasibility and enforceability.",
+          "sources": [
+            "https://nos.nl/artikel/2587149-raad-van-state-overwegend-positief-over-verbod-op-onverdoofd-slachten",
+            "https://www.nieuweoogst.nl/nieuws/2025/06/14/pvdd-komt-met-wetsvoorstel-voor-verbod-rituele-onverdoofde-slacht",
+            "https://www.raadvanstate.nl/@151785/w11-25-00148-iv/"
+          ]
+        },
+        {
+          "question": "Which parties in the current House and Senate have said they would back the new bill?",
+          "answer": "NOS reported in 2025, when the Council of State advice came out, that the PVV, VVD, D66, GroenLinks-PvdA and SP supported a ban on unstunned slaughter. TPO notes that the CDA has previously been sceptical, and the SGP and DENK oppose a ban on religious-freedom grounds. No up-to-date count of party positions in the current House or the Senate was found.",
+          "sources": [
+            "https://nos.nl/artikel/2587149-raad-van-state-overwegend-positief-over-verbod-op-onverdoofd-slachten",
+            "https://tpo.nl/2026/10/04/onverdoofd-slachten-erkens-verbod-ouwehand/",
+            "https://nltimes.nl/2026/10/04/lawmakers-weigh-ban-animal-slaughter-without-prior-stunning"
+          ]
+        },
+        {
+          "question": "How have Jewish and Muslim organisations in the Netherlands, such as CIDI or the CMO, responded to Erkens's remarks?",
+          "answer": "The Central Jewish Council (CJO) strongly opposes the ban. Vice-chairman Hans Weijel called it 'another blow against Jews' and said 'the net is closing ever tighter'. He also voiced concern about possible future restrictions on circumcision, and said the CJO expects to work with Muslim organisations against the bill. No reaction from CIDI or the CMO to Erkens's remarks was found. IslamOmroep ran a critical editorial pointing to a contradiction with Prime Minister Jetten's statements against excluding Muslims.",
+          "sources": [
+            "https://jonet.nl/cjo-verbod-rituele-slacht-is-opnieuw-tegenwerking/",
+            "https://islamomroep.nl/2026/10/04/kabinet-wil-rituele-slacht-volledig-verbieden/"
+          ]
+        },
+        {
+          "question": "Is the Belgian ban (in Flanders and Wallonia) in force, and has the EU Court of Justice upheld it?",
+          "answer": "Yes. Flanders' ban has applied since 2019, and Wallonia also has one. On 17 December 2020, the EU Court of Justice ruled that the Flemish ban does not breach EU law or religious freedom, and that member states may require reversible stunning for ritual slaughter. Belgium's Constitutional Court upheld the Flemish and Walloon bans in September 2021. On 13 February 2024, the European Court of Human Rights ruled in Executive of the Muslims of Belgium v. Belgium that the bans do not violate freedom of religion or the ban on discrimination.",
+          "sources": [
+            "https://www.vrt.be/vrtnws/nl/2020/12/17/verbod-op-onverdoofd-slachten-toegestaan/",
+            "https://www.vrt.be/vrtnws/nl/2021/09/30/grondwettelijk-hof-bevestigt-verbod-op-onverdoofd-slachten/",
+            "https://www.vrt.be/vrtnws/nl/2024/02/13/verbod-op-onverdoofd-slachten-kan-wel-degelijk-oordeelt-europee/"
+          ]
+        }
+      ]
+    },
+    {
+      "headline": "Verstappen wins his first race of 2026 after a chaotic, rain-hit start",
+      "section": "sport",
+      "kind": "light",
+      "previously": "",
+      "summary": "Max Verstappen won the Bahrain Grand Prix on Sunday, the first win of the season for the Dutch Red Bull driver. The race was held at the Sepang circuit in Malaysia. He finished 2.3 seconds ahead of championship leader Kimi Antonelli of Mercedes, with Lewis Hamilton third. Heavy rain, thunder and lightning delayed the start. Then, during the formation laps on the wet track, about eight cars lost power and stopped because of a software fault. Verstappen and Hamilton were among them. Nothing like it had been seen before in Formula 1. The sport's governing body, the FIA, said the software had not been tested in these wet, low-speed conditions. It sent the teams an update, which took about 20 minutes, and apologised to fans for the wait. It also promised a full review with the teams and engine makers. It has not announced any penalties or changes to its testing rules. The race finally started at 10:30 Dutch time, an hour and a half late. Verstappen started from pole on intermediate tyres, while many rivals gambled on dry-weather tyres. He got away badly and fell behind both Mercedes drivers. He passed George Russell on lap six. As the track dried, Red Bull made the bold choice to put him on soft tyres, and he took the lead from Antonelli at a safety car restart. Near the end, an extra pit stop briefly cost him the lead, but Antonelli also pitted and Verstappen pulled away again at the next restart. Russell retired with an engine problem, and Hamilton overtook Verstappen's teammate Isack Hadjar for third. It is Red Bull's first win with the engine it now builds itself, and Verstappen's first win since Abu Dhabi in December 2025. He celebrated with his father, Jos. Seven races remain, starting with Singapore next weekend. Antonelli cannot win the title there, but he could clinch it as early as the United States Grand Prix on 25 October.",
+      "context": "Verstappen is a four-time world champion and a huge sporting figure in the Netherlands, where F1 weekends draw large TV audiences and seas of orange-clad fans. This season has been difficult for him: he is still only sixth in the standings with 188 points. New engine rules came in this year, and many people in the sport dislike them. The race was technically the Bahrain Grand Prix but was moved to Malaysia because the April races in Bahrain and Saudi Arabia were cancelled over the security situation in the Middle East linked to the conflict involving Iran. Antonelli, a young Italian, now leads Russell, his Mercedes teammate, by 84 points.",
+      "key_terms": [
+        "Max Verstappen",
+        "Jos Verstappen (Max's father, a former F1 driver)",
+        "Red Bull Racing",
+        "Sepang (the Malaysian circuit)",
+        "formatieronde (formation lap)",
+        "safetycar",
+        "intermediates (light rain tyres)",
+        "FIA (motorsport's governing body)",
+        "Jeroen Bleekemolen (Dutch racing driver and NOS analyst)"
+      ],
+      "sources": [
+        "NOS",
+        "NU.nl",
+        "NL Times"
+      ],
+      "urls": [
+        "https://nos.nl/l/2633605",
+        "https://nos.nl/l/2633623",
+        "https://nos.nl/l/2633615",
+        "https://www.nu.nl/formule-1/6411944/verstappen-boekt-eerste-zege-van-2026-na-chaotisch-begin-in-maleisie-door-regen.html",
+        "https://www.nu.nl/formule-1/6411952/verstappen-viert-zege-met-vader-start-seizoen-voor-hem-ook-niet-leuk-om-te-zien.html",
+        "https://www.nu.nl/formule-1/6411981/f1-coureurs-over-bizarre-formatieronde-in-maleisie-leek-wel-de-lego-race.html",
+        "https://nltimes.nl/2026/10/04/max-verstappen-picks-first-victory-season-malaysia",
+        "https://grandepremio.com/en/f1/when-can-kimi-antonelli-win-the-2026-f1-championship-2/",
+        "https://racingnews365.com/fia-vow-to-launch-full-review-into-bahrain-gp-formation-lap-carnage",
+        "https://www.f1head.nl/nieuws/fia-legt-softwarestoring-uit-die-de-gp-van-bahrein-in-maleisie-stillegde/"
+      ],
+      "open_questions": [],
+      "findings": [
+        {
+          "question": "Which tyres did Verstappen use, and when? NOS says he started on intermediates while others gambled on slick tyres. NL Times says he switched from intermediates to soft tyres during the race.",
+          "answer": "The two reports describe different stages of the race and don't contradict each other. NOS reports that Verstappen started on intermediates while most rivals gambled on dry-weather tyres, and that this proved the best choice. NL Times reports that when the track began to dry, Red Bull pitted him onto soft tyres, which it called an aggressive move. The fresher tyres then helped him pass Antonelli for the lead at a safety car restart.",
+          "sources": [
+            "https://nos.nl/l/2633605",
+            "https://nltimes.nl/2026/10/04/max-verstappen-picks-first-victory-season-malaysia"
+          ]
+        },
+        {
+          "question": "How many races are left in the 2026 season, and is Antonelli close to clinching the title?",
+          "answer": "Seven Grands Prix and one Sprint remain, worth a maximum of 183 points. The remaining races are Singapore (11 Oct, with a Sprint), the United States (25 Oct), Mexico City (1 Nov), São Paulo (8 Nov), Las Vegas (21 Nov), Qatar (29 Nov) and Abu Dhabi (6 Dec). Antonelli has 320 points, Russell 236 and Hamilton 214. Antonelli cannot clinch the title in Singapore, but the United States Grand Prix on 25 October is his earliest chance, depending on results. One analysis says São Paulo is a more likely place for him to seal it. These calculations assume the calendar does not change.",
+          "sources": [
+            "https://grandepremio.com/en/f1/when-can-kimi-antonelli-win-the-2026-f1-championship-2/"
+          ]
+        },
+        {
+          "question": "Will the FIA investigate or sanction anyone over the software failure, or change its testing rules?",
+          "answer": "The FIA says it will carry out a full review of the problem together with the teams and the engine manufacturers. Its technical director, Nikolas Tombazis, admitted the software had not been tested as thoroughly as the FIA wanted, because there had been almost no wet-weather running this season. He also apologised to spectators for the long delay. The FIA said the fault had not been spotted by the FIA or the teams during testing. So far it has announced no sanctions and no specific changes to its testing rules.",
+          "sources": [
+            "https://racingnews365.com/fia-vow-to-launch-full-review-into-bahrain-gp-formation-lap-carnage",
+            "https://www.f1head.nl/nieuws/fia-legt-softwarestoring-uit-die-de-gp-van-bahrein-in-maleisie-stillegde/"
+          ]
+        }
+      ]
+    },
+    {
+      "headline": "Netherlands narrowly beat Serbia 2-1 as Van Dijk plays his 100th international",
+      "section": "sport",
+      "kind": "light",
+      "previously": "",
+      "summary": "The Dutch men's national team beat Serbia 2-1 in Eindhoven on Sunday in the UEFA Nations League. It was the last of four games in new head coach Xavi Hernández's first international window, which ended with two wins and two draws and no defeats. Teun Koopmeiners scored first with a curling free kick that went straight in. Serbia's 19-year-old striker Mihajlo Cvetković equalised with a header four minutes later, the twelfth game in a row in which the Dutch have conceded. Substitute Joshua Zirkzee tapped in the winner in the 71st minute after a low cross was laid back across goal by Tijjani Reijnders. Reports differ on who sent in that cross: some say Denzel Dumfries, others Crysencio Summerville. Goalkeeper Bart Verbruggen made a key save in stoppage time. The Dutch finished with ten men because all substitutions had been used when Micky van de Ven hurt his hand late on. Serbia's Luka Jović stepped on Van de Ven's taped hand in a challenge. Xavi said the defender became dizzy from the pain in his finger. It is not yet clear how serious the injury is, which is a worry for his club Tottenham. Captain Virgil van Dijk became only the eleventh Dutch man to play 100 internationals. He walked out holding his son Mase's hand, played in an unfamiliar right-sided role, and said he had been emotional in the dressing room. He also promised that he will not stop at 100. Greece and Germany drew 0-0, so the Netherlands and Greece are level at the top of the group on eight points and the same goal difference of plus two. The Dutch are listed first, having scored more goals. Germany have five points and Serbia none. Xavi, who said he had lost his voice, said the team is 'forging a family.'",
+      "context": "The national team is known as 'Oranje' after its orange shirts, and its games are a national event. Xavi, the former Barcelona midfielder and coach, is a new and high-profile appointment. Van Dijk captains Liverpool and is widely seen as the team's undisputed leader. Still, members of the 1988 European Championship-winning team, including Marco van Basten and Ruud Gullit, have criticised him over the years for not taking enough of a leading role. The record for most caps is held by Wesley Sneijder with 134. Van Dijk, who is 35 and missed a year with a knee ligament injury, has committed to playing through Euro 2028. The Nations League is a European competition between national teams. The Dutch play their next games in November, at home to Greece and away to Germany.",
+      "key_terms": [
+        "Oranje (the Dutch national team)",
+        "bondscoach (national team head coach)",
+        "interland (international match)",
+        "Virgil van Dijk",
+        "Xavi Hernández",
+        "Joshua Zirkzee",
+        "Teun Koopmeiners",
+        "Philips Stadion, Eindhoven",
+        "Nations League"
+      ],
+      "sources": [
+        "NOS",
+        "NU.nl",
+        "NL Times"
+      ],
+      "urls": [
+        "https://nos.nl/l/2633671",
+        "https://nos.nl/l/2633681",
+        "https://nos.nl/l/2633687",
+        "https://nos.nl/l/2633578",
+        "https://www.nu.nl/voetbal/6411984/oranje-boekt-dankzij-goal-zirkzee-moeizame-zege-op-servie-in-nations-league.html",
+        "https://www.nu.nl/voetbal/6411979/oranje-begint-met-lang-koopmeiners-en-jubilaris-van-dijk-tegen-servie.html",
+        "https://nltimes.nl/2026/10/04/oranje-beat-serbia-2-1-move-top-nations-league-group",
+        "https://www.voetbalprimeur.nl/nieuws/2143061/nederland-wint-jubileumduel-van-van-dijk.html",
+        "https://www.meemetoranje.nl/nederlands-elftal/nieuws/oranje-boekt-zwaarbevochten-zege-op-servie-en-sluit-af-als-groepshoofd/",
+        "https://www.vi.nl/competities/nations-league/2026-2027/stand",
+        "https://www.meemetoranje.nl/nederlands-elftal/nieuws/oranje-boekt-zwaarbevochten-zege-op-servie-en-sluit-af-als-groepshoofd/",
+        "https://www.voetbalprimeur.nl/nieuws/2143061/nederland-wint-jubileumduel-van-van-dijk.html",
+        "https://www.soccernews.nl/news/dit-is-de-stand-in-nederlands-poule-van-de-nations-league/",
+        "https://www.vi.nl/nieuws/meer-oranje-zorgen-bij-spurs-ook-van-de-ven-valt-geblesseerd-uit",
+        "https://www.voetbalprimeur.nl/videos/2143094/xavi-geeft-blessure-update-over-van-de-ven-bij-oranje.html"
+      ],
+      "open_questions": [],
+      "findings": [
+        {
+          "question": "Who set up Zirkzee's winner? NOS says the cross came from Crysencio Summerville, but NL Times credits Denzel Dumfries. Both say Reijnders made the final pass.",
+          "answer": "Still disputed, but most reports credit Dumfries. NOS's match report says Summerville sent in the cross and Reijnders laid it back for Zirkzee. NL Times, Voetbalprimeur and MeeMetOranje all say Denzel Dumfries put in a low cross, and Reijnders turned it back with his left foot for Zirkzee to tap in at the far post. Every source agrees on Reijnders' role. No official confirmation was found, so the story names both players.",
+          "sources": [
+            "https://nos.nl/l/2633671",
+            "https://nltimes.nl/2026/10/04/oranje-beat-serbia-2-1-move-top-nations-league-group",
+            "https://www.voetbalprimeur.nl/nieuws/2143061/nederland-wint-jubileumduel-van-van-dijk.html",
+            "https://www.meemetoranje.nl/nederlands-elftal/nieuws/oranje-boekt-zwaarbevochten-zege-op-servie-en-sluit-af-als-groepshoofd/"
+          ]
+        },
+        {
+          "question": "Are the Dutch sole leaders of their group or joint leaders? NL Times says top of the group, while NOS says co-leaders. What are the group standings on points and goal difference?",
+          "answer": "Both framings are correct. The Netherlands and Greece are level on 8 points from 4 games, each with two wins and two draws, and the Netherlands are listed first. VI's table puts the Netherlands on 7-5 in goals (+2), Greece 5-3 (+2), Germany 3-2 with 5 points, and Serbia 3-8 with 0 points. The Dutch goal totals match their results: 1-1 against Germany, 2-1 away to Serbia, 2-2 against Greece and 2-1 at home to Serbia. So the two leaders have the same goal difference, and the Netherlands have scored more goals. A Soccernews table gave different goal figures (NL 6-4, Greece 4-4), but those don't add up from the Dutch results.",
+          "sources": [
+            "https://www.vi.nl/competities/nations-league/2026-2027/stand",
+            "https://www.meemetoranje.nl/nederlands-elftal/nieuws/oranje-boekt-zwaarbevochten-zege-op-servie-en-sluit-af-als-groepshoofd/",
+            "https://www.voetbalprimeur.nl/nieuws/2143061/nederland-wint-jubileumduel-van-van-dijk.html",
+            "https://nos.nl/l/2633671",
+            "https://www.soccernews.nl/news/dit-is-de-stand-in-nederlands-poule-van-de-nations-league/"
+          ]
+        },
+        {
+          "question": "How serious is Micky van de Ven's hand injury, and will it affect his club, Tottenham?",
+          "answer": "It's not yet known. His hand was already taped when Luka Jović stepped on it, or fell on his arm, in a challenge late in the game. Xavi said Van de Ven 'became dizzy because he had pain in his finger.' VI reports that how serious the injury is still has to be determined and that no scan results have been reported. VI calls it another Oranje-related worry for Tottenham, but there is no word yet on whether he will miss club games.",
+          "sources": [
+            "https://www.vi.nl/nieuws/meer-oranje-zorgen-bij-spurs-ook-van-de-ven-valt-geblesseerd-uit",
+            "https://www.voetbalprimeur.nl/videos/2143094/xavi-geeft-blessure-update-over-van-de-ven-bij-oranje.html",
+            "https://nltimes.nl/2026/10/04/oranje-beat-serbia-2-1-move-top-nations-league-group"
+          ]
+        }
+      ]
+    },
+    {
+      "headline": "Dutch shipbuilder Damen claims €4.7 billion from Germany over cancelled frigates",
+      "section": "business",
+      "kind": "hard",
+      "previously": "",
+      "summary": "Dutch shipbuilder Damen is claiming nearly €4.7 billion (€4.68 billion net) from the German government after Berlin cancelled its order for six F126 frigates. The claim is set out in letters from Damen's lawyer, Peter Gauweiler, to the German defence ministry and to members of the Bundestag's budget and defence committees. Damen says €4.3 billion of the total is needed to pay for materials already ordered for the ships, much of it owed to subcontractors, and it is keeping open the option of further damages claims. German Defence Minister Boris Pistorius ended the programme on 24 June, saying it faced years of delays and that the projected cost had risen from about €10 billion to more than €18 billion. Germany is now buying eight MEKO A-200 frigates from German shipbuilder ThyssenKrupp Marine Systems instead. Damen blames the German government for the delays and calls the cancellation a politically motivated breach of contract. Pistorius has rejected the claim, calling it a \"prophylactic counter-attack\", and says Germany may file counterclaims of up to €2.3 billion against Damen for poor performance. About €2.3 billion had been spent on the programme before it was cancelled. Damen could also lose a Belgian order. Belgium's two frigates are part of a joint Dutch-Belgian order with Damen, and Belgian Defence Minister Theo Francken, citing delays and rising costs, has been looking at other suppliers. An internal Belgian navy evaluation reportedly favours Italy's FREMM EVO frigate. The Belgian government has not yet made a formal decision, which Francken has said will come in October.",
+      "context": "Damen is one of Europe's biggest shipbuilders and a family-owned Dutch company. The German contract was one of the largest naval orders ever won by a Dutch firm. Frigates are mid-sized warships. Germany has been sharply increasing defence spending since Russia's invasion of Ukraine, so the dispute is about both a major industrial contract and European cooperation on defence. A claim like this could end in arbitration or in court.",
+      "key_terms": [
+        "Damen Shipyards",
+        "F126 fregatten (F126 frigates)",
+        "Boris Pistorius (German defence minister)",
+        "ThyssenKrupp Marine Systems (TKMS)",
+        "Theo Francken (Belgian defence minister)"
+      ],
+      "sources": [
+        "NL Times"
+      ],
+      "urls": [
+        "https://nltimes.nl/2026/10/04/damen-wants-eu47-billion-compensation-germany-cancelling-frigate-order",
+        "https://www.finanznachrichten.de/nachrichten-2026-10/69742239-roundup-milliardenforderung-im-streit-um-aus-fuer-fregatte-f126-016.htm",
+        "https://www.bairdmaritime.com/amp/story/security/naval/naval-ships/germany-faces-47b-damen-claim-after-ditching-troubled-frigate-progamme",
+        "https://www.debelegger.nl/post/damen-eist-4-7-miljard-maar-duitsland-heeft-ook-een-rekening",
+        "https://www.finanznachrichten.de/nachrichten-2026-10/69742239-roundup-milliardenforderung-im-streit-um-aus-fuer-fregatte-f126-016.htm",
+        "https://ms-aktuell.de/welt/f126-damen-forderung-01-10-2026/",
+        "https://www.finanznachrichten.de/nachrichten-2026-10/69742239-roundup-milliardenforderung-im-streit-um-aus-fuer-fregatte-f126-016.htm",
+        "https://www.vrt.be/vrtnws/nl/2026/10/01/scheepsbouwer-damen-en-duitse-regering-ruzie-over-contract-frega/",
+        "https://ms-aktuell.de/welt/f126-damen-forderung-01-10-2026/",
+        "https://www.debelegger.nl/post/damen-eist-4-7-miljard-maar-duitsland-heeft-ook-een-rekening",
+        "https://www.omroepzeeland.nl/nieuws/18805363/vrt-nws-belgische-marine-wil-af-van-contract-met-damen-en-wil-de-italianen-fregatten-laten-bouwen",
+        "https://nos.nl/artikel/2623643-scheepsbouwer-damen-verliest-mogelijk-belgische-fregattenorder",
+        "https://www.vrt.be/vrtnws/nl/2026/10/01/scheepsbouwer-damen-en-duitse-regering-ruzie-over-contract-frega/"
+      ],
+      "open_questions": [],
+      "findings": [
+        {
+          "question": "Will Damen's claim go to court or to arbitration, and in which country?",
+          "answer": "No source reports this. So far Damen has made the claim in letters from its lawyer Peter Gauweiler (law firm Gauweiler) to the German defence ministry and to Bundestag budget and defence committee members. No arbitration or court case has been reported, and the contract terms that set out how disputes are settled are confidential. Damen is keeping open further damages claims on top of the €4.68 billion.",
+          "sources": [
+            "https://www.finanznachrichten.de/nachrichten-2026-10/69742239-roundup-milliardenforderung-im-streit-um-aus-fuer-fregatte-f126-016.htm",
+            "https://www.bairdmaritime.com/amp/story/security/naval/naval-ships/germany-faces-47b-damen-claim-after-ditching-troubled-frigate-progamme",
+            "https://www.debelegger.nl/post/damen-eist-4-7-miljard-maar-duitsland-heeft-ook-een-rekening"
+          ]
+        },
+        {
+          "question": "How has the German defence ministry responded to the €4.7 billion claim?",
+          "answer": "Defence Minister Boris Pistorius rejected the claim, calling it a 'prophylactic counter-attack'. He said Damen's poor performance (delays, cost overruns, problems with construction software) justified ending the contract, and he said Germany may file counterclaims of up to €2.3 billion against Damen. Some early reports said the ministry had not yet commented on the specific demand.",
+          "sources": [
+            "https://www.finanznachrichten.de/nachrichten-2026-10/69742239-roundup-milliardenforderung-im-streit-um-aus-fuer-fregatte-f126-016.htm",
+            "https://ms-aktuell.de/welt/f126-damen-forderung-01-10-2026/"
+          ]
+        },
+        {
+          "question": "What was the original value of the F126 contract, and how much had Germany already paid Damen?",
+          "answer": "Sources give different figures depending on what they count. The dpa roundup says the contract with Damen was worth €4.5 billion and rose to €6.5 billion when Germany ordered ships five and six in June 2024. VRT says the project cost rose from €5.27 billion to over €10 billion. Several outlets describe a roughly €10 billion programme for six ships, which Germany estimated would rise to more than €18 billion. The €18 billion in the NL Times report is that projected cost, not the original contract value. About €2.3 billion had been spent on the programme before it was cancelled. It is not clear whether all of that was paid to Damen.",
+          "sources": [
+            "https://www.finanznachrichten.de/nachrichten-2026-10/69742239-roundup-milliardenforderung-im-streit-um-aus-fuer-fregatte-f126-016.htm",
+            "https://www.vrt.be/vrtnws/nl/2026/10/01/scheepsbouwer-damen-en-duitse-regering-ruzie-over-contract-frega/",
+            "https://ms-aktuell.de/welt/f126-damen-forderung-01-10-2026/",
+            "https://www.debelegger.nl/post/damen-eist-4-7-miljard-maar-duitsland-heeft-ook-een-rekening"
+          ]
+        },
+        {
+          "question": "Has Belgium decided whether to cancel its two-frigate order with Damen?",
+          "answer": "No formal decision has been reported. Belgium's two frigates are part of a joint Dutch-Belgian order with Damen. Francken has looked at other suppliers, citing a first delivery no earlier than 2033 and a price per ship that rose from €600 million to €1.3 billion, and said he would decide in October. On 23 September VRT NWS reported that an internal Belgian navy evaluation favours Italy's FREMM EVO (Fincantieri), which could deliver from 2030. France's FDI and Spain's F110 are also on the shortlist. This is the navy's preference, not yet government policy.",
+          "sources": [
+            "https://www.omroepzeeland.nl/nieuws/18805363/vrt-nws-belgische-marine-wil-af-van-contract-met-damen-en-wil-de-italianen-fregatten-laten-bouwen",
+            "https://nos.nl/artikel/2623643-scheepsbouwer-damen-verliest-mogelijk-belgische-fregattenorder",
+            "https://www.vrt.be/vrtnws/nl/2026/10/01/scheepsbouwer-damen-en-duitse-regering-ruzie-over-contract-frega/"
+          ]
+        }
+      ]
+    },
+    {
+      "headline": "Rising seas threaten the Delta Works, 40 years after the Oosterschelde barrier opened",
+      "section": "national",
+      "kind": "hard",
+      "previously": "",
+      "summary": "Sunday marked 40 years since Queen Beatrix opened the Oosterschelde storm surge barrier in Zeeland on 4 October 1986. Experts told NU.nl that the barrier can keep working for at least several more decades. But because of sea level rise, the Delta Works as a whole will not last as long as was hoped. The barrier was originally meant to last about 200 years. Rijkswaterstaat now calculates that it reaches its limit at around 60 centimetres of sea level rise. At that point it would have to close about ten times a year, which is the most it can handle while still being maintained. It currently closes about once a year on average. The government's sea level rise knowledge programme, completed in June, expects the Oosterschelde and Maeslant barriers to need replacing between 2070 and 2100, mainly because they are wearing out. Options for the Oosterschelde include raising the water level at which the gates close, which would also mean strengthening dikes, rebuilding the barrier, or replacing it with a permanent dam. Delta Commissioner Co Verdaas has said the decision cannot wait another twenty years. One expert noted that building a replacement would take about forty years, so planning has to start well in advance.",
+      "context": "The Delta Works (Deltawerken) are a huge system of dams, sluices and storm surge barriers in the southwest of the country. They were built after the North Sea flood of 1953, which killed more than 1,800 people. The Oosterschelde barrier is the most famous part. Instead of closing the estuary off completely, it was built with movable gates that close only during storms, which preserved the tidal ecosystem. With much of the country below sea level, flood defence is a core function of the Dutch state, run by the national water agency, Rijkswaterstaat, and by regional water boards.",
+      "key_terms": [
+        "Oosterscheldekering (Oosterschelde storm surge barrier)",
+        "Deltawerken (Delta Works)",
+        "Zeeland (southwestern coastal province)",
+        "zeespiegelstijging (sea level rise)",
+        "Watersnoodramp (the 1953 North Sea flood)",
+        "Rijkswaterstaat (national water and infrastructure agency)"
+      ],
+      "sources": [
+        "NU.nl"
+      ],
+      "urls": [
+        "https://www.nu.nl/binnenland/6411781/hoger-water-bedreigt-toekomst-deltawerken-bouwen-duurt-veertig-jaar.html",
+        "https://www.omroepzeeland.nl/nieuws/18567619/jarige-stormvloedkering-gaat-niet-lang-meer-mee-moeilijke-keuzes-op-stapel",
+        "https://www.h2owaternetwerk.nl/h2o-actueel/kennisprogramma-zeespiegelstijging-afgerond-wat-wordt-ons-nieuwe-deltaplan-2",
+        "https://www.rijkswaterstaat.nl/nieuws/archief/2026/03/mini-oosterscheldekering-doorstaat-extreme-stormtesten-en-geeft-inzicht-in-toekomstig-onderhoud-en-lange-termijn-inzet",
+        "https://www.omroepzeeland.nl/nieuws/18567619/jarige-stormvloedkering-gaat-niet-lang-meer-mee-moeilijke-keuzes-op-stapel",
+        "https://www.h2owaternetwerk.nl/h2o-actueel/kennisprogramma-zeespiegelstijging-afgerond-wat-wordt-ons-nieuwe-deltaplan-2",
+        "https://www.rijkswaterstaat.nl/water/waterbeheer/bescherming-tegen-het-water/waterkeringen/deltawerken/oosterscheldekering",
+        "https://www.omroepzeeland.nl/nieuws/18567619/jarige-stormvloedkering-gaat-niet-lang-meer-mee-moeilijke-keuzes-op-stapel"
+      ],
+      "open_questions": [],
+      "findings": [
+        {
+          "question": "How long do experts now expect the Oosterschelde barrier and the other Delta Works to last, and at what level of sea level rise do they stop working?",
+          "answer": "When it opened in 1986, the barrier was designed to last about 200 years. It will not reach that age. Rijkswaterstaat calculates that its tipping point is about 60 cm of sea level rise. At that level the gates would have to close about ten times a year, the most they can handle while still allowing maintenance. Beyond that the barrier no longer meets requirements. The Delta Programme's sea level rise knowledge programme, completed in June 2026, expects the Oosterschelde and Maeslant barriers to need replacing between 2070 and 2100. It says this is because they reach the end of their working life, not directly because of sea level rise. It also says the barriers may need replacing again 100 to 150 years from now. Raising the water level at which the gates close, from 3 m to 3.25 m above NAP, could keep the barrier working up to about 1 m of sea level rise, but the surrounding dikes would then need strengthening. Deltares scale-model tests reported in March 2026 found that some wave loads are lower than assumed, which helps long-term reliability.",
+          "sources": [
+            "https://www.omroepzeeland.nl/nieuws/18567619/jarige-stormvloedkering-gaat-niet-lang-meer-mee-moeilijke-keuzes-op-stapel",
+            "https://www.h2owaternetwerk.nl/h2o-actueel/kennisprogramma-zeespiegelstijging-afgerond-wat-wordt-ons-nieuwe-deltaplan-2",
+            "https://www.rijkswaterstaat.nl/nieuws/archief/2026/03/mini-oosterscheldekering-doorstaat-extreme-stormtesten-en-geeft-inzicht-in-toekomstig-onderhoud-en-lange-termijn-inzet"
+          ]
+        },
+        {
+          "question": "Which experts did NU.nl speak to, and what replacement options are being studied, for example under the Delta Programme's sea level rise knowledge programme?",
+          "answer": "I could not confirm which experts NU.nl spoke to because the article could not be accessed. Omroep Zeeland (July 2026) lists three options for the Oosterschelde barrier: (1) raise the closing level from 3 m to 3.25 m above NAP, which would require strengthening dikes, starting at Stavenisse, the Oesterdam and the Philipsdam; (2) rebuild the barrier completely; or (3) remove it or replace it with a permanent dam. Delta Commissioner Co Verdaas said: 'We don't have two more decades to decide.' Another report says the long-term plan is a new, nature-based storm surge barrier, but I did not read that source directly. Nationally, the knowledge programme studied four broad strategies: protect (beschermen), build seaward (zeewaarts), adapt (meebewegen) and grow with the sea (meegroeien).",
+          "sources": [
+            "https://www.omroepzeeland.nl/nieuws/18567619/jarige-stormvloedkering-gaat-niet-lang-meer-mee-moeilijke-keuzes-op-stapel",
+            "https://www.h2owaternetwerk.nl/h2o-actueel/kennisprogramma-zeespiegelstijging-afgerond-wat-wordt-ons-nieuwe-deltaplan-2"
+          ]
+        },
+        {
+          "question": "How often is the Oosterschelde barrier closed now compared with when it opened in 1986?",
+          "answer": "Rijkswaterstaat says the barrier closes for high water about once a year on average, and expects closures to become more frequent as the sea rises. Other reports give slightly different current figures, from about once every two years to about twice a year. Projections put closures at 3 to 20 a year by 2100, depending on the scenario. I could not find a figure for how often it closed in its early years after 1986.",
+          "sources": [
+            "https://www.rijkswaterstaat.nl/water/waterbeheer/bescherming-tegen-het-water/waterkeringen/deltawerken/oosterscheldekering",
+            "https://www.omroepzeeland.nl/nieuws/18567619/jarige-stormvloedkering-gaat-niet-lang-meer-mee-moeilijke-keuzes-op-stapel"
+          ]
+        }
+      ]
+    },
+    {
+      "headline": "Polymarket goes to court to fight its Dutch ban",
+      "section": "business",
+      "kind": "hard",
+      "previously": "",
+      "summary": "Polymarket, the American prediction market website, is going to court to challenge a ban in the Netherlands, the company confirmed to the financial daily FD. In February, the Dutch Gambling Authority ruled that Polymarket is a gambling site operating without a licence and ordered it to stop its activities in the Netherlands, under threat of a penalty of €420,000 per week, up to a maximum of €840,000. Polymarket complied, but too late, and had to pay €420,000. In court, the company will argue that a prediction market is not a game of chance but a financial product. Users trade contracts that pay out depending on whether an event happens, which Polymarket compares to futures. That would put it under the financial markets regulator, the AFM. The AFM has not taken a public position on Polymarket. In July, the EU markets watchdog ESMA said only event contracts tied to things like indices, currencies or commodity prices count as financial instruments, and that those fall under the EU-wide ban on selling binary options to retail investors. Critics also say the contracts look more like binary options, which are banned for ordinary investors because of their high risk. Polymarket is also banned in France and Germany, among other countries, and is lobbying in Brussels to have its contracts treated as financial instruments across the EU.",
+      "context": "In the US, prediction markets such as Polymarket and Kalshi have been fighting a similar battle over whether they are gambling, regulated by states, or financial derivatives, regulated by the federal CFTC. The Netherlands legalised online gambling only in 2021, under a strict licensing system run by the Gambling Authority. Unlicensed operators can face penalties. A 'dwangsom' is a penalty, charged per day, per week or per violation, that a regulator imposes to force someone to comply.",
+      "key_terms": [
+        "Kansspelautoriteit, Ksa (Netherlands Gambling Authority)",
+        "Autoriteit Financiële Markten, AFM (financial markets regulator)",
+        "dwangsom (penalty payment for non-compliance)",
+        "FD / Het Financieele Dagblad (Dutch financial daily)",
+        "voorspellingsmarkt (prediction market)",
+        "binaire opties (binary options)"
+      ],
+      "sources": [
+        "NOS"
+      ],
+      "urls": [
+        "https://nos.nl/l/2633676",
+        "https://www.bnr.nl/nieuws/economie/10612379/polymarket-vecht-verbod-op-nederlandse-activiteiten-aan-bij-rechter",
+        "https://fd.nl/bedrijfsleven/1614181/polymarket-vecht-verbod-in-nederland-aan-bij-rechter",
+        "https://nos.nl/artikel/2633676-voorspellingssite-polymarket-stapt-naar-rechter-om-nederlands-verbod-aan-te-vechten",
+        "https://focusgn.com/dutch-gambling-regulator-upholds-polymarket-sanction",
+        "https://playsense.nl/771183/prediction-markets-financieel-toezicht-esma",
+        "https://www.casinonieuws.nl/online/esma-verduidelijkt-toezicht-op-prediction-markets-en-eventcontracts/",
+        "https://www.crowdfundinsider.com/2026/09/312570-polymarket-requests-european-authorities-to-regulate-prediction-markets-as-finance-not-gambling/"
+      ],
+      "open_questions": [],
+      "findings": [
+        {
+          "question": "Which Dutch court will hear Polymarket's case, and has a hearing date been set?",
+          "answer": "Search-result excerpts of the FD and BNR reports say Polymarket has filed its case with the district court in The Hague (rechtbank Den Haag), but both articles were paywalled or blocked, so this could not be checked against the full text. NOS does not name a court. No source found mentions a hearing date. Before this, the Gambling Authority had already rejected Polymarket's objection (bezwaar) to the penalty order.",
+          "sources": [
+            "https://www.bnr.nl/nieuws/economie/10612379/polymarket-vecht-verbod-op-nederlandse-activiteiten-aan-bij-rechter",
+            "https://fd.nl/bedrijfsleven/1614181/polymarket-vecht-verbod-in-nederland-aan-bij-rechter",
+            "https://nos.nl/artikel/2633676-voorspellingssite-polymarket-stapt-naar-rechter-om-nederlands-verbod-aan-te-vechten",
+            "https://focusgn.com/dutch-gambling-regulator-upholds-polymarket-sanction"
+          ]
+        },
+        {
+          "question": "Has the AFM said whether it considers prediction markets to be financial products it should regulate?",
+          "answer": "No public AFM statement on Polymarket or prediction markets was found. The closest is the EU regulator ESMA's statement of 8 July 2026: only event contracts whose underlying is in the MiFID II categories (such as indices, currencies or commodities) count as financial instruments, and those fall under the binary-options restrictions that ban sales to retail investors. Trade press notes that the AFM and the Gambling Authority have a cooperation agreement for products that have features of both investing and gambling. Polymarket is lobbying EU authorities to have its contracts treated as financial instruments under MiFID.",
+          "sources": [
+            "https://playsense.nl/771183/prediction-markets-financieel-toezicht-esma",
+            "https://www.casinonieuws.nl/online/esma-verduidelijkt-toezicht-op-prediction-markets-en-eventcontracts/",
+            "https://www.crowdfundinsider.com/2026/09/312570-polymarket-requests-european-authorities-to-regulate-prediction-markets-as-finance-not-gambling/"
+          ]
+        }
+      ]
+    },
+    {
+      "headline": "Amsterdam-Noord school director hired his daughter's and son-in-law's firms for nearly €1 million",
+      "section": "amsterdam",
+      "kind": "hard",
+      "previously": "",
+      "summary": "A school director in Amsterdam-Noord hired small companies owned by his daughter and his son-in-law, paying them nearly €1 million in total, the Amsterdam newspaper Het Parool reports. The paper has not yet been joined by other outlets in reporting the case, and it is not yet publicly known which school is involved, what work the companies did, or whether the school board or the Education Inspectorate has taken action.",
+      "context": "Dutch schools are almost entirely publicly funded, including faith-based and other 'special' schools. They are run by school boards that are accountable for spending public money, and the Education Inspectorate oversees them. Hiring family members' businesses without open procurement raises questions of conflict of interest and of how public education money is used. Amsterdam-Noord is the district across the IJ river from the city centre.",
+      "key_terms": [
+        "Amsterdam-Noord (district north of the IJ river)",
+        "schooldirecteur (school director or principal)",
+        "schoolbestuur (school board)",
+        "Inspectie van het Onderwijs (Education Inspectorate)",
+        "Het Parool (Amsterdam daily newspaper)"
+      ],
+      "sources": [
+        "Het Parool"
+      ],
+      "urls": [
+        "https://www.parool.nl/amsterdam/schooldirecteur-in-noord-huurde-voor-bijna-een-miljoen-euro-bedrijfjes-van-dochter-en-schoonzoon-in~b2c6a47c/"
+      ],
+      "open_questions": [
+        "Which school in Amsterdam-Noord is involved, and which school board runs it?",
+        "What services did the daughter's and son-in-law's companies provide, and over what period?",
+        "Has the school board, the Education Inspectorate or the police launched an investigation, and has the director been suspended or responded?"
+      ],
+      "findings": [
+        {
+          "question": "Which school in Amsterdam-Noord is involved, and which school board runs it?",
+          "answer": "",
+          "sources": []
+        },
+        {
+          "question": "What services did the daughter's and son-in-law's companies provide, and over what period?",
+          "answer": "",
+          "sources": []
+        },
+        {
+          "question": "Has the school board, the Education Inspectorate or the police launched an investigation, and has the director been suspended or responded?",
+          "answer": "",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "headline": "Poll: 83 percent of Dutch people oppose reparations for slavery",
+      "section": "national",
+      "kind": "hard",
+      "previously": "On Friday, the King received a major study showing that the House of Orange-Nassau actively supported colonialism and slavery for centuries and earned the equivalent of about €576 million from it, and Prime Minister Rob Jetten ruled out new reparations.",
+      "summary": "In a poll by RTL's panel, 83 percent of respondents said the Netherlands should not pay reparations for its slavery past, and only 8 percent were in favour. Among voters for the PVV, VVD, JA21, BBB and FvD, 99 percent were opposed. Opposition was 71 percent among D66 voters and 50 percent among GroenLinks-PvdA supporters. Thirty-eight percent said there is too much attention on the colonial past. Most said the current level of attention is about right or could be higher. Views split by age: 24 percent of younger respondents said the topic gets too little attention, compared with 6 percent of people aged 65 and older, who are more likely to say it gets too much.",
+      "context": "The parties with near-unanimous opposition are on the right: the PVV, Geert Wilders' far-right party, the center-right VVD, and the right-wing JA21, BBB (Farmer-Citizen Movement) and FvD (Forum for Democracy). D66, Jetten's centrist liberal party, and the left-wing GroenLinks-PvdA alliance are where support for reparations is relatively strongest.",
+      "key_terms": [
+        "herstelbetalingen (reparations)",
+        "slavernijverleden (slavery past)",
+        "RTL Nieuws-panel (RTL's polling panel)",
+        "GroenLinks-PvdA (Green-Labour alliance)",
+        "JA21 (right-wing party)",
+        "BBB (Farmer-Citizen Movement)"
+      ],
+      "sources": [
+        "NL Times"
+      ],
+      "urls": [
+        "https://nltimes.nl/2026/10/04/poll-83-dutch-oppose-slavery-reparations"
+      ],
+      "open_questions": [
+        "How many people did the RTL panel survey, when, and how exactly was the reparations question worded?",
+        "What age range counts as 'younger people' in the RTL poll?"
+      ],
+      "findings": [
+        {
+          "question": "How many people did the RTL panel survey, when, and how exactly was the reparations question worded?",
+          "answer": "",
+          "sources": []
+        },
+        {
+          "question": "What age range counts as 'younger people' in the RTL poll?",
+          "answer": "",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "headline": "Michelin stars turn 100 as the new Dutch stars are announced in Maastricht",
+      "section": "culture",
+      "kind": "light",
+      "previously": "",
+      "summary": "The Michelin star turns 100 this year. The awards were first given in France in 1926, and the new Dutch Michelin stars are announced on Monday at the MECC in Maastricht, during the BBB Maastricht hospitality trade fair. A week earlier, Michelin named ten new Bib Gourmand restaurants for good food at a moderate price. Three are in Amsterdam: FuLu Mandarijn on the Rokin, Utage Sake Bar in Amsterdam-Zuid and Boon & De Koot in Amsterdam-West. After last year's ceremony, about 120 Dutch restaurants held at least one star. Werner Loens, a former director of Michelin Benelux, spent 37 years at the company as an inspector and head inspector. He said inspectors eat about 250 restaurant meals a year, and he has eaten in 8,500 restaurants in 22 countries. Stars are never given on one person's judgment: a promising restaurant gets three or four more visits, months apart. Inspectors judge five things: the quality of the ingredients, the chef's technique, harmony, personality, and consistency, which Loens calls the hardest. Two stars go to top chefs who have fully mastered their craft, and three to places where 'craft becomes art.' Inspectors eat alone most of the time and book under common fake names. Loens used 'Jan Jansen' in the Netherlands. There are 161 three-star restaurants worldwide. Going into Monday's ceremony, only De Librije in Zwolle had three stars in the Netherlands. Château Neercanne in Maastricht was among the first Dutch restaurants to get a star, in 1957, and has held one or two almost ever since. Its front-of-house manager says staff get nervous when someone books a table for one.",
+      "context": "The Michelin Guide began as a marketing idea by the French tyre company, to get people driving to restaurants. In the Netherlands, the yearly announcement is followed closely, and gaining or losing a star can transform a restaurant's business. A Bib Gourmand is Michelin's separate award for good food at a moderate price, and it is worth knowing for anyone eating out on a budget in Amsterdam.",
+      "key_terms": [
+        "Michelinster (Michelin star)",
+        "Bib Gourmand (Michelin award for good-value restaurants)",
+        "De Librije (three-star restaurant in Zwolle)",
+        "Château Neercanne (historic restaurant in Maastricht)",
+        "Maastricht",
+        "Werner Loens (former director of Michelin Benelux)"
+      ],
+      "sources": [
+        "NOS"
+      ],
+      "urls": [
+        "https://nos.nl/l/2633599",
+        "https://www.mecc.nl/events/michelin-guide-ceremony-2026",
+        "https://www.kokswereld.nl/vooruitblik-michelin-sterren-2026-2027/",
+        "https://www.dutchnews.nl/2025/10/de-librije-keeps-three-michelin-stars-after-death-of-jonnie-boer/",
+        "https://nltimes.nl/2026/09/28/michelin-awards-10-dutch-restaurants-bib-gourmand-quality-value",
+        "https://nltimes.nl/2025/10/06/seven-dutch-michelin-star-winners-include-two-new-2-star-spots-de-librije-keeps-3",
+        "https://nltimes.nl/2025/10/06/seven-dutch-michelin-star-winners-include-two-new-2-star-spots-de-librije-keeps-3",
+        "https://www.iamexpat.nl/lifestyle/lifestyle-news/7-restaurants-netherlands-honoured-new-michelin-stars"
+      ],
+      "open_questions": [],
+      "findings": [
+        {
+          "question": "Which Dutch restaurants gained or lost Michelin stars at Monday's ceremony in Maastricht, and did any new restaurant get three stars?",
+          "answer": "I couldn't find any published results from today's ceremony (Monday 5 October 2026, MECC Maastricht). The sources I found only confirm the date and venue. The ceremony is by invitation and streamed on Michelin's YouTube channel. Going into the ceremony, De Librije in Zwolle was the only Dutch three-star restaurant. It kept its three stars in 2025, after Jonnie Boer's death, with Nelson Tanate as head chef.",
+          "sources": [
+            "https://www.mecc.nl/events/michelin-guide-ceremony-2026",
+            "https://www.kokswereld.nl/vooruitblik-michelin-sterren-2026-2027/",
+            "https://www.dutchnews.nl/2025/10/de-librije-keeps-three-michelin-stars-after-death-of-jonnie-boer/",
+            "https://nos.nl/l/2633599"
+          ]
+        },
+        {
+          "question": "Which Amsterdam restaurants got new stars or Bib Gourmands this year?",
+          "answer": "Bib Gourmands: on 28 September 2026, ahead of the ceremony, Michelin named 10 new Bib Gourmand restaurants. Three are in Amsterdam: FuLu Mandarijn (Rokin, Sichuan cuisine), Utage Sake Bar (Lekstraat, Amsterdam-Zuid) and Boon & De Koot (Barentszstraat, Amsterdam-West, izakaya-style). The other seven are Bistro Toost (Amstelveen), ORA Taverna & Bar (Breda), Dokjard (Groningen), Brasserie Bruis (Haarlem), Ramen Kitanoya (The Hague), Bistro Luux (Weert) and Wijn Boer (Zwolle). New stars for Amsterdam from today's ceremony could not be confirmed. Last year, Amsterdam's Choux and Cue got their first stars.",
+          "sources": [
+            "https://nltimes.nl/2026/09/28/michelin-awards-10-dutch-restaurants-bib-gourmand-quality-value",
+            "https://nltimes.nl/2025/10/06/seven-dutch-michelin-star-winners-include-two-new-2-star-spots-de-librije-keeps-3"
+          ]
+        },
+        {
+          "question": "How many Michelin-starred restaurants does the Netherlands now have in total?",
+          "answer": "The new total after today's ceremony could not be confirmed. After the October 2025 ceremony, NL Times reported 120 Dutch restaurants with at least one star. Other reports from that time gave 119.",
+          "sources": [
+            "https://nltimes.nl/2025/10/06/seven-dutch-michelin-star-winners-include-two-new-2-star-spots-de-librije-keeps-3",
+            "https://www.iamexpat.nl/lifestyle/lifestyle-news/7-restaurants-netherlands-honoured-new-michelin-stars"
+          ]
+        }
+      ]
+    }
+  ],
+  "agenda": {
+    "window": "Monday 5 October 2026",
+    "events": [
+      {
+        "name": "Azymuth",
+        "when": "Monday 5 October, 19:30",
+        "where": "Melkweg, Leidsebuurt (Centrum)",
+        "price": "",
+        "blurb": "Brazilian band Azymuth has been mixing jazz, funk and samba for more than 50 years, and DJs and producers like MF Doom and Flying Lotus have sampled their music. Bassist Alex Malheiros, the only original member still in the band, leads this one-night show.",
+        "note": "",
+        "source": "10480ade"
+      },
+      {
+        "name": "Deep Seeing Currents by Olafur Eliasson",
+        "when": "Monday 5 October, 09:00–17:00",
+        "where": "ARTIS Aquarium, ARTIS Amsterdam Royal Zoo, Plantage",
+        "price": "",
+        "blurb": "Artist Olafur Eliasson takes you to the deep sea in a dark room filled with whale songs, the rumble of underwater vents, and flickering lights. The 3D sound is strong enough to feel in your body. It's part of the Amsterdam Dance Event's daytime program, and you don't need any Dutch to enjoy it.",
+        "note": "Part of Amsterdam Dance Event",
+        "source": "84743aee"
+      },
+      {
+        "name": "The Great Dictator (Charlie Chaplin, 1940)",
+        "when": "Monday 5 October, various times (screening through Friday 9 October)",
+        "where": "LAB111, Oud-West",
+        "price": "",
+        "blurb": "This is the first film where Chaplin speaks. He plays both a poor Jewish barber and a Hitler-like dictator in a bold 1940 satire of Nazi Germany. LAB111 is a cinema known for showing unusual films, and this is a classic that still feels relevant.",
+        "note": "",
+        "source": "cc49e99d"
+      }
+    ]
+  }
+}

@@ -1,0 +1,586 @@
+{
+  "date": "2026-10-04",
+  "top_line": "Maintenance work shut down all trains to and from Amsterdam Centraal for a day this weekend, with reduced service through Monday. Meanwhile, a former MP is openly testing the new Dutch ban on goods from Israeli settlements.",
+  "stories": [
+    {
+      "headline": "No trains at Amsterdam Centraal for a day of station works, reduced service through Monday",
+      "section": "amsterdam",
+      "kind": "hard",
+      "previously": "",
+      "summary": "Amsterdam Centraal, the city's main station, had no trains at all on Saturday 3 October because of engineering works. Today, Sunday, and tomorrow, Monday, trains are running again but less often. ProRail, which manages the rail network, is connecting a new track, 11a, to the network and taking track 14a out of service. That meant changing the safety and signalling systems, so all trains to and from the station had to stop for a day. The work is part of a larger renovation that also covers platforms, stairs and lifts. Today there are fewer trains between Haarlem, Amsterdam Centraal, Weesp, Almere Centrum and Hilversum. On Monday there are fewer trains between Zaandam and Schiphol, and between Amsterdam Centraal and Amsterdam Muiderpoort and Utrecht Centraal. NS, the Dutch railway operator, expects heavy crowding on those last routes, especially in the rush hour, and suggests travelling via Amsterdam Sloterdijk, Amsterdam Zuid or Duivendrecht instead. During the shutdown, travellers were sent to the metro, which accepted NS tickets. On the nights before and after the shutdown, buses replaced the night train between Schiphol and Amsterdam Centraal, and extra night buses ran between Centraal and Sloterdijk, between Centraal and Muiderpoort, and between Muiderpoort and Bijlmer ArenA. Normal service returns on Tuesday 6 October. From then on, trains will no longer stop at platforms 13 and 14, so that this platform can be widened and get better access. About 200,000 people use the station every day, and ProRail expects that to grow to 275,000 by 2030.",
+      "context": "The Netherlands splits rail into two organisations. ProRail is the state-owned company that manages the tracks, stations and signals. NS (Nederlandse Spoorwegen) is the main train operator. Roughly speaking, ProRail owns the road and NS drives the buses. Amsterdam Centraal is the country's busiest hub, comparable to Penn Station in New York. Weekend closures for works are common, and travellers are usually sent to the metro: the North–South line (52) and the eastern lines connect Centraal with stations like Amsterdam Zuid and Amstel. Muiderpoort is a station in Amsterdam-Oost on the main line toward Utrecht.",
+      "key_terms": [
+        "Amsterdam Centraal (main station)",
+        "ProRail (rail infrastructure manager)",
+        "NS, Nederlandse Spoorwegen (Dutch Railways)",
+        "Amsterdam Muiderpoort (station in Amsterdam-Oost)",
+        "Utrecht Centraal (Utrecht's main station)",
+        "spits (rush hour)",
+        "werkzaamheden (engineering works)"
+      ],
+      "sources": [
+        "NOS"
+      ],
+      "urls": [
+        "https://nos.nl/l/2633470",
+        "https://www.prorail.nl/nieuws/werkzaamheden-amsterdam-centraal-zaterdag-3-oktober-geen-treinen",
+        "https://www.treinreiziger.nl/zaterdag-3-oktober-geen-volgende-dagen-minder-treinen-op-amsterdam-centraal/",
+        "https://www.treinreiziger.nl/zaterdag-3-oktober-geen-volgende-dagen-minder-treinen-op-amsterdam-centraal/",
+        "https://pitane.blue/2026/09/24/let-op-reizigers-drie-dagen-minder-treinen-rond-amsterdam-centraal/",
+        "https://www.prorail.nl/nieuws/werkzaamheden-amsterdam-centraal-zaterdag-3-oktober-geen-treinen",
+        "https://www.treinreiziger.nl/zaterdag-3-oktober-geen-volgende-dagen-minder-treinen-op-amsterdam-centraal/",
+        "https://www.treinreiziger.nl/zaterdag-3-oktober-geen-volgende-dagen-minder-treinen-op-amsterdam-centraal/",
+        "https://www.at5.nl/artikelen/240062/zaterdag-3-oktober-geen-treinen-van-en-naar-centraal-station"
+      ],
+      "open_questions": [],
+      "findings": [
+        {
+          "question": "Exactly which days are affected? Was the full shutdown on Saturday 3 October or Sunday 4 October, and does reduced service run Sunday and Monday or only Monday?",
+          "answer": "The full shutdown was on Saturday 3 October. The NOS article was published that day, so its \"today\" means Saturday. Trains run less often on both Sunday 4 and Monday 5 October. Normal service resumes on Tuesday 6 October.",
+          "sources": [
+            "https://www.prorail.nl/nieuws/werkzaamheden-amsterdam-centraal-zaterdag-3-oktober-geen-treinen",
+            "https://nos.nl/l/2633470",
+            "https://www.treinreiziger.nl/zaterdag-3-oktober-geen-volgende-dagen-minder-treinen-op-amsterdam-centraal/"
+          ]
+        },
+        {
+          "question": "Which train routes are cut or reduced on Monday, and how often do trains run between Amsterdam Centraal and Utrecht?",
+          "answer": "On Monday there are fewer trains between Zaandam and Schiphol, and between Amsterdam Centraal and Amsterdam Muiderpoort and Utrecht Centraal. NS expects heavy crowding on the Centraal–Muiderpoort/Utrecht routes, especially in the rush hour, and suggests travelling via Sloterdijk, Zuid or Duivendrecht. On Sunday the reductions are on trains between Haarlem, Amsterdam Centraal, Weesp, Almere Centrum and Hilversum. None of the sources gives the exact number of trains per hour between Amsterdam Centraal and Utrecht.",
+          "sources": [
+            "https://www.treinreiziger.nl/zaterdag-3-oktober-geen-volgende-dagen-minder-treinen-op-amsterdam-centraal/",
+            "https://pitane.blue/2026/09/24/let-op-reizigers-drie-dagen-minder-treinen-rond-amsterdam-centraal/"
+          ]
+        },
+        {
+          "question": "When does normal service at Amsterdam Centraal resume, and are more weekend closures planned this autumn?",
+          "answer": "Normal service resumes on Tuesday 6 October. From that day, trains no longer stop at platforms 13 and 14, so that platform can be widened and get better access. ProRail mentions more works in future but gives no dates for other weekend closures.",
+          "sources": [
+            "https://www.prorail.nl/nieuws/werkzaamheden-amsterdam-centraal-zaterdag-3-oktober-geen-treinen",
+            "https://www.treinreiziger.nl/zaterdag-3-oktober-geen-volgende-dagen-minder-treinen-op-amsterdam-centraal/"
+          ]
+        },
+        {
+          "question": "Which NS night buses replace the trains, and where do they leave from?",
+          "answer": "On the nights of 2–3 and 3–4 October, a bus replaced the night train between Schiphol Airport and Amsterdam Centraal. Extra night buses ran between Centraal and Sloterdijk, between Centraal and Muiderpoort, and between Muiderpoort and Bijlmer ArenA. According to AT5, on the night of Saturday to Sunday the night train continued from Schiphol via Bijlmer ArenA to Utrecht Centraal. None of the sources says where at the stations the buses leave from.",
+          "sources": [
+            "https://www.treinreiziger.nl/zaterdag-3-oktober-geen-volgende-dagen-minder-treinen-op-amsterdam-centraal/",
+            "https://www.at5.nl/artikelen/240062/zaterdag-3-oktober-geen-treinen-van-en-naar-centraal-station"
+          ]
+        }
+      ]
+    },
+    {
+      "headline": "Cleaners' union FNV announces new strikes as employers refuse talks",
+      "section": "business",
+      "kind": "hard",
+      "previously": "",
+      "summary": "Cleaners in the Netherlands are going on strike again after employers refused to negotiate with the union FNV. The employers' association Schoonmakend Nederland says it will not reopen the new collective labour agreement for the cleaning sector, which it signed with a different union, CNV, on 1 September. Its position is that a finished cao is not the starting point for new talks. The agreement runs from July 2026 to June 2028. It raises wages by 3.1 percent in January 2027 and 3 percent in January 2028, sets a starting wage of 16 euros an hour, and extends travel allowances to about 85,000 cleaners who did not get them before. It also cuts sick pay for staff with less than six years in the sector. CNV members approved the deal, but more than 80 percent of FNV members rejected it. FNV wants no loss of income during sick leave, automatic inflation adjustment, a bigger pay rise, and the same allowances for hotel cleaners. In mid-September FNV held a five-day strike at Schiphol, train stations, universities and colleges. About 800 cleaners took part, and hundreds rallied outside the Utrecht head office of cleaning company Asito. Schiphol and the rail operator NS reported little disruption, and the strike week did not get the employers to reopen the deal.",
+      "context": "Most Dutch sectors are covered by a cao (collective labour agreement). It sets wages and conditions for a whole industry, including workers who aren't union members. The Netherlands has several union federations. FNV is the largest and leans left. CNV is a smaller union with Christian roots. An employer can sign a cao with one union even if another union rejects it. That is the situation here: FNV wanted more and was left out of the deal. Cleaning is a large, low-wage sector with many migrant workers, and FNV has run high-profile cleaner strikes before. American sector-wide bargaining is rare, so this system has no close US equivalent.",
+      "key_terms": [
+        "FNV, Federatie Nederlandse Vakbeweging (largest Dutch trade union federation)",
+        "CNV (Christian trade union federation)",
+        "Schoonmakend Nederland (cleaning employers' association)",
+        "cao, collectieve arbeidsovereenkomst (collective labour agreement)",
+        "staking (strike)"
+      ],
+      "sources": [
+        "NU.nl"
+      ],
+      "urls": [
+        "https://www.nu.nl/economie/6411766/fnv-en-schoonmaakbranche-op-ramkoers-nieuwe-stakingen-op-komst.html",
+        "https://www.schoonmakendnederland.nl/kennisbank/artikel/2026/09/14/cao-schoonmaak-en-acties-fnv",
+        "https://www.facto.nl/44415/schoonmakend-nederland-en-cnv-geven-fnv-tot-1-september-om-zich-alsnog-bij-cao-aan-te-sluiten",
+        "https://www.fnv.nl/nieuwsbericht/algemeen-nieuws/2026/09/fnv-schoonmakers-leggen-week-lang-het-werk-neer-zo",
+        "https://www.facto.nl/44826/cnv-en-schoonmakend-nederland-tekenen-schoonmaak-cao-zonder-fnv",
+        "https://www.facto.nl/44826/cnv-en-schoonmakend-nederland-tekenen-schoonmaak-cao-zonder-fnv",
+        "https://www.cnv.nl/dienstverlening/schoonmaak/cao-schoonmaak-en-glazenwassersbedrijf/nieuws/cnv-leden-zijn-akkoord-met-nieuwe-schoonmaak-cao-fnv-leden-niet-wat-betekent-dat-2026-06-30/",
+        "https://www.cnv.nl/dienstverlening/schoonmaak/cao-schoonmaak-en-glazenwassersbedrijf/nieuws/cnv-leden-zijn-akkoord-met-nieuwe-schoonmaak-cao-fnv-leden-niet-wat-betekent-dat-2026-06-30/",
+        "https://www.fnv.nl/nieuwsbericht/algemeen-nieuws/2026/09/fnv-schoonmakers-leggen-week-lang-het-werk-neer-zo",
+        "https://www.facto.nl/44899/fnv-schoonmakers-staken-en-trekken-naar-den-haag-geen-straffen-bij-ziekte",
+        "https://www.facto.nl/45000/schoonmakers-staken-een-week-fnv-wil-schoonmaak-cao-openbreken",
+        "https://www.facto.nl/45034/fnv-500-schoonmakers-naar-asito-voor-betere-cao",
+        "https://www.rd.nl/a/fnv-sluit-nieuwe-acties-niet-uit-na-stakingsweek-schoonmakers"
+      ],
+      "open_questions": [
+        "When and where will the new cleaners' strikes take place? Which locations, such as stations, hospitals or Schiphol, will be affected?"
+      ],
+      "findings": [
+        {
+          "question": "When and where will the new cleaners' strikes take place? Which locations, such as stations, hospitals or Schiphol, will be affected?",
+          "answer": "",
+          "sources": []
+        },
+        {
+          "question": "What does the new cao signed with CNV contain on wages, and what is FNV demanding instead?",
+          "answer": "Schoonmakend Nederland and CNV signed the cao on 1 September 2026. It applies retroactively from 1 July 2026 and runs until 30 June 2028. Wages rise 3.1% on 1 January 2027 and 3% on 1 January 2028, a total of about 6.1%. That follows a 4.6% increase in January 2026. From January 2027 the starting wage in pay group 1 is €16 an hour. About 85,000 cleaners who had no travel allowance will get one, rising to €0.25 per km. The deal also includes a loyalty bonus of up to €1,000 for workers with more than 20 years in the sector and faster permanent contracts for temporary staff. Sick pay is now tiered by length of service, for example 85% for staff with less than six months' service. Workers with more than six years are not affected. FNV demands no income loss during sickness, automatic price compensation, a higher wage increase, and equal allowances for hotel cleaners. More than 80% of FNV members rejected the deal.",
+          "sources": [
+            "https://www.schoonmakendnederland.nl/kennisbank/artikel/2026/09/14/cao-schoonmaak-en-acties-fnv",
+            "https://www.facto.nl/44415/schoonmakend-nederland-en-cnv-geven-fnv-tot-1-september-om-zich-alsnog-bij-cao-aan-te-sluiten",
+            "https://www.fnv.nl/nieuwsbericht/algemeen-nieuws/2026/09/fnv-schoonmakers-leggen-week-lang-het-werk-neer-zo",
+            "https://www.facto.nl/44826/cnv-en-schoonmakend-nederland-tekenen-schoonmaak-cao-zonder-fnv"
+          ]
+        },
+        {
+          "question": "How many cleaners are covered by the sector cao, and how many are FNV members compared with CNV members?",
+          "answer": "No figure for the total number of workers covered was found, and no membership numbers for either union. What the sources do say: the cao extends travel allowances to about 85,000 previously excluded cleaners. A request will be made to declare the cao generally binding (AVV), which would make it apply to the whole sector. 81% of CNV members voted for the deal, and more than 80% of FNV members voted against it.",
+          "sources": [
+            "https://www.facto.nl/44826/cnv-en-schoonmakend-nederland-tekenen-schoonmaak-cao-zonder-fnv",
+            "https://www.cnv.nl/dienstverlening/schoonmaak/cao-schoonmaak-en-glazenwassersbedrijf/nieuws/cnv-leden-zijn-akkoord-met-nieuwe-schoonmaak-cao-fnv-leden-niet-wat-betekent-dat-2026-06-30/"
+          ]
+        },
+        {
+          "question": "When did the previous cleaners' strikes take place, and what did they achieve?",
+          "answer": "After FNV members rejected the deal, FNV scheduled its first action for 2 July 2026. FNV says there were also actions at Schiphol and NS in August. On 8 September cleaners struck and demonstrated in The Hague, including about 150 from the government cleaning organisation RSO. The main action was a five-day strike in the week of 14–18 September 2026 at Schiphol, train stations, universities and colleges. About 800 cleaners took part, and about 500 rallied at Asito's head office in Utrecht on 17 September. Schiphol and NS reported little disruption. Schoonmakend Nederland then said it would not reopen the cao, so the strikes did not get the deal renegotiated.",
+          "sources": [
+            "https://www.cnv.nl/dienstverlening/schoonmaak/cao-schoonmaak-en-glazenwassersbedrijf/nieuws/cnv-leden-zijn-akkoord-met-nieuwe-schoonmaak-cao-fnv-leden-niet-wat-betekent-dat-2026-06-30/",
+            "https://www.fnv.nl/nieuwsbericht/algemeen-nieuws/2026/09/fnv-schoonmakers-leggen-week-lang-het-werk-neer-zo",
+            "https://www.facto.nl/44899/fnv-schoonmakers-staken-en-trekken-naar-den-haag-geen-straffen-bij-ziekte",
+            "https://www.facto.nl/45000/schoonmakers-staken-een-week-fnv-wil-schoonmaak-cao-openbreken",
+            "https://www.facto.nl/45034/fnv-500-schoonmakers-naar-asito-voor-betere-cao",
+            "https://www.rd.nl/a/fnv-sluit-nieuwe-acties-niet-uit-na-stakingsweek-schoonmakers"
+          ]
+        }
+      ]
+    },
+    {
+      "headline": "Minority cabinet's big offer to opposition mostly benefits PRO",
+      "section": "politics",
+      "kind": "hard",
+      "previously": "",
+      "summary": "The Netherlands' minority cabinet of D66, VVD and CDA, led by Prime Minister Rob Jetten, had another difficult week trying to get its 2027 budget through parliament. After talks with PRO, Volt, ChristenUnie, JA21 and SGP, it made what Jetten called a \"new and attractive offer\". The cabinet dropped about 6 billion euros in planned cuts to social security, including unemployment (WW), disability (WIA) and state pension (AOW) benefits. It also proposed taxing actual gains on shares, bonds and property in the savings and investment tax (\"box 3\") from 2028. To help pay for the package, the tax-free allowance in box 3 would fall from 1,800 to 1,000 euros per person, bringing an estimated 850,000 more people into the tax. Director-shareholders could borrow at most 100,000 euros from their own company, down from 500,000. The offer did not win broad support. PRO, the party formed this summer from the merger of GroenLinks and the Labour Party (PvdA) and led by Jesse Klaver, came away with the clearest win: the welfare cuts were dropped, which had been one of its central demands. Trade unions FNV, CNV and VCP called it \"an important victory\" and suspended planned strikes. PRO and Volt, which are negotiating jointly, say they will back the Social Affairs budget but are not yet convinced by the rest. Their main disagreements are over taxes on wealth and the rest of the tax plan, and Klaver wants further talks. On the right, JA21 leader Joost Eerdmans called the package \"more left than right\", said there was nothing on tax cuts, migration or security, and called parts of the box 3 funding unacceptable because of the effect on small investors. SGP leader Chris Stoffer said he was not very enthusiastic and pointed to missing commitments on abortion and surrogacy, although both parties welcomed the box 3 changes. ChristenUnie saw movement from the cabinet but said no party would be fully satisfied. Support from PRO and Volt together would give the cabinet 87 of the 150 seats in the lower house and 38 of 75 in the Senate, the narrowest possible Senate majority.",
+      "context": "In a minority cabinet, the governing parties do not hold a majority in the Tweede Kamer, the 150-seat lower house of parliament. To pass laws and budgets, they have to win votes from opposition parties case by case, often by offering policy concessions. Autumn is budget season: the government presents its plans on Prinsjesdag, the third Tuesday of September, and then needs parliamentary support. The US comparison is a president whose party lacks a majority in Congress and has to win over members of the other party for each bill.",
+      "key_terms": [
+        "minderheidscoalitie (minority coalition)",
+        "kabinet (cabinet / government)",
+        "oppositie (opposition)",
+        "Tweede Kamer (House of Representatives)",
+        "PRO (political party)"
+      ],
+      "sources": [
+        "NU.nl"
+      ],
+      "urls": [
+        "https://www.nu.nl/politiek/6411785/kabinet-hoopte-op-brede-steun-maar-pro-gaat-er-met-de-winst-vandoor.html",
+        "https://nl.wikipedia.org/wiki/Kabinet-Jetten",
+        "https://www.dutchnews.nl/2026/09/budget-deal-in-sight-after-coalition-agree-to-scrap-welfare-cuts/",
+        "https://en.wikipedia.org/wiki/Progressief_Nederland",
+        "https://www.welingelichtekringen.nl/politiek/uitgelekt-kabinet-wil-cruciale-eis-van-pro-inwilligen",
+        "https://www.dutchnews.nl/2026/09/budget-deal-in-sight-after-coalition-agree-to-scrap-welfare-cuts/",
+        "https://nos.nl/artikel/2632999-meer-beleggers-en-spaarders-gaan-belasting-betalen-sociale-zekerheid-niet-gekort",
+        "https://vastgoedinsider.nl/box-3-vanaf-2028-belasting-op-gerealiseerde-winst-maar-ook-kleine-spaarders-en-beleggers-betalen-mee/",
+        "https://nos.nl/artikel/2632999-meer-beleggers-en-spaarders-gaan-belasting-betalen-sociale-zekerheid-niet-gekort",
+        "https://www.dutchnews.nl/2026/09/budget-deal-in-sight-after-coalition-agree-to-scrap-welfare-cuts/",
+        "https://www.welingelichtekringen.nl/politiek/uitgelekt-kabinet-wil-cruciale-eis-van-pro-inwilligen",
+        "https://www.rd.nl/a/ja-21-en-sgp-niet-enthousiast-over-voorstellen-kabinet",
+        "https://nos.nl/artikel/2632999-meer-beleggers-en-spaarders-gaan-belasting-betalen-sociale-zekerheid-niet-gekort",
+        "https://www.dutchnews.nl/2026/09/budget-deal-in-sight-after-coalition-agree-to-scrap-welfare-cuts/"
+      ],
+      "open_questions": [],
+      "findings": [
+        {
+          "question": "Which parties make up the current minority coalition, and how many seats short of a majority is it in the Tweede Kamer and the Eerste Kamer?",
+          "answer": "The Jetten cabinet (sworn in on 23 February 2026) is made up of D66 (26 seats), VVD (22) and CDA (18). Together they hold 66 of the 150 seats in the Tweede Kamer, 10 short of a majority of 76. In the Eerste Kamer they hold 22 of 75 seats, 16 short of a majority of 38. DutchNews puts the shortfall the same way: the cabinet needs 10 opposition votes in the lower house and 16 in the Senate.",
+          "sources": [
+            "https://nl.wikipedia.org/wiki/Kabinet-Jetten",
+            "https://www.dutchnews.nl/2026/09/budget-deal-in-sight-after-coalition-agree-to-scrap-welfare-cuts/"
+          ]
+        },
+        {
+          "question": "What is PRO, who leads it, and what exactly did it win from the cabinet?",
+          "answer": "PRO (Progressief Nederland) is a centre-left party formed on 1 July 2026 when GroenLinks and the PvdA merged. It holds 20 seats in the lower house and 14 in the Senate. Jesse Klaver leads the party and its lower-house group. Its main win is that the cabinet dropped all of its planned social security cuts, about 6 billion euros including cuts to unemployment (WW) and disability (WIA) benefits. Ending these cuts had been a central demand of PRO, Volt and the trade unions. PRO and Volt say they will now support the Social Affairs budget.",
+          "sources": [
+            "https://en.wikipedia.org/wiki/Progressief_Nederland",
+            "https://www.welingelichtekringen.nl/politiek/uitgelekt-kabinet-wil-cruciale-eis-van-pro-inwilligen",
+            "https://www.dutchnews.nl/2026/09/budget-deal-in-sight-after-coalition-agree-to-scrap-welfare-cuts/",
+            "https://nos.nl/artikel/2632999-meer-beleggers-en-spaarders-gaan-belasting-betalen-sociale-zekerheid-niet-gekort"
+          ]
+        },
+        {
+          "question": "What was in the cabinet's large offer to the opposition, and which plans still lack majority support?",
+          "answer": "The offer was one linked package on social security, purchasing power and box 3:\n- Planned cuts to AOW, WW and WIA benefits were withdrawn.\n- From 2028, box 3 would tax gains on shares, bonds and property when they are actually realised.\n- The tax-free allowance in box 3 would fall from 1,800 to 1,000 euros per person, bringing an estimated 850,000 more people into the tax.\n- The deemed return on other assets would rise to 7.87% in 2027. Crypto and art would stay under the old system until 2031.\n- Director-shareholders could borrow at most 100,000 euros from their own company, down from 500,000.\n- The box 2 top rate would be cut temporarily, from 31% to 29.2%, for four years.\n- The threshold for the top income tax bracket would rise.\n\nThe only budget with confirmed new support is Social Affairs, backed by PRO and Volt. The other ministry budgets are still being negotiated. The open issues are wealth taxes and the wider tax plan, where the remaining revenue will come from, and the planned healthcare savings that Klaver opposes.",
+          "sources": [
+            "https://vastgoedinsider.nl/box-3-vanaf-2028-belasting-op-gerealiseerde-winst-maar-ook-kleine-spaarders-en-beleggers-betalen-mee/",
+            "https://nos.nl/artikel/2632999-meer-beleggers-en-spaarders-gaan-belasting-betalen-sociale-zekerheid-niet-gekort",
+            "https://www.dutchnews.nl/2026/09/budget-deal-in-sight-after-coalition-agree-to-scrap-welfare-cuts/",
+            "https://www.welingelichtekringen.nl/politiek/uitgelekt-kabinet-wil-cruciale-eis-van-pro-inwilligen"
+          ]
+        },
+        {
+          "question": "Which opposition parties rejected the offer, and why?",
+          "answer": "No party rejected it outright, but support was mostly partial or lukewarm:\n- JA21: Leader Joost Eerdmans called the package \"more left than right\" and complained that JA21's priorities (tax cuts, migration and security) were missing. He also called parts of the box 3 funding \"unacceptable\" because of the effect on small investors.\n- SGP: Leader Chris Stoffer was \"not super-enthusiastic\" and raised the lack of commitments on abortion and surrogacy. Both JA21 and SGP did welcome the box 3 changes.\n- PRO and Volt: They back only the Social Affairs budget. They are not yet convinced by the rest because of differences over wealth taxation.\n- ChristenUnie: It saw movement from the cabinet but said no party would be 100% satisfied.\n- 50Plus: It asked for a stress test of the impact on workers, nurses and retirees.",
+          "sources": [
+            "https://www.rd.nl/a/ja-21-en-sgp-niet-enthousiast-over-voorstellen-kabinet",
+            "https://nos.nl/artikel/2632999-meer-beleggers-en-spaarders-gaan-belasting-betalen-sociale-zekerheid-niet-gekort",
+            "https://www.dutchnews.nl/2026/09/budget-deal-in-sight-after-coalition-agree-to-scrap-welfare-cuts/"
+          ]
+        }
+      ]
+    },
+    {
+      "headline": "Open House Day: Amsterdam sellers ignore buyers' motivation letters, only price counts",
+      "section": "amsterdam",
+      "kind": "hard",
+      "previously": "",
+      "summary": "On Saturday, almost 14,500 homes across the Netherlands opened their doors from 11:00 to 15:00 for Open House Day, the twice-yearly event organised by NVM, the real estate agents' association. That is up from about 8,900 homes at the end of March. NVM says about 65,000 people came to look, up from 52,000 in March and 45,000 in rainy October last year. That works out to about 4.5 visitors per home, down from 5.8 in the spring. NVM says 28 percent of all homes for sale on the property site Funda took part, up from 18 percent of roughly 49,000 listings in the spring. NL Times reported a lower share, 14 percent of more than 100,000 homes on Funda. Amsterdam had more homes taking part than anywhere else, with 665. NVM says the jump reflects more homes for sale, as landlords sell rental properties after tax rules for them became less favourable. Demand is cooling because higher mortgage rates mean buyers can borrow less, and the banks ING and ABN Amro expect only limited price rises in the coming months. In Amsterdam, buyers still pay above the asking price: in the second quarter, 78 percent of homes sold for more than the asking price, on average 7.1 percent more, according to the Amsterdam estate agents' association MVA. The average sale price in the city was 588,000 euros, 2.9 percent lower than a year earlier. Amsterdam sellers told Het Parool they don't even read the personal motivation letters some buyers attach to their bids: what matters is the best price.",
+      "context": "Amsterdam has one of Europe's tightest housing markets. For years, buyers have routinely bid well above the asking price, and some write personal letters to stand out, a bit like the 'love letters' buyers send in hot US markets. Funda is the national listings site, roughly the Dutch Zillow. NVM is the largest association of estate agents. In recent years the government made renting out property less attractive through rent regulation and higher taxes on investment property, the 'box 3' wealth tax. Many private landlords have sold, which adds homes for sale but removes rental homes.",
+      "key_terms": [
+        "Open Huizen Dag (Open House Day)",
+        "NVM, Nederlandse Vereniging van Makelaars (Dutch real estate agents' association)",
+        "Funda (property listings website)",
+        "makelaar (estate agent)",
+        "motivatiebrief (motivation letter)",
+        "bod (bid)",
+        "overbieden (bidding over the asking price)"
+      ],
+      "sources": [
+        "Het Parool",
+        "NL Times"
+      ],
+      "urls": [
+        "https://www.parool.nl/amsterdam/een-motivatiebrief-bij-je-bod-verkopers-op-open-huizen-dag-in-amsterdam-lezen-hem-niet-eens-het-gaat-om-de-beste-prijs~b8f7a1ea/",
+        "https://nltimes.nl/2026/10/03/house-hunters-can-tour-14000-homes-open-house-day-begins-saturday-11",
+        "https://www.nvm.nl/nieuws/2026/ruim-66000-kijkers-verspreid-over-bijna-14500-woningen-tijdens-nvm-open-huizen-dag/",
+        "https://www.nvm.nl/nieuws/2026/rond-52000-kijkers-verspreid-over-8900-deelnemende-woningen-op-nvm-open-huizen-dag/",
+        "https://www.nvm.nl/nieuws/2026/ruim-66000-kijkers-verspreid-over-bijna-14500-woningen-tijdens-nvm-open-huizen-dag/",
+        "https://www.hartvannederland.nl/economie/wonen/artikelen/open-huizen-dag-trekt-meer-bezoekers-dan-vorige-keer",
+        "https://propertynl.com/Nieuws/Woningmarkt-Amsterdam-tweede-kwartaal-krapte-blijft-de-norm/d7103c2d-9c34-4afe-9a25-95140ff81aa4",
+        "https://propertynl.com/Nieuws/Woningmarkt-Amsterdam-tweede-kwartaal-krapte-blijft-de-norm/d7103c2d-9c34-4afe-9a25-95140ff81aa4",
+        "https://www.nvm.nl/nieuws/2026/rond-52000-kijkers-verspreid-over-8900-deelnemende-woningen-op-nvm-open-huizen-dag/"
+      ],
+      "open_questions": [],
+      "findings": [
+        {
+          "question": "What share of listed homes took part in this Open House Day compared with the spring edition? The reported figures (14 percent now versus an unclear earlier figure) are garbled.",
+          "answer": "The two sources measure this differently. NVM's results release from 3 October says 28% of the total supply on Funda took part, with almost 14,500 homes. NVM's March release says the spring edition had about 8,900 homes, 18% of the roughly 49,000 homes then available on Funda. NL Times reported 14% now against about 19% in March, apparently measured against the 100,000+ figure for all Funda listings. NVM's own release does not mention 100,000.",
+          "sources": [
+            "https://www.nvm.nl/nieuws/2026/ruim-66000-kijkers-verspreid-over-bijna-14500-woningen-tijdens-nvm-open-huizen-dag/",
+            "https://www.nvm.nl/nieuws/2026/rond-52000-kijkers-verspreid-over-8900-deelnemende-woningen-op-nvm-open-huizen-dag/",
+            "https://nltimes.nl/2026/10/03/house-hunters-can-tour-14000-homes-open-house-day-begins-saturday-11"
+          ]
+        },
+        {
+          "question": "How many people visited homes on Saturday 3 October?",
+          "answer": "NVM's release gives two slightly different numbers. The body says about 65,000 people visited almost 14,500 homes, while the headline says 'more than 66,000'. That is about 4.5 visitors per home, compared with 52,000 visitors (5.8 per home) in March 2026 and 45,000 in October 2025. Amsterdam had the most participating homes of any location, with 665.",
+          "sources": [
+            "https://www.nvm.nl/nieuws/2026/ruim-66000-kijkers-verspreid-over-bijna-14500-woningen-tijdens-nvm-open-huizen-dag/",
+            "https://www.hartvannederland.nl/economie/wonen/artikelen/open-huizen-dag-trekt-meer-bezoekers-dan-vorige-keer"
+          ]
+        },
+        {
+          "question": "How much above the asking price are Amsterdam homes currently selling for on average, according to NVM?",
+          "answer": "The latest figures are for the second quarter of 2026, published on 9 July by MVA, the Amsterdam estate agents' association that is affiliated with NVM. Third-quarter figures had not been published yet. In Amsterdam, 78% of homes sold above the asking price (71% nationally), on average 7.1% above (4.6% nationally).",
+          "sources": [
+            "https://propertynl.com/Nieuws/Woningmarkt-Amsterdam-tweede-kwartaal-krapte-blijft-de-norm/d7103c2d-9c34-4afe-9a25-95140ff81aa4"
+          ]
+        },
+        {
+          "question": "What is the current average home price in Amsterdam, and how has it changed over the past year?",
+          "answer": "According to MVA's second-quarter 2026 figures, the average sale price in Amsterdam was €588,000, compared with €506,000 nationally. That is 3.1% higher than in Q1 2026 but 2.9% lower than in Q2 2025. Separately, the average asking price of Amsterdam homes in the spring Open House Day was about €800,000.",
+          "sources": [
+            "https://propertynl.com/Nieuws/Woningmarkt-Amsterdam-tweede-kwartaal-krapte-blijft-de-norm/d7103c2d-9c34-4afe-9a25-95140ff81aa4",
+            "https://www.nvm.nl/nieuws/2026/rond-52000-kijkers-verspreid-over-8900-deelnemende-woningen-op-nvm-open-huizen-dag/"
+          ]
+        }
+      ]
+    },
+    {
+      "headline": "Ex-MP Bisschop buys settlement wine in protest, testing the new trade ban",
+      "section": "politics",
+      "kind": "hard",
+      "previously": "",
+      "summary": "Roelof Bisschop is a former MP for the SGP, an orthodox Protestant party. On the Christian TV channel Family7, he said he deliberately bought two bottles of Israeli wine the day after the Dutch ban on goods from Israeli settlements took effect. He called it a statement against a cabinet decision he fundamentally opposes. Activists from the BDS movement have reported him to the FIOD, the fiscal crime investigation service. There has been no public confirmation that the report was received. A ministry spokesperson said it was too early to comment on reports coming in. Since 22 September, the Netherlands has banned importing, selling, trading, circumventing the rules on, and buying goods from settlements in Israeli-occupied territories. It is not clear that Bisschop actually broke the ban. The winery, Teperberg, is on a UN list of companies active in settlements because it has vineyards in the West Bank. But it says this specific wine is made just outside, in Israel's Shfelat Yehuda region, and Bisschop says he doesn't know where his bottle came from. Enforcement is patchy:\n\n- Customs checks imports from outside Europe only by risk-based sampling.\n- Settlement goods can still enter through other EU countries. Most have no such ban, although Spain has banned imports of settlement goods. NOS found Golan Heights wine on a Dutch-looking webshop based in Germany.\n- No one checks products on Dutch shelves, and the FIOD acts only on reports.\n\nIsrael strongly opposes the measure. On Sunday 27 September, Foreign Minister Gideon Sa'ar revoked the diplomatic status of Dutch staff at the mission in Ramallah. He gave them seven days to return their Israeli-issued diplomatic papers. Foreign Minister Tom Berendsen said eight staff members are affected. He called the decision \"unnecessary\" and \"deeply regrets\" it, and he has told Israel's ambassador so. He said the ban follows from the international-law duty not to contribute to the illegal settlements. The Netherlands is in talks with Israel, and Berendsen said the staff's protection comes first. Working without diplomatic passports would be very complicated because of all the border crossings. The cabinet is considering its options. Israel has also warned citizens flying to the Netherlands about long baggage checks, which Dutch customs denies. Violations of the ban can bring community service, a fine, or up to six years in prison. The ban will be evaluated within a year.",
+      "context": "Israeli settlements in the occupied West Bank and Golan Heights are considered illegal under international law by the Netherlands and most countries. The Dutch cabinet chose to go further than most EU states by banning trade in settlement goods altogether. The SGP is a small, strictly orthodox Protestant party, the oldest party in the Dutch parliament. It is strongly pro-Israel for religious reasons. BDS (Boycott, Divestment, Sanctions) is an international pro-Palestinian campaign. The FIOD investigates financial and economic crimes, somewhat like the IRS Criminal Investigation division. Ramallah is the seat of the Palestinian Authority, where the Netherlands keeps a diplomatic mission.",
+      "key_terms": [
+        "Roelof Bisschop (former SGP MP)",
+        "SGP, Staatkundig Gereformeerde Partij (orthodox Protestant party)",
+        "FIOD, Fiscale Inlichtingen- en Opsporingsdienst (fiscal crime investigation service)",
+        "Openbaar Ministerie (Public Prosecution Service)",
+        "douane (customs)",
+        "handelsverbod (trade ban)",
+        "nederzettingen (settlements)",
+        "Westelijke Jordaanoever (West Bank)",
+        "Golanhoogten (Golan Heights)",
+        "Family7 (Christian TV channel)"
+      ],
+      "sources": [
+        "NOS"
+      ],
+      "urls": [
+        "https://nos.nl/l/2633531",
+        "https://tpo.nl/2026/09/28/israel-diplomaten-ramallah-status-ingetrokken/",
+        "https://www.jns.org/news/israel-news/fm-saar-orders-dutch-diplomats-in-ramallah-to-surrender-diplomatic-credentials",
+        "https://nos.nl/artikel/2632790-israel-zet-nederlandse-diplomaten-ramallah-uit-vanwege-boycot-israelische-producten",
+        "https://wnl.tv/2026/10/02/berendsen-israel-trekt-status-van-acht-nederlandse-diplomaten-in",
+        "https://nos.nl/artikel/2632843-kabinet-vindt-uitzetten-van-nederlandse-diplomaten-door-israel-onnodig",
+        "https://tpo.nl/2026/09/28/israel-diplomaten-ramallah-status-ingetrokken/",
+        "https://wnl.tv/2026/10/02/berendsen-israel-trekt-status-van-acht-nederlandse-diplomaten-in",
+        "https://www.euronews.com/my-europe/2026/06/18/fact-check-can-eu-countries-restrict-or-ban-israeli-settlement-imports",
+        "https://www.aljazeera.com/news/2026/9/3/eu-remains-divided-over-trade-sanctions-on-illegal-israeli-settlements"
+      ],
+      "open_questions": [
+        "Has the FIOD confirmed receiving the BDS report about Roelof Bisschop?"
+      ],
+      "findings": [
+        {
+          "question": "Did Israel actually order Dutch diplomats to leave the Dutch representation in Ramallah, and on which date did Foreign Minister Gideon Sa'ar announce it?",
+          "answer": "Yes. Sa'ar revoked the Israeli-granted diplomatic status of Dutch staff at the Ramallah mission and gave them seven days to return their Israeli-issued diplomatic papers. After that deadline their privileges and immunities would lapse. He announced it on Sunday 27 September 2026, not today: TPO dates the announcement to 'Sunday', Dutch and Israeli coverage followed on 28 September, and on 2 October WNL described it as 'last week'. On 2 October, Minister Berendsen said eight embassy staff are affected. Sa'ar cited the settlement-goods ban and said that if the Netherlands wants to advocate for the Palestinians, it can do so from Palestinian Authority territory.",
+          "sources": [
+            "https://tpo.nl/2026/09/28/israel-diplomaten-ramallah-status-ingetrokken/",
+            "https://www.jns.org/news/israel-news/fm-saar-orders-dutch-diplomats-in-ramallah-to-surrender-diplomatic-credentials",
+            "https://nos.nl/artikel/2632790-israel-zet-nederlandse-diplomaten-ramallah-uit-vanwege-boycot-israelische-producten",
+            "https://wnl.tv/2026/10/02/berendsen-israel-trekt-status-van-acht-nederlandse-diplomaten-in"
+          ]
+        },
+        {
+          "question": "How has the Dutch government responded to Israel's expulsion of its diplomats?",
+          "answer": "Foreign Minister Tom Berendsen (CDA) said the Netherlands 'deeply regrets' the decision and called it 'unnecessary'. He said the import ban follows from the international-law obligation not to contribute to an unlawful situation, namely the illegal settlements. On 2 October, he said he had passed this message to Israel's ambassador and that talks with the Israeli government were under way, with the protection of the staff and their future as the priority. He said working without diplomatic passports would be 'very complicated' because of all the border crossings, and that the government is weighing scenarios. No countermeasures have been announced.",
+          "sources": [
+            "https://nos.nl/artikel/2632843-kabinet-vindt-uitzetten-van-nederlandse-diplomaten-door-israel-onnodig",
+            "https://tpo.nl/2026/09/28/israel-diplomaten-ramallah-status-ingetrokken/",
+            "https://wnl.tv/2026/10/02/berendsen-israel-trekt-status-van-acht-nederlandse-diplomaten-in"
+          ]
+        },
+        {
+          "question": "Which other EU countries, if any, have banned trade in goods from Israeli settlements?",
+          "answer": "According to Euronews (June 2026), Spain has a ban on imports of goods from Israeli settlements in the West Bank, Golan Heights and East Jerusalem as part of a package of trade restrictions; Euronews dates it to December 2025. Slovenia has also moved to prohibit imports of settlement goods. As of June 2026, Ireland was expected to introduce settlement-goods legislation by mid-July 2026, and Belgium had announced plans but adopted no legislation. Germany, Austria, Czechia and Hungary oppose EU-wide measures. The Dutch ban goes further than most because it also covers sale and purchase.",
+          "sources": [
+            "https://www.euronews.com/my-europe/2026/06/18/fact-check-can-eu-countries-restrict-or-ban-israeli-settlement-imports",
+            "https://www.aljazeera.com/news/2026/9/3/eu-remains-divided-over-trade-sanctions-on-illegal-israeli-settlements"
+          ]
+        },
+        {
+          "question": "Has the FIOD confirmed receiving the BDS report about Roelof Bisschop?",
+          "answer": "",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "headline": "University of Amsterdam apologises for wartime firing of Jewish staff",
+      "section": "amsterdam",
+      "kind": "hard",
+      "previously": "",
+      "summary": "The University of Amsterdam (UvA) has apologised for dismissing Jewish staff members, and staff punished for resistance work, during the Second World War. Executive board chair Vinod Subramaniam made the apology on Wednesday 30 September at the unveiling of a new monument in the garden of the Oudemanhuispoort in central Amsterdam. The monument bears the names of 254 UvA students and 28 staff members who did not survive the war. Some were murdered because they were Jewish, because they were in the resistance, or both. Others died in bombings or from illness, exhaustion or suicide. At the time, the university was part of the Amsterdam city administration, and the city carried out the dismissals on the occupiers' orders. Staff first had to sign 'Aryan declarations', and Jewish professors and lecturers were removed from late November 1940. Among them were professors Palache, Van den Bergh, Bregstein, Laqueur, Van Creveld, Cohen, Frijda and Kohnstamm. One of the people named was a professor of economics and statistics who was dismissed in 1940, went into hiding, was arrested in 1944 and died in Auschwitz. The university has now formally reversed the dismissals. It is also correcting its historical register of staff, the Album Academicum, so that the employment of professors and lecturers removed by the occupiers now ends on the date of their death. Subramaniam said the decision 'should never have taken so long'. He apologised to everyone who suffered the injustice and to their descendants, and acknowledged that the university 'offered no resistance to the measures of the occupying forces.'",
+      "context": "Germany occupied the Netherlands from 1940 to 1945. The Netherlands had one of the highest rates of Jewish deportation in Western Europe: about three-quarters of Dutch Jews were murdered, and many came from Amsterdam. In late 1940, the occupiers ordered Jewish civil servants, including university staff, dismissed. Leiden University famously protested, while others complied. In recent years, Dutch institutions have been making formal apologies for their wartime role: the government, the national railway NS, the central bank, and the city of Amsterdam among them. The Oudemanhuispoort is a historic covered passage in the city centre that houses part of the UvA.",
+      "key_terms": [
+        "Universiteit van Amsterdam, UvA (University of Amsterdam)",
+        "Oudemanhuispoort (historic UvA building in the city centre)",
+        "College van Bestuur (executive board)",
+        "Vinod Subramaniam (UvA executive board chair)",
+        "verzetsstrijders (resistance fighters)"
+      ],
+      "sources": [
+        "NL Times"
+      ],
+      "urls": [
+        "https://nltimes.nl/2026/10/03/university-amsterdam-apologizes-wartime-firing-jewish-staff",
+        "https://www.dbnl.org/tekst/pres003onde01_01/pres003onde01_01_0005.php",
+        "https://rozenbergquarterly.com/fatsoenlijk-land-de-duitse-inval-en-het-ontslag-van-de-vaders/",
+        "https://www.at5.nl/artikelen/240185/excuses-uva-voor-ontslag-joodse-medewerkers-tijdens-tweede-wereldoorlog-bij-onthulling-monument",
+        "https://www.folia.nl/nl/actueel/177470/nieuw-oorlogsmonument-woii-onthuld-bij-oudemanhuispoort",
+        "https://www.nationaleonderwijsgids.nl/universiteit/uva-biedt-excuses-aan-en-onthult-gedenkteken-voor-oorlogsslachtoffers/",
+        "https://www.rd.nl/a/excuses-van-uv-a-voor-ontslag-joodse-medewerkers-tijdens-oorlog"
+      ],
+      "open_questions": [
+        "Has the Vrije Universiteit or another Dutch university made a similar apology?"
+      ],
+      "findings": [
+        {
+          "question": "How many Jewish staff members did the University of Amsterdam dismiss during the occupation, and who were some of them?",
+          "answer": "None of the coverage gives a total number of dismissed staff. The 28 staff on the monument are the staff who died in the war, not a count of those dismissed. The historian Jacques Presser's standard history 'Ondergang' says that after the decree of late November 1940, rector B. Brouwer sent students on early holiday to head off protests. It names the professors removed as Palache, Van den Bergh, Bregstein, Laqueur, Van Creveld, Cohen, Frijda and Kohnstamm, and the lecturers as Leefmans, Van Zanten and Van Praag. Other historical writing names Jules van Amerongen and Louis Kukenheim as receiving dismissal letters on 29 November 1940. It also says Brouwer tried to stop student protest, and that physics professor Jacob Clay was one of the few Amsterdam professors who publicly objected. Current reporting adds: the UvA was then part of the city administration and the city carried out the dismissals on Nazi orders (AT5/NH Nieuws); staff first had to sign 'Aryan declarations' (Folia); one example is a professor of economics and statistics who was dismissed in 1940, arrested in 1944 and died in Auschwitz (Nationale Onderwijsgids); the Album Academicum records are being corrected. The ceremony took place on Wednesday 30 September 2026.",
+          "sources": [
+            "https://www.dbnl.org/tekst/pres003onde01_01/pres003onde01_01_0005.php",
+            "https://rozenbergquarterly.com/fatsoenlijk-land-de-duitse-inval-en-het-ontslag-van-de-vaders/",
+            "https://www.at5.nl/artikelen/240185/excuses-uva-voor-ontslag-joodse-medewerkers-tijdens-tweede-wereldoorlog-bij-onthulling-monument",
+            "https://www.folia.nl/nl/actueel/177470/nieuw-oorlogsmonument-woii-onthuld-bij-oudemanhuispoort",
+            "https://www.nationaleonderwijsgids.nl/universiteit/uva-biedt-excuses-aan-en-onthult-gedenkteken-voor-oorlogsslachtoffers/",
+            "https://www.rd.nl/a/excuses-van-uv-a-voor-ontslag-joodse-medewerkers-tijdens-oorlog"
+          ]
+        },
+        {
+          "question": "Has the Vrije Universiteit or another Dutch university made a similar apology?",
+          "answer": "",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "headline": "Netherlands loses its seat on Eurovision's governing board over boycott",
+      "section": "culture",
+      "kind": "light",
+      "previously": "",
+      "summary": "The Netherlands has lost its seat on Eurovision's Reference Group, the international committee that oversees the contest on behalf of the participating broadcasters, because it boycotted this year's contest. Dutch head of delegation Claudia van der Pas had been elected to the group for a two-year term. AVROTROS pulled out of the 2026 contest in December 2025 over Israel's participation, but van der Pas was allowed to stay on with a non-voting \"wildcard\" place. That arrangement ran out this summer, so she no longer has a vote. The European Broadcasting Union says elected seats are meant for delegation heads who are actively doing the job. Spain also boycotted 2026, but the chair of the Reference Group is still Ana María Bordas of the Spanish broadcaster RTVE, and her term runs until June 2027. The Netherlands is now heading back to Eurovision. In August, AVROTROS said it would also stay out of the 2027 contest, but in late September the umbrella public broadcaster NPO took over and announced that the country will compete. NPO said the EBU had given it firmer commitments. NOS will broadcast the shows, and a panel of experts from several broadcasters will pick the act. Van der Pas says she is \"absolutely\" open to coming back.",
+      "context": "Eurovision is huge in the Netherlands. The country has won five times, most recently with Duncan Laurence in 2019, and Rotterdam hosted the 2021 contest. The Dutch boycott is tied to the dispute over Israel's participation in the contest. Losing the board seat shows the boycott has consequences beyond simply not sending a song: the Netherlands gives up influence over how the contest is run, even as it prepares to return in 2027. The Reference Group is the steering committee of the European Broadcasting Union (EBU), which organises Eurovision.",
+      "key_terms": [
+        "Eurovisie Songfestival (Eurovision Song Contest)",
+        "Reference Group (Eurovision's governing committee)",
+        "AVROTROS (Dutch public broadcaster responsible for Eurovision)",
+        "boycot (boycott)"
+      ],
+      "sources": [
+        "NU.nl"
+      ],
+      "urls": [
+        "https://www.nu.nl/muziek/6411859/nederland-zit-vanwege-boycot-niet-meer-in-bestuur-van-eurovisie-songfestival.html",
+        "https://nltimes.nl/2025/12/04/netherlands-pulls-eurovision-organizer-votes-keep-israel-2026-contest",
+        "https://wnl.tv/2026/09/24/gemengde-reacties-op-terugkeer-nederland-naar-songfestival-ik-snap-echt-geen-argument",
+        "https://www.transport-online.nl/139392/nederland-doet-in-2027-toch-weer-mee-aan-eurovisie-songfestival-nos-verzorgt-verslaggeving/",
+        "https://nieuws.nl/entertainment/nederland-na-boycot-niet-meer-in-songfestivalbestuur",
+        "https://nieuws.nl/entertainment/nederland-na-boycot-niet-meer-in-songfestivalbestuur",
+        "https://www.itv.com/news/2025-12-04/israel-allowed-to-compete-in-eurovision-contest-as-several-countries-pull-out",
+        "https://nltimes.nl/2025/12/04/netherlands-pulls-eurovision-organizer-votes-keep-israel-2026-contest"
+      ],
+      "open_questions": [],
+      "findings": [
+        {
+          "question": "Which Dutch broadcaster announced the Eurovision boycott, when, and for which contest years?",
+          "answer": "AVROTROS, which held the Dutch Eurovision rights, announced on Thursday 4 December 2025 that it would not take part in the 2026 contest. This came right after the EBU decided to keep Israel in. It was the first time in 24 years that the Netherlands stayed away. AVROTROS cited the humanitarian suffering in Gaza, the suppression of press freedom and political interference at the previous contest. In August 2026 it said it would also skip 2027. Around 24 September 2026, the umbrella public broadcaster NPO took over responsibility and announced that the Netherlands will compete in 2027 after all. NPO said the EBU had given it firmer commitments. NOS will broadcast the shows, and a panel of experts from several broadcasters will choose the act.",
+          "sources": [
+            "https://nltimes.nl/2025/12/04/netherlands-pulls-eurovision-organizer-votes-keep-israel-2026-contest",
+            "https://wnl.tv/2026/09/24/gemengde-reacties-op-terugkeer-nederland-naar-songfestival-ik-snap-echt-geen-argument",
+            "https://www.transport-online.nl/139392/nederland-doet-in-2027-toch-weer-mee-aan-eurovisie-songfestival-nos-verzorgt-verslaggeving/"
+          ]
+        },
+        {
+          "question": "Who represented the Netherlands on the Eurovision Reference Group, and who has replaced them?",
+          "answer": "Claudia van der Pas, the Dutch head of delegation, was elected to the Reference Group for a two-year term. After the boycott she was moved from an elected seat to a non-voting wildcard place, which expired in summer 2026. The EBU says elected seats are meant for delegation heads who are actively doing the job. The sources don't say who, if anyone, has taken over her seat. She says she is 'absolutely' open to returning.",
+          "sources": [
+            "https://nieuws.nl/entertainment/nederland-na-boycot-niet-meer-in-songfestivalbestuur"
+          ]
+        },
+        {
+          "question": "Which other countries are boycotting Eurovision, and are they also losing Reference Group seats?",
+          "answer": "Spain (RTVE), Ireland (RTÉ), Slovenia (RTVSLO) and Iceland (RÚV) also stayed out of the 2026 contest over Israel's participation. Spain is treated differently: Ana María Bordas of RTVE is still chair of the Reference Group, with a term running until June 2027. The sources don't say whether any of the other boycotting countries had or have lost seats.",
+          "sources": [
+            "https://nieuws.nl/entertainment/nederland-na-boycot-niet-meer-in-songfestivalbestuur",
+            "https://www.itv.com/news/2025-12-04/israel-allowed-to-compete-in-eurovision-contest-as-several-countries-pull-out",
+            "https://nltimes.nl/2025/12/04/netherlands-pulls-eurovision-organizer-votes-keep-israel-2026-contest"
+          ]
+        }
+      ]
+    },
+    {
+      "headline": "Demi Vollering adds European title a week after becoming world champion",
+      "section": "sport",
+      "kind": "light",
+      "previously": "",
+      "summary": "A week after winning the road world championship in Canada, Dutch cyclist Demi Vollering also won the European road title on Saturday in Slovenia. She rode the last 15 kilometres alone. Puck Pieterse took silver for the Netherlands, winning the sprint of the chasing group ahead of Switzerland's Marlen Reusser and Italy's Elisa Longo Borghini. The 130-kilometre race ran from Ljubljana to Šenčur. The Dutch team controlled it from the start, with sprinter Lorena Wiebes setting the pace early on. On the final climb, the Mozjanca, Femke de Vries and Pieterse raised the tempo before Vollering attacked. It is Vollering's second European title in a row and the tenth for a Dutch woman. Dutch riders have won nine of the last ten editions. Her season already includes the Tour of Flanders, Liège–Bastogne–Liège, the Giro d'Italia and the Tour de France. Two kilometres from the finish, Vollering pointed at a sticker on the back of her helmet: a picture of national coach Laurens ten Dam on a scooter in Rwanda, a team good-luck tradition. Ten Dam said the race looked 'almost like PlayStation' and promised the team burgers and good wine to celebrate. The men's European road race is on Sunday afternoon over almost 200 kilometres, with five laps that include the Mozjanca. Belgium's Remco Evenepoel is the favourite.",
+      "context": "Women's cycling is a point of national pride in the Netherlands, where the bike is part of daily life. Dutch women have dominated the sport for years. The world champion wears the white jersey with rainbow stripes, the 'regenboogtrui', for a full year. That jersey ranks above the European champion's jersey, so under the rules, no one will wear the European jersey in the women's peloton next year. Riders in these championships are not allowed race radios, so teamwork has to be planned in advance. Dutch teams have sometimes fallen apart under those conditions, which made this flawless race notable.",
+      "key_terms": [
+        "Demi Vollering (Dutch cyclist, world and European champion)",
+        "Puck Pieterse (Dutch cyclist, silver medal)",
+        "Laurens ten Dam (Dutch national coach)",
+        "bondscoach (national team coach)",
+        "EK, Europees kampioenschap (European championship)",
+        "WK, wereldkampioenschap (world championship)",
+        "regenboogtrui (rainbow jersey of the world champion)",
+        "Oranje (the Dutch national team)",
+        "Lorena Wiebes (Dutch sprinter)"
+      ],
+      "sources": [
+        "NU.nl",
+        "NOS"
+      ],
+      "urls": [
+        "https://www.nu.nl/wielrennen/6411899/demi-vollering-rijdt-week-na-wereldtitel-ook-overtuigend-naar-goud-bij-ek.html",
+        "https://nos.nl/l/2633534",
+        "https://nos.nl/l/2633554"
+      ],
+      "open_questions": [
+        "Did any Dutch rider win a medal in the men's European road race in Slovenia?"
+      ],
+      "findings": [
+        {
+          "question": "Did any Dutch rider win a medal in the men's European road race in Slovenia?",
+          "answer": "",
+          "sources": [
+            "https://wielerrevue.nl/artikel/697135/ek-wielrennen-2026-in-slovenie-het-complete-programma-met-alle-wegwedstrijden-en-tijdritten",
+            "https://www.bicycling.nl/nieuws/ek-wegrit-mannen-2026-hoe-laat-en-waar-zie-je-het",
+            "https://www.wielerflits.nl/nieuws/ek-2026-voorbeschouwing-wegrit-mannen-is-er-iets-te-doen-aan-remco-evenepoel/"
+          ]
+        }
+      ]
+    },
+    {
+      "headline": "Toad ladders in drains: twelve municipalities fight toad deaths",
+      "section": "offbeat",
+      "kind": "light",
+      "previously": "",
+      "summary": "Next year, twelve Dutch municipalities will join a project to cut toad deaths using toad ladders in street drains, small ponds near schools, and lowered curbs. They are Alkmaar, Culemborg, Edam-Volendam, Heemstede, Heerenveen, Heiloo, Leeuwarden, Utrechtse Heuvelrug, Velsen, Zaanstad, Zoetermeer and Zwolle. The Dutch toad population has fallen by about 40 percent in 18 years. Hundreds of thousands of amphibians are estimated to die in drains and sewers every year, often slowly. The danger is greatest during the spring migration: once toads land in a gutter, they can't jump high enough to get out, so they get run over, dry out, or fall into a drain. A toad ladder is a small strip of recycled plastic with a grip profile, fixed into the corner of a drain so trapped animals can climb back out. In trials, 95 percent of adult common toads escaped within 24 hours. Two years ago, Zwolle installed 122 of them. According to the conservation group Ravon, each ladder saves at least five amphibians a year on average. Under the project, called Pad uit de Put (Toad out of the Drain), each municipality will draw up a tailored toad plan with nature organisations, including toad-friendly measures in new construction and sewer projects. A toad plan costs around 28,000 euros on average, and the project pays half. Pad uit de Put is run by Ravon, IVN Natuureducatie and the Vereniging Nederlands Cultuurlandschap, with money from the Postcode Lottery. Maastricht, Wageningen and Nijmegen have already started toad plans.",
+      "context": "The Netherlands is densely built, so wildlife constantly runs into roads, curbs and drains. Every spring, volunteers across the country carry toads across roads during the migration to breeding ponds, and some roads close to traffic for it. Projects like this show the Dutch mix of small-scale, practical design fixes and local government working with nature groups. Zwolle is a provincial capital in the east of the country, in the province of Overijssel.",
+      "key_terms": [
+        "pad / padden (toad / toads)",
+        "paddentrapje (toad ladder)",
+        "straatkolk / put (street drain)",
+        "Pad uit de Put (\"Toad out of the Drain\", the project name and a pun)",
+        "Ravon (amphibian and reptile conservation organisation)",
+        "IVN Natuureducatie (nature education organisation)",
+        "Zwolle (city in the province of Overijssel)",
+        "voorjaarstrek (spring migration)"
+      ],
+      "sources": [
+        "NOS"
+      ],
+      "urls": [
+        "https://nos.nl/l/2633495",
+        "https://www.naturetoday.com/intl/nl/nature-reports/message/?msg=35874",
+        "https://paduitdeput.nl/gemeenten/",
+        "https://www.ravon.nl/thema/onderzoek/soortbescherming/pad-uit-de-put/",
+        "https://winkel.natuurpunt.be/padden-kikkertrap.html",
+        "https://paduitdeput.nl/gemeenten/"
+      ],
+      "open_questions": [],
+      "findings": [
+        {
+          "question": "Which twelve municipalities are taking part in Pad uit de Put in 2027?",
+          "answer": "The twelve municipalities selected for 2027 are Alkmaar, Culemborg, Edam-Volendam, Heemstede, Heerenveen, Heiloo, Leeuwarden, Utrechtse Heuvelrug, Velsen, Zaanstad, Zoetermeer and Zwolle. Each gets a tailored toad plan with 50 percent co-financing. The project is run by RAVON, Vereniging Nederlands Cultuurlandschap and IVN Natuureducatie, with support from the Postcode Lottery. According to paduitdeput.nl, registration for 2027 is closed and a toad plan costs about €28,000 on average, so the municipality pays about €14,000.",
+          "sources": [
+            "https://www.naturetoday.com/intl/nl/nature-reports/message/?msg=35874",
+            "https://paduitdeput.nl/gemeenten/"
+          ]
+        },
+        {
+          "question": "What does a toad ladder look like, and how much does one cost to install?",
+          "answer": "It is a small corner ladder (hoektrap) made of recycled plastic with a broad grip profile. It is screwed into the corner of a street drain so amphibians can climb out. It holds up against cleaning equipment and doesn't affect drainage. In Ravon's trials, 95% of adult common toads and nearly all small newts escaped within 24 hours. No installation cost for municipalities was confirmed. Ravon asks a €35 donation to sponsor one ladder. A Belgian nature group, Natuurpunt, sells a consumer frog and toad ladder for €8.49.",
+          "sources": [
+            "https://www.ravon.nl/thema/onderzoek/soortbescherming/pad-uit-de-put/",
+            "https://winkel.natuurpunt.be/padden-kikkertrap.html",
+            "https://paduitdeput.nl/gemeenten/"
+          ]
+        }
+      ]
+    }
+  ],
+  "agenda": {
+    "window": "Sunday 4 October 2026",
+    "events": [
+      {
+        "name": "Weekend of Science",
+        "when": "Sunday 4 October, 10:00–18:00",
+        "where": "Various locations across Amsterdam, including NEMO, ARTIS-Micropia, Amsterdam Science Park and the KNAW's Trippenhuis",
+        "price": "free",
+        "blurb": "A free citywide science festival with hands-on experiments: watch glassblowing and a mini-tornado at Science Park, sit in a real Airbus 320 cockpit at the Amsterdam University of Applied Sciences, or look through observatory domes. It's an easy way to see parts of the city you might not visit otherwise.",
+        "note": "Final day. The full programme and locations are at weekendvandewetenschap.nl.",
+        "source": "23e72307"
+      },
+      {
+        "name": "Ed O'Brien: An Evening With… Blue Morpho",
+        "when": "Sunday 4 October, 20:00–22:10",
+        "where": "Royal Theatre Carré, Amsterdam Centrum",
+        "price": "",
+        "blurb": "Radiohead guitarist Ed O'Brien opens his seven-date solo tour here. It's his first solo show in the Netherlands. He's playing songs from his new album Blue Morpho with a band that includes musical director Dave Okumu, and the show is designed to change from night to night.",
+        "note": "Only Smart Secure Tickets are sold, and they can't be transferred. Download the Ticketmatic app before you buy.",
+        "source": "f25ac29e"
+      },
+      {
+        "name": "Soirée of Butoh",
+        "when": "Sunday 4 October, 20:00–22:00",
+        "where": "De Lange Adem, Ruyschstraat 295, Oosterpark (Amsterdam-Oost)",
+        "price": "€10 donation at the door",
+        "blurb": "Butoh is an avant-garde dance form from Japan. Here, five dancers from Italy and the Netherlands each perform a short piece in one intimate evening. It's movement rather than words, so you don't need any Dutch.",
+        "note": "Cash only",
+        "source": "e8d74a8d"
+      }
+    ]
+  }
+}

@@ -1,0 +1,756 @@
+{
+  "episode_title": "Centraal Goes Quiet, a Wine Bottle Tests the Settlement Ban, and Ladders for Toads",
+  "description": "Amsterdam Centraal had no trains at all on Saturday, and service is still reduced through Monday. A former SGP MP bought Israeli wine on purpose to test the new ban on settlement goods, the cabinet's budget offer mostly pays off for PRO, and cleaners are getting ready to strike again. Also today: the University of Amsterdam's wartime apology, Demi Vollering's second title in a week, and the little ladders saving Dutch toads.",
+  "segments": [
+    {
+      "title": "Cold open",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "Not a single train at Amsterdam Centraal yesterday. And if you're travelling today or tomorrow, it's not over yet.",
+          "style": "crisp"
+        },
+        {
+          "speaker": "Sam",
+          "text": "Plus a former MP who went out and bought two bottles of wine on purpose, just to test a brand-new Dutch law.",
+          "style": "wry"
+        },
+        {
+          "speaker": "Maya",
+          "text": "It's Sunday, the fourth of October. I'm Maya.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And I'm Sam. This is Dutch Daily Briefing.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "No trains at Amsterdam Centraal, reduced service through Monday",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "Let's start at Amsterdam Centraal, which went all of Saturday without a single train.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "That's quite something for a station that handles about two hundred thousand people a day. What happened?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Engineering works. ProRail, the company that manages the tracks and stations, was connecting a new track, called 11a, and taking another one, 14a, out of service. That meant changing the safety and signalling systems, and you can't do that with trains running through.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Quick newcomer note: ProRail and NS aren't the same thing. ProRail owns the road, basically. NS, the Dutch railway company, drives the buses. Well, the trains.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Yesterday people were sent to the metro, which took NS tickets. And it's not fully back yet. Today there are fewer trains between Haarlem, Centraal, Weesp, Almere Centrum and Hilversum.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And tomorrow's the one to watch, right? Monday morning.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Exactly. On Monday there are fewer trains between Zaandam and Schiphol, and between Centraal, Muiderpoort and Utrecht Centraal. Muiderpoort is the station in Amsterdam-Oost on the line to Utrecht. NS expects heavy crowding there, especially in the spits, the rush hour.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "So if you commute to Utrecht, what's the advice?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Avoid Centraal if you can. NS suggests going via Sloterdijk, Amsterdam Zuid or Duivendrecht instead.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And when's it back to normal?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Tuesday, with one change. From then on, trains won't stop at platforms 13 and 14, so that platform can be widened and made easier to get to. It's all part of a bigger renovation of platforms, stairs and lifts.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "That makes sense when you hear ProRail expects two hundred and seventy-five thousand people a day by 2030.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "So if you're heading to Utrecht tomorrow morning, give yourself extra time, or just start from Zuid.",
+          "style": "practical"
+        }
+      ]
+    },
+    {
+      "title": "Cleaners plan new strikes as employers refuse talks",
+      "lines": [
+        {
+          "speaker": "Sam",
+          "text": "While we're on stations, the cleaners who struck there last month are getting ready to strike again.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "The union FNV says there'll be new strikes, because employers won't come back to the table. And Sam, this is really a story about two unions.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Right. Most Dutch sectors run on a cao, a collective labour agreement. It sets wages and conditions for the whole industry, whether you're in a union or not. And there are several unions. FNV is the biggest, and it leans left. CNV is smaller, with Christian roots.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And the employers signed with CNV.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "On the first of September. The employers' association, Schoonmakend Nederland, did a deal with CNV that runs until mid-2028, and FNV was left out. Now the employers say a finished cao isn't a starting point for new talks.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "So what's actually in it?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Pay goes up 3.1 percent this coming January and 3 percent the January after. The starting wage becomes sixteen euros an hour. And about 85,000 cleaners who never got a travel allowance will now get one.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "That doesn't sound terrible. So why did FNV members say no?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "More than 80 percent of them voted it down. A big reason is sick pay: the deal cuts it for people with less than six years in the sector. FNV wants no loss of income when you're ill, automatic inflation adjustment, a bigger raise, and the same allowances for hotel cleaners.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And they've already tried striking.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "In mid-September they held a five-day strike at Schiphol, train stations and universities. About 800 cleaners took part, and hundreds rallied outside the Utrecht head office of the cleaning company Asito. But Schiphol and NS reported little disruption, and the employers didn't budge.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "So when's the next one?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "FNV hasn't said when or where yet.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "We'll tell you once the dates are out.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "Cabinet's budget offer mostly benefits PRO",
+      "lines": [
+        {
+          "speaker": "Sam",
+          "text": "Some of those unions are also in our next story, the fight over next year's budget.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Quick setup. The Netherlands has a minority cabinet of D66, VVD and CDA, led by Prime Minister Rob Jetten. Together they hold 66 of the 150 seats in the Tweede Kamer, the House of Representatives.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "That's ten short of a majority, and they're even further short in the Senate.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "So every budget needs opposition votes. This week, after talks with five opposition parties, Jetten made what he called a new and attractive offer.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And what's in it?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "The big item: the cabinet dropped about six billion euros in planned cuts to social security. That covers unemployment benefit, disability benefit, and the AOW, the state pension.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And the unions FNV, CNV and VCP called that an important victory and called off strikes they'd planned. The cleaners' dispute is a separate fight, though.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Then there's box 3, the tax on savings and investments. From 2028, the plan is to tax actual gains on shares, bonds and property. But to help pay for all this, the tax-free allowance would drop from 1,800 euros to 1,000 per person.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Which would bring an estimated 850,000 more people into that tax. So if you've got a bit put away, keep an ear on this one.",
+          "style": "wry"
+        },
+        {
+          "speaker": "Maya",
+          "text": "And director-shareholders could borrow at most 100,000 euros from their own company, down from 500,000.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "So who walked away happy?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Mostly PRO. That's the party formed this summer when GroenLinks and Labour, the PvdA, merged, and it's led by Jesse Klaver. Scrapping the welfare cuts was one of its central demands.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "But they're not fully on board?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Not yet. PRO and Volt are negotiating together. They'll back the Social Affairs budget, but they still disagree on taxing wealth and on the rest of the tax plan. Klaver wants more talks.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And the right?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "JA21 leader Joost Eerdmans called the package more left than right. He said there's nothing on tax cuts, migration or security, and called parts of the box 3 funding unacceptable because of what it does to small investors. SGP leader Chris Stoffer wasn't very enthusiastic either. He pointed to missing commitments on abortion and surrogacy. Both parties did welcome the box 3 changes, though.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And ChristenUnie basically said nobody's going to love this.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Their words were that no party will be fully satisfied. Here's the math to watch: with PRO and Volt, the cabinet would have 87 seats in the lower house and 38 of 75 in the Senate.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Thirty-eight of seventy-five. That's the narrowest majority you can get.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "Open House Day: sellers skip the motivation letters",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "Now to housing, and yesterday's Open House Day.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Open Huizen Dag. It happens twice a year, organised by the NVM, the big estate agents' association. You can just walk in and look around, no appointment.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "This time almost 14,500 homes took part, up from about 8,900 in March. Amsterdam had more than anywhere else, with 665.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Why the jump?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "More homes are for sale. The NVM says landlords are selling off rental properties now that the tax rules for them have become less favourable. That includes the box 3 tax we just talked about.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "So more homes to buy and fewer to rent. That's mixed news if you're an international renter.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Right. The NVM says around 65,000 people came to look. That's more than in spring, but fewer per home: about four and a half, down from almost six.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "I saw different numbers on how big a share of the market took part.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Yes. The NVM says it was 28 percent of everything for sale on Funda, the listings site. NL Times put it at 14 percent, measured against a bigger total.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "So is the market cooling?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "A little, nationally. Higher mortgage rates mean buyers can borrow less, and the banks ING and ABN Amro expect only limited price rises in the coming months. But Amsterdam is Amsterdam. In the second quarter, 78 percent of homes there sold above the asking price, by 7.1 percent on average. The average sale price was 588,000 euros, though that's slightly down on a year ago.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Okay, now the motivation letters. Explain these to me.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Some buyers attach a personal letter to their bid, about who they are and why they love the place.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Like the love letters people write in hot US markets.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And Amsterdam sellers told Het Parool they don't even read them. All that counts is the best price.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "So skip the poetry and call your mortgage adviser.",
+          "style": "amused"
+        }
+      ]
+    },
+    {
+      "title": "Ex-MP buys settlement wine to test the new ban",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "Next, a wine purchase that's turned into a test of a new Dutch law.",
+          "style": "serious"
+        },
+        {
+          "speaker": "Sam",
+          "text": "Who bought it?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Roelof Bisschop, a former MP for the SGP, the strictly orthodox Protestant party we just heard from in the budget talks. It's strongly pro-Israel. On the Christian TV channel Family7, he said he deliberately bought two bottles of Israeli wine the day after the ban on goods from Israeli settlements took effect.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Remind us what the ban covers.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Since the twenty-second of September, it's been illegal here to import, sell, trade or buy goods from settlements in Israeli-occupied territories. Like most countries, the Netherlands considers those settlements illegal under international law. Breaking the ban can mean community service, a fine, or up to six years in prison.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And Bisschop called his purchase a statement against a decision he fundamentally opposes.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Activists from the BDS movement, the pro-Palestinian boycott campaign, have reported him to the FIOD, the fiscal crime investigation service. Nobody has publicly confirmed the report was received, and a ministry spokesperson said it was too early to comment.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "But did he actually break the law?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "That's not clear. The winery, Teperberg, is on a UN list of companies active in settlements because it has vineyards in the West Bank. But it says this particular wine is made just outside, in Israel itself. And Bisschop says he doesn't know where his bottle came from.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Which shows how hard this is to enforce.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Very hard. Customs only checks imports from outside Europe, and only by risk-based sampling. Goods can come in through other EU countries, and most of those have no such ban. Spain is an exception. NOS even found Golan Heights wine on a Dutch-looking webshop based in Germany. Nobody checks what's on Dutch shelves, and the FIOD only acts when someone files a report.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Meanwhile, Israel is furious.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Last Sunday, Foreign Minister Gideon Sa'ar revoked the diplomatic status of Dutch staff at the mission in Ramallah, the seat of the Palestinian Authority. He gave them seven days to hand back their Israeli-issued diplomatic papers. Dutch Foreign Minister Tom Berendsen says eight staff are affected.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "How has The Hague responded?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Berendsen called it unnecessary, said he deeply regrets it, and told Israel's ambassador so. He says the ban follows from the international-law duty not to contribute to illegal settlements. Talks with Israel are under way, and he says the staff's protection comes first. Without diplomatic passports, and with all those border crossings, their work would get very complicated.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And wasn't there some kind of travel warning too?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Israel warned its citizens flying to the Netherlands about long baggage checks. Dutch customs denies that.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "The ban will be reviewed within a year. Between a two-bottle protest and a diplomatic standoff, that review won't be short of material.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "University of Amsterdam apologises for wartime dismissals",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "The University of Amsterdam has apologised for how it treated its own staff during the Second World War.",
+          "style": "serious"
+        },
+        {
+          "speaker": "Sam",
+          "text": "What happened back then?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Germany occupied the Netherlands from 1940. Staff at the UvA first had to sign so-called Aryan declarations. Then, from late November 1940, Jewish professors and lecturers were removed. Staff punished for resistance work were dismissed too. The university was part of the city administration at the time, and the city carried out the dismissals on the occupiers' orders.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And the apology came this week.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "On Wednesday, when a new monument was unveiled in the garden of the Oudemanhuispoort, a historic covered passage in the city centre that's part of the university. It carries the names of 254 students and 28 staff members who didn't survive the war. Some were murdered because they were Jewish, some because they were in the resistance, some for both.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "One of the names is a professor of economics and statistics. He was dismissed in 1940, went into hiding, and was arrested in 1944. He died in Auschwitz.",
+          "style": "quiet"
+        },
+        {
+          "speaker": "Maya",
+          "text": "The board chair, Vinod Subramaniam, acknowledged that the university offered no resistance to the measures of the occupying forces. He apologised to everyone who suffered that injustice, and to their descendants. And he said the decision should never have taken so long.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Is anything changing beyond the words?",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Yes. The dismissals have been formally reversed. And the university is correcting its historical staff register, the Album Academicum, so that for the professors and lecturers the occupiers removed, their employment now ends on the date of their death.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "So on paper, finally, they never stopped belonging to the university.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "It adds to a series of formal apologies here in recent years, from the government, NS, the central bank and the city of Amsterdam.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "The Netherlands loses its Eurovision board seat",
+      "lines": [
+        {
+          "speaker": "Sam",
+          "text": "Maya, pop quiz: how many times have the Dutch won Eurovision?",
+          "style": "playful"
+        },
+        {
+          "speaker": "Maya",
+          "text": "Five. The last one was Duncan Laurence in 2019. Never test me on Eurovision.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Noted. Well, the Netherlands has now lost its seat on Eurovision's governing committee, the Reference Group.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "The group that oversees the contest for the broadcasters. Why did they lose it?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "The boycott. The Dutch head of delegation, Claudia van der Pas, had been elected for two years. Then last December the broadcaster AVROTROS pulled out of the 2026 contest over Israel's participation. She was allowed to stay on in a non-voting wildcard spot, but that ran out this summer.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "So, no vote.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "No vote. The EBU, which organises Eurovision, says elected seats are for delegation heads who are actually doing the job.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Didn't Spain boycott too?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "It did. And the chair of the Reference Group is still Ana María Bordas of the Spanish broadcaster RTVE, with a term that runs until June 2027.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Very Eurovision. Nul points for consistency.",
+          "style": "amused"
+        },
+        {
+          "speaker": "Sam",
+          "text": "Here's the twist, though. In August, AVROTROS said it would skip 2027 as well. Then in late September the umbrella broadcaster NPO took over and said the Netherlands will compete after all, because the EBU had given it firmer commitments. NOS will broadcast it, and a panel of experts will pick the act.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And van der Pas?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "She says she's absolutely open to coming back.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "So the seat's gone, but the living-room Eurovision parties are back on. And here, those are serious business.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "Demi Vollering adds the European title",
+      "lines": [
+        {
+          "speaker": "Sam",
+          "text": "From one European contest to another: cyclist Demi Vollering is having quite a week.",
+          "style": "upbeat"
+        },
+        {
+          "speaker": "Maya",
+          "text": "A week ago she became world champion in Canada. Yesterday in Slovenia she added the European title.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "At this point she's just collecting jerseys.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "She rode the last fifteen kilometres on her own. Puck Pieterse took silver for the Netherlands by winning the sprint of the chasing group.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And it was a proper team effort. Sprinter Lorena Wiebes set the pace early. On the final climb, Femke de Vries and Pieterse cranked it up, and then Vollering attacked. Riders can't use race radios at these championships, so all of that had to be planned in advance.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "The national coach, Laurens ten Dam, said it looked almost like PlayStation.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Now my favourite bit. Two kilometres from the finish, Vollering pointed at a sticker on the back of her helmet. It's a picture of Ten Dam on a scooter in Rwanda, a team good-luck tradition.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Of course it is. And the reward?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "He's promised them burgers and good wine.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "It's her second European title in a row, and Dutch women have won nine of the last ten. Her season already includes the Tour of Flanders, Liège–Bastogne–Liège, the Giro and the Tour de France.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "There's one catch. The world champion's rainbow jersey outranks the European one, so next year nobody will wear the European jersey in the women's peloton.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "The men race this afternoon, almost two hundred kilometres, and Belgium's Remco Evenepoel is the favourite.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "Ladders to get toads out of drains",
+      "lines": [
+        {
+          "speaker": "Sam",
+          "text": "Maya, have you ever wondered what happens to a toad that falls into a drain?",
+          "style": "playful"
+        },
+        {
+          "speaker": "Maya",
+          "text": "I have not. But I suspect I'm about to find out.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "It can't get out. Once a toad ends up in the gutter, it can't jump high enough to escape. So it dries out, gets run over, or falls into the drain. By some estimates, hundreds of thousands of amphibians die in drains and sewers every year.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And the Dutch toad population has fallen by about 40 percent in eighteen years. So, what's the fix?",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "The paddentrapje, or toad ladder. It's a little strip of recycled plastic with grip, fixed into the corner of the drain so they can climb out. In trials, 95 percent of adult toads got out within a day.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "I love that someone ran that trial.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Zwolle put in 122 of them two years ago. The conservation group Ravon says each ladder saves at least five amphibians a year.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "And now it's spreading. Next year twelve more municipalities join, including Alkmaar, Zaanstad, Leeuwarden, Edam-Volendam and Zoetermeer. Each will get its own toad plan, with things like small ponds near schools and lowered curbs.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "A plan costs around 28,000 euros, and the project pays half, using Postcode Lottery money. It's called Pad uit de Put: Toad out of the Drain.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "If you've seen volunteers carrying toads across the road here in spring, it's the same spirit.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "And if you want to chip in, Ravon asks a 35-euro donation to sponsor a ladder. Cheapest home improvement in the country.",
+          "style": "amused"
+        }
+      ]
+    },
+    {
+      "title": "What's on in Amsterdam today",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "If you're feeling curious today, it's the last day of the Weekend of Science. It's free, from ten till six, at places all over the city, from NEMO and ARTIS-Micropia to Science Park and the Trippenhuis.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "There's a mini-tornado at Science Park, and you can sit in a real Airbus 320 cockpit at the Amsterdam University of Applied Sciences. I know where I'm going.",
+          "style": ""
+        },
+        {
+          "speaker": "Maya",
+          "text": "Tonight, Radiohead guitarist Ed O'Brien opens his solo tour at Carré at eight. It's his first solo show here. Tickets can't be transferred, so download the Ticketmatic app before you buy.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "Or try something completely different: butoh, an avant-garde dance form from Japan, at De Lange Adem near the Oosterpark. Five dancers, eight o'clock, a ten-euro donation, cash only, and you don't need any Dutch.",
+          "style": ""
+        }
+      ]
+    },
+    {
+      "title": "Sign-off",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "And if you're catching a train tomorrow morning, leave early. That's Dutch Daily Briefing for Sunday the fourth of October. I'm Maya.",
+          "style": ""
+        },
+        {
+          "speaker": "Sam",
+          "text": "I'm Sam. See you tomorrow.",
+          "style": ""
+        }
+      ]
+    }
+  ]
+}
