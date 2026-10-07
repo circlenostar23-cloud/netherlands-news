@@ -22,6 +22,8 @@ Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`
 
 **NotebookLM comparison:** upload `data/<date>/briefing.md` (also attached to the daily email) to a notebook and click **Audio Overview**.
 
+**Health check:** `.venv/bin/python scripts/health_check.py` checks today's run, release, feed and audio (pass a date for another day). Add `--voices` to also check that every script line is in the audio and in the right host's voice; that needs `pip install -e '.[check]'` and takes a few minutes.
+
 ## One-time setup (GitHub Actions)
 
 1. Create the repo on **circlenostar23-cloud** and push.

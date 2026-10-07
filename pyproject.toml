@@ -15,6 +15,13 @@ dependencies = [
     "python-dotenv>=1.0",
 ]
 
+[project.optional-dependencies]
+# for `scripts/health_check.py --voices`
+check = [
+    "faster-whisper>=1.1",
+    "numpy>=2.0",
+]
+
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"

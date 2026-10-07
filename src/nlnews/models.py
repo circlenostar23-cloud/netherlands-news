@@ -56,6 +56,8 @@ class Story(BaseModel):
     urls: list[str]
     open_questions: list[str] = Field(default=[], description="Facts a listener would want that the articles leave out, or where outlets disagree")
     findings: list["Finding"] = Field(default=[], description="Filled in by the research pass; leave empty")
+    airtime: int = Field(default=0, description="Filled in by the airtime plan; leave 0")
+    airtime_reason: str = Field(default="", description="Filled in by the airtime plan; leave empty")
 
 
 class Finding(BaseModel):
@@ -87,6 +89,15 @@ class Agenda(BaseModel):
 
 class Shortlist(BaseModel):
     ids: list[str] = Field(description="Bracketed IDs of the shortlisted events, best first")
+
+
+class Airtime(BaseModel):
+    words: int
+    reason: str = Field(description="One line: what in the briefing earns this story its time, or why it's quick")
+
+
+class AirtimePlan(BaseModel):
+    stories: list[Airtime] = Field(description="One per story, in the briefing's order")
 
 
 class Briefing(BaseModel):

@@ -63,7 +63,12 @@ def run(args) -> None:
     if args.stop_after == "briefing":
         return
 
-    script = _cached(d / "script.json", args.fresh, lambda: scriptmod.write_script(briefing), EpisodeScript)
+    def planned_script():
+        planned = scriptmod.plan_airtime(briefing)  # kept in briefing.json to compare with the script
+        (d / "briefing.json").write_text(planned.model_dump_json(indent=2))
+        return scriptmod.write_script(planned)
+
+    script = _cached(d / "script.json", args.fresh, planned_script, EpisodeScript)
     (d / "script.md").write_text(scriptmod.render_text(script))
     print(f"  script: {scriptmod.word_count(script)} words, {len(script.segments)} segments")
     if args.stop_after == "script":
