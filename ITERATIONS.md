@@ -7,7 +7,7 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 ### Future: a shared podcast engine for more shows
 *Logged 2026-10-07. Brainstorm only; nothing built.*
 
-**Idea:** reuse this pipeline for other daily briefings, starting with a New York theater show for David's friend Michael, modelled on the Broadway Briefing newsletter. The mechanics live in one shared engine so an improvement made for one show reaches the other; each show supplies its own inputs and gets its own outputs.
+**Idea:** reuse this pipeline for other daily briefings, starting with a New York theater show for David's friend Michael, anchored on the Broadway Briefing newsletter so he can keep up by listening instead of reading. The mechanics live in one shared engine so an improvement made for one show reaches the other; each show supplies its own inputs and gets its own outputs.
 
 **What's already generic:** nearly all of the ~1,500 lines of Python: fetch, cluster, select, write, fact-check, airtime plan, script, voices with backups, release, feed, and `scripts/health_check.py`.
 
@@ -18,10 +18,10 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 **Shape:** one engine repo plus a thin repo per show. A show repo holds only its config, prompts, sources and a short workflow that installs the engine from its `main`. GitHub scopes secrets, the Pages feed, releases and the cron trigger per repo, so each show gets its own of each, and this repo keeps its feed URL. The catch: a bad engine change breaks every show at 04:13. A tag pin as an escape hatch, plus the health check, covers that.
 
-**The obstacle is the newsletter, not the code:**
-- It arrives by email, not RSS, so the engine would need a source type that reads a mailbox.
-- It's someone else's product, and probably a paid one (not verified). This repo is public and each release attaches the full briefing, so a show built directly on the newsletter would republish a derivative of paid content.
-- Cleaner route: use theater outlets' own feeds (Playbill, BroadwayWorld, Deadline, the NYT theater section) as sources, the way this show uses NOS and NU.nl. That needs no new source type. Feed URLs not checked yet.
+**Source: Broadway Briefing is the anchor (decided 2026-10-07).** Each day's newsletter sets the story list, the way the RSS feeds do here. What that needs:
+- **A mailbox source type.** The newsletter arrives by email, not RSS, so the engine needs a source that reads the day's issue from a mailbox (Michael's subscription, or a forwarding address) and splits it into stories. This is the main new piece of engine work.
+- **Full text behind the items.** If the newsletter's items are short blurbs with links, the writer needs the linked articles, as it uses full article text here. Theater outlets' own feeds (Playbill, BroadwayWorld, Deadline, the NYT theater section) can fill that in and add anything the newsletter missed. Feed URLs not checked yet.
+- **Keep the output private.** The newsletter is someone else's product, and probably a paid one (not verified). This repo is public and each release attaches the full briefing, so the same setup would put a derivative of it in public. The theater show's repo should be private, or at least not attach the briefing to releases. Check the newsletter's terms first.
 
 **Quotas:**
 - Gemini voices: each show needs its own key. An episode uses about 5 of the 10 free requests a day, so two shows on one key leave no room for retries. The limit is thought to be per Google Cloud project, not per account, so a second project may be enough. Not verified.
@@ -32,7 +32,7 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 2. Build the theater show as a second config.
 3. Split into engine and show repos only once two shows exist to shape the boundary.
 
-**Open questions:** whether Michael wants a private feed (a private repo changes the Pages and Actions-minutes picture); what the newsletter's terms allow; whether a theater show needs an agenda-style segment (openings, closings, tonight's curtain times).
+**Open questions:** how a private repo changes the Pages and Actions-minutes picture; what the newsletter's terms allow; what time the newsletter arrives, which sets the show's start time; whether an issue's items are full stories or blurbs with links; whether a theater show needs an agenda-style segment (openings, closings, tonight's curtain times).
 
 ### OpenRouter as the paid voice provider
 *Logged 2026-10-04*
