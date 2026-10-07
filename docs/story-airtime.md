@@ -32,7 +32,7 @@ Scripts were regenerated from the saved 10-01, 10-02 and 10-03 briefings with `N
 - **Short stories still sound complete.** The 91-word Van Gogh story keeps its joke, and the 96-word Fabel Friet follow-up keeps its caveat and its punchline.
 - No story break had the same host on both sides.
 
-The saved briefings, published scripts, the fixed-caps and airtime regenerations, and the `measure.py` / `regen.py` helpers are in commit `7d84847` on the branch `claude/story-length-caps`, under `docs/story-length-caps/`.
+The saved briefings, published scripts, the fixed-caps and airtime regenerations, and the `measure.py` / `regen.py` helpers for 10-01 to 10-03 are in commit `7d84847` in `main`'s history, under `docs/story-length-caps/` (the branch they were made on, `claude/story-length-caps`, has been merged and deleted). View one with `git show 7d84847:docs/story-length-caps/<file>`. The briefings, published scripts and fixed-caps test scripts for 10-04 and 10-05 are still in `docs/story-length-caps/`.
 
 ## Watch
 
