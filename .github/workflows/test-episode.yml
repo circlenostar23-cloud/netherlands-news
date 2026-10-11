@@ -1,0 +1,94 @@
+name: Test episode
+
+# Republishes a day's episode under a separate `ep-<date>-test` release, so a feature can be
+# checked in a podcast app without touching the real episode or spending TTS quota: the day's
+# working files come from its Daily episode run, every stage is cached, and only the steps
+# after the audio (chapters, transcript, show notes) run with the current code.
+# `remove` deletes the test release again. Both rebuild the feed and redeploy Pages.
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Episode date (YYYY-MM-DD) whose working files to reuse"
+        required: true
+      action:
+        type: choice
+        options: [publish, remove]
+        default: publish
+
+permissions:
+  actions: read
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: episode  # never alongside a daily run, which also deploys Pages
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+    env:
+      FEED_SECRET_PATH: ${{ secrets.FEED_SECRET_PATH }}
+      SITE_BASE_URL: ${{ vars.SITE_BASE_URL }}
+      GH_TOKEN: ${{ github.token }}
+      DAY: ${{ inputs.date }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-tiny.en
+      - run: pip install -e .
+
+      - name: Fetch the day's working files
+        if: ${{ inputs.action == 'publish' }}
+        run: |
+          # the day's run (they start at 02:13 or 03:13 UTC, so the UTC date is the day), latest first
+          run=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow episode.yml -L 20 --json databaseId,createdAt \
+            --jq "[.[] | select(.createdAt[:10] == \"$DAY\")][0].databaseId // empty")
+          [ -n "$run" ] || { echo "No Daily episode run on $DAY"; exit 1; }
+          gh run download "$run" --repo "$GITHUB_REPOSITORY" -n episode-data -D data
+          ls "data/$DAY"
+
+      - name: Publish the test episode
+        if: ${{ inputs.action == 'publish' }}
+        run: |
+          rm -f "data/$DAY/chapters.json" "data/$DAY/transcript.vtt"
+          python -m nlnews run --date "$DAY" --stop-after audio
+          python - <<'PY'
+          import os
+          from datetime import date
+          from pathlib import Path
+          from nlnews import publish, tts
+          from nlnews.models import EpisodeScript
+          day = date.fromisoformat(os.environ["DAY"])
+          d = Path("data") / day.isoformat()
+          script = EpisodeScript.model_validate_json((d / "script.json").read_text())
+          title = f"TEST {day.strftime('%a %d %b')}: {script.episode_title}"
+          publish.upload_episode(f"ep-{day.isoformat()}-test", title, (d / "shownotes.md").read_text(),
+                                 d / "episode.mp3", tts.duration_seconds(d / "episode.mp3"), d / "briefing.md",
+                                 d / "transcript.vtt")
+          PY
+
+      - name: Remove the test episode
+        if: ${{ inputs.action == 'remove' }}
+        run: gh release delete "ep-$DAY-test" --cleanup-tag --yes --repo "$GITHUB_REPOSITORY"
+
+      - run: python -m nlnews feed
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/
+      - uses: actions/deploy-pages@v4
