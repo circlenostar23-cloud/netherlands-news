@@ -20,12 +20,13 @@ import trafilatura
 from nlnews.config import TZ, load_prompt
 from nlnews.fetch import USER_AGENT
 from nlnews.llm import ask
-from nlnews.models import Agenda, Shortlist
+from nlnews.models import Agenda, EventLink, Shortlist
 
 log = logging.getLogger(__name__)
 IAMSTERDAM = "https://www.iamsterdam.com/en/"
 WEEKEND_GUIDE = IAMSTERDAM + "whats-on/weekend-guide"
 YLBB_FEED = "https://www.yourlittleblackbook.me/feed/"
+MORE_EVENTS = 4  # shortlisted events that weren't picked, linked in the show notes
 WEEKEND_EDITIONS = (3, 4)  # Thursday and Friday, each through Sunday
 HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh) AppleWebKit/537.36 Chrome/128 Safari/537.36"}
 _RSC = re.compile(r'self\.__next_f\.push\(\[1,"(.*?)"\]\)', re.S)
@@ -89,6 +90,13 @@ def _line(key: str, ev: dict) -> str:
     return f"[{key}] {ev['title']}{note} | {dates} | {info.get('date', '')} | {info.get('location', '')} | {', '.join(ev.get('tags', []))}"
 
 
+def _details(ev: dict, weekend: bool) -> str:
+    """When and where, for the show notes: "11:00 - 17:00, Frans Hals Museum, final days"."""
+    info = {h["id"]: h["label"] for h in ev.get("highlights", [])}
+    day = ev["first"].strftime("%a %d %b") if weekend and ev["first"] == ev["last"] else ""
+    return ", ".join(x for x in (day, info.get("date", ""), info.get("location", ""), ev["note"]) if x)
+
+
 def _text(url: str, limit: int = 3000) -> str:
     try:
         return (trafilatura.extract(_get(url), include_comments=False) or "")[:limit]
@@ -97,14 +105,23 @@ def _text(url: str, limit: int = 3000) -> str:
         return ""
 
 
-def _weekend_guides(day: date) -> list[tuple[str, str]]:
-    guides = [("I amsterdam weekend guide", _text(WEEKEND_GUIDE, 12000))]
+def _weekend_guides(day: date) -> list[tuple[str, str, str]]:
+    """(name, text, url) of each weekend guide."""
+    guides = [("I amsterdam weekend guide", _text(WEEKEND_GUIDE, 12000), WEEKEND_GUIDE)]
     feed = feedparser.parse(YLBB_FEED, agent=USER_AGENT)
     recent = (e for e in feed.entries if "weekendtips amsterdam" in e.title.lower()
               and e.get("published_parsed") and date(*e.published_parsed[:3]) >= day - timedelta(days=7))
     if entry := next(recent, None):
-        guides.append((f"Your Little Black Book: {entry.title}", _text(entry.link, 25000)))
-    return [(name, text) for name, text in guides if text]
+        guides.append((f"Your Little Black Book: {entry.title}", _text(entry.link, 25000), entry.link))
+    return [g for g in guides if g[1]]
+
+
+def _link(candidates: dict[str, dict], guides: list[tuple[str, str, str]], source: str) -> str:
+    """The page behind an event's `source`: its calendar page, or the weekend guide it came from."""
+    key = re.sub(r"[^0-9a-f]", "", source.lower())[:8]
+    if (ev := candidates.get(key)) and ev.get("slug"):
+        return IAMSTERDAM + ev["slug"]
+    return next((url for name, _, url in guides if name.lower() in source.lower() or source.lower() in name.lower()), "")
 
 
 def build(day: date, recent: list[str] = ()) -> Agenda | None:
@@ -120,7 +137,7 @@ def build(day: date, recent: list[str] = ()) -> Agenda | None:
     guides = _weekend_guides(day) if weekend else []
     print(f"  agenda: {len(candidates)} calendar candidates, {len(guides)} weekend guide(s)")
 
-    sources = []
+    sources, picked = [], []
     if candidates:
         shortlist = ask(load_prompt("agenda_shortlist").format(n=10 if weekend else 8),
                         f"Window: {span}\n\n" + "\n".join(_line(k, ev) for k, ev in candidates.items())
@@ -132,7 +149,7 @@ def build(day: date, recent: list[str] = ()) -> Agenda | None:
             texts = list(pool.map(page, picked))
         sources += [(f"I amsterdam calendar: {_line(k, candidates[k])}", text or "(no description)")
                     for k, text in zip(picked, texts)]
-    sources += guides
+    sources += [(name, text) for name, text, _ in guides]
     if not sources:
         print("  agenda: nothing to pick from")
         return None
@@ -143,5 +160,12 @@ def build(day: date, recent: list[str] = ()) -> Agenda | None:
     if recent:
         body += "\n\n# Already recommended in the last few episodes\n\n" + "\n".join(f"- {r}" for r in recent)
     agenda = ask(system, body, Agenda, effort="medium")
-    print(f"  agenda: {len(agenda.events)} picks for {agenda.window}")
+    for e in agenda.events:
+        e.url = _link(candidates, guides, e.source)
+    # shortlisted but not picked: listed in the show notes, not voiced
+    used = {re.sub(r"[^0-9a-f]", "", e.source.lower())[:8] for e in agenda.events}
+    agenda.more = [EventLink(name=candidates[k]["title"], details=_details(candidates[k], weekend),
+                             url=IAMSTERDAM + candidates[k]["slug"])
+                   for k in picked if k not in used and candidates[k].get("slug")][:MORE_EVENTS]
+    print(f"  agenda: {len(agenda.events)} picks for {agenda.window}, {len(agenda.more)} more in the show notes")
     return agenda if agenda.events else None

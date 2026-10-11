@@ -86,11 +86,19 @@ class Event(BaseModel):
     blurb: str = Field(description="1-2 sentences on what it is and why a newcomer might go")
     note: str = Field(default="", description="Practical flag if any: 'free ticket required', 'mostly in Dutch', 'nearly sold out', 'final weekend'")
     source: str
+    url: str = Field(default="", description="Filled in after the picks; leave empty")
+
+
+class EventLink(BaseModel):
+    name: str
+    details: str  # when and where, e.g. "11:00 - 17:00, Frans Hals Museum, final days"
+    url: str
 
 
 class Agenda(BaseModel):
     window: str = Field(description="The days covered, e.g. 'Thursday 1 to Sunday 4 October' or 'Wednesday 30 September'")
     events: list[Event]
+    more: list[EventLink] = Field(default=[], description="Filled in after the picks; leave empty")
 
 
 class Shortlist(BaseModel):

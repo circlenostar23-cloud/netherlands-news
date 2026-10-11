@@ -1,5 +1,6 @@
 """The episode's show notes: the script's description, chapter timestamps, links to read more
-on each story, and runners-up that didn't fit. Written in Markdown for the GitHub release;
+on each story, What's on in Amsterdam with links (plus shortlisted events that weren't voiced),
+and runners-up that didn't fit. Written in Markdown for the GitHub release;
 publish.py turns it into HTML for the feed."""
 
 from nlnews.chapters import clock
@@ -19,6 +20,12 @@ def _links(urls: list[str], by_url: dict[str, Article]) -> list[str]:
             picked.append(a)
             outlets.add(a.source)
     return [f"[{a.source}]({a.url})" for a in picked]
+
+
+def _event(event: tuple[str, str, str]) -> str:
+    name, url, details = event
+    name = name.replace("[", "(").replace("]", ")")  # would break the link
+    return f"- {f'[{name}]({url})' if url else name}" + (f": {details}" if details else "")
 
 
 def _story_titles(script: EpisodeScript, briefing: Briefing) -> list[str]:
@@ -41,6 +48,11 @@ def build(description: str, script: EpisodeScript, briefing: Briefing, selection
     more = [(t, _links(s.urls, by_url)) for t, s in zip(_story_titles(script, briefing), briefing.stories)]
     if more := [f"- {t}: {', '.join(links)}" for t, links in more if links]:
         out += ["", "**Read more**", *more]
+    if briefing.agenda:
+        events = [(e.name, e.url, ", ".join(x for x in (e.when, e.where) if x)) for e in briefing.agenda.events]
+        out += ["", f"**What's on in Amsterdam** ({briefing.agenda.window})", *map(_event, events)]
+        if briefing.agenda.more:
+            out += ["", "**More on in Amsterdam**", *(_event((e.name, e.url, e.details)) for e in briefing.agenda.more)]
     also = [(r.working_title, _links([by_id[i].url for i in r.article_ids if i in by_id], by_url))
             for r in selection.runners_up]
     if also := [f"- {t}: {', '.join(links)}" for t, links in also if links]:
