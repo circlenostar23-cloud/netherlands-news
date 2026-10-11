@@ -22,8 +22,10 @@ from xml.etree import ElementTree as ET
 from nlnews.config import SHOW_TITLE, SITE_DIR, require_env
 
 ITUNES = "http://www.itunes.com/dtds/podcast-1.0.dtd"
+PODCAST = "https://podcastindex.org/namespace/1.0"
 META = re.compile(r"<!-- nlnews (\{.*?\}) -->")
 ET.register_namespace("itunes", ITUNES)
+ET.register_namespace("podcast", PODCAST)
 
 
 def _gh(*args: str) -> str:
@@ -34,12 +36,15 @@ def _repo() -> str:
     return os.environ.get("GITHUB_REPOSITORY") or json.loads(_gh("repo", "view", "--json", "nameWithOwner"))["nameWithOwner"]
 
 
-def upload_episode(tag: str, title: str, description: str, mp3: Path, duration: int, briefing_md: Path) -> None:
+def upload_episode(tag: str, title: str, description: str, mp3: Path, duration: int, briefing_md: Path,
+                   transcript: Path | None = None) -> None:
     """Create (or update) the episode's release. Watching the repo's releases on GitHub
     turns this into an email notification with the MP3 and briefing attached as downloads."""
     meta = json.dumps({"duration": duration})
     notes = f"{description}\n\n<!-- nlnews {meta} -->"
     assets = [str(mp3), f"{briefing_md}#Briefing (NotebookLM source)"]
+    if transcript and transcript.exists():
+        assets.append(f"{transcript}#Transcript")
     try:
         _gh("release", "view", tag, "--repo", _repo())
         _gh("release", "upload", tag, *assets, "--clobber", "--repo", _repo())
@@ -112,6 +117,13 @@ def build_feed(max_episodes: int = 30) -> Path:
                                           "length": str(mp3.stat().st_size), "type": "audio/mpeg"})
         if "duration" in meta:
             ET.SubElement(item, f"{{{ITUNES}}}duration").text = str(meta["duration"])
+        if vtt := next((a for a in rel["assets"] if a["name"] == "transcript.vtt"), None):
+            local = episodes_dir / f"{rel['tag_name']}.vtt"
+            if not local.exists() or local.stat().st_size != vtt["size"]:
+                _gh("release", "download", rel["tag_name"], "--pattern", vtt["name"],
+                    "--output", str(local), "--clobber", "--repo", _repo())
+            ET.SubElement(item, f"{{{PODCAST}}}transcript", {"url": f"{base}/{secret}/episodes/{local.name}",
+                                                             "type": "text/vtt", "language": "en"})
 
     out = SITE_DIR / secret / "feed.xml"
     ET.ElementTree(rss).write(out, encoding="utf-8", xml_declaration=True)

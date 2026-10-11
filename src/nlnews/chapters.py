@@ -1,12 +1,14 @@
-"""Chapter markers: where each story starts in the episode. They're embedded in the MP3 as ID3
-chapters, which Apple Podcasts, Overcast and Pocket Casts show, and listed in the show notes.
+"""When each script line is heard in the episode. From that come the chapters (where each story
+starts), embedded in the MP3 as ID3 chapters and listed in the show notes, and the transcript,
+a WebVTT file the feed points to with a `podcast:transcript` tag.
 
-Gemini voices several stories in one request, so where a story starts inside a chunk isn't
-known. Whisper (tiny.en, ~1.5 min for an episode on 4 cores) finds each story's first words.
-Without it, or if it fails, the start is estimated from the share of the chunk's words before
-it, which was up to 5 s off on ep-2026-10-11 because serious stories are read more slowly.
-Either way the start then moves to the nearest pause, so a chapter never begins mid-word.
-Stories voiced line by line by a backup have a file each, so their starts are exact.
+Gemini voices several stories in one request, so where a line starts inside a chunk isn't
+known. Whisper (tiny.en, ~1.5 min for an episode on 4 cores) finds each line's first words.
+Lines it doesn't recognise, and every line when Whisper is missing or fails, are placed by
+their share of the words between the nearest known starts. On ep-2026-10-11 that estimate was
+up to 5 s off for story starts when only the chunk's ends were known, because serious stories
+are read more slowly. Either way a start then moves to the nearest pause, so it never falls
+mid-word. Lines voiced one by one by a backup have a file each, so their starts are exact.
 """
 
 import array
@@ -16,15 +18,19 @@ import subprocess
 import wave
 from pathlib import Path
 
-from nlnews.models import Chapter, EpisodeScript, Segment
-from nlnews.tts import _chunk, _ffmpeg, _quiet, _words
+from nlnews.models import Chapter, EpisodeScript, Line
+from nlnews.tts import _chunk, _ffmpeg, _quiet
 
 WHISPER_MODEL = "tiny.en"
-LEAD_IN = 0.2  # seconds of the pause kept before a story's first word
+LEAD_IN = 0.2  # seconds of the pause kept before a line's first word
 
 
 def _norm(word: str) -> str:
     return re.sub(r"[^a-z0-9]", "", word.lower())
+
+
+def _n(line: Line) -> int:
+    return len(line.text.split())
 
 
 def _pause_ends(wav: Path, min_pause: float = 0.3, floor_db: float = -45) -> tuple[float, list[float]]:
@@ -43,8 +49,8 @@ def _pause_ends(wav: Path, min_pause: float = 0.3, floor_db: float = -45) -> tup
     return len(samples) / rate, ends
 
 
-def _heard_starts(model, wav: Path, segments: list[Segment]) -> list[float | None]:
-    """When Whisper hears each segment's first words, or None if it doesn't recognise them."""
+def _heard_starts(model, wav: Path, lines: list[Line]) -> list[float | None]:
+    """When Whisper hears each line's first words, or None if it doesn't recognise them."""
     import numpy as np
     pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", str(wav), "-ar", "16000", "-ac", "1", "-f", "s16le", "-"],
                          capture_output=True, check=True).stdout
@@ -52,33 +58,48 @@ def _heard_starts(model, wav: Path, segments: list[Segment]) -> list[float | Non
                                 language="en", word_timestamps=True, condition_on_previous_text=False)
     heard = [(_norm(w.word), w.start) for s in found for w in s.words if _norm(w.word)]
     words, firsts = [], []
-    for seg in segments:
+    for line in lines:
         firsts.append(len(words))
-        words += [t for l in seg.lines for t in map(_norm, l.text.split()) if t]
+        words += [t for t in map(_norm, line.text.split()) if t]
     at = {}
     for a, b, n in difflib.SequenceMatcher(None, words, [h[0] for h in heard], autojunk=False).get_matching_blocks():
         for j in range(n):
             at[a + j] = heard[b + j][1]
-    # a story's first word or one of the two after it; later than that and the start is a guess
+    # a line's first word or one of the two after it; later than that and the start is a guess
     return [next((at[i] for i in range(f, f + 3) if i in at), None) for f in firsts]
 
 
-def _chunk_starts(model, wav: Path, segments: list[Segment]) -> list[float]:
-    """Where each segment starts inside one Gemini chunk, in seconds."""
+def _chunk_starts(model, wav: Path, lines: list[Line]) -> list[float]:
+    """Where each line starts inside one Gemini chunk, in seconds."""
     length, pauses = _pause_ends(wav)
-    heard = [None] * len(segments)
+    heard = [None] * len(lines)
     if model is not None:
         try:
-            heard = _heard_starts(model, wav, segments)
+            heard = _heard_starts(model, wav, lines)
         except Exception as exc:
-            print(f"  Whisper failed on {wav.name} ({exc}); estimating its chapter starts")
-    total, before, starts = sum(map(_words, segments)), 0, []
-    for seg, t in zip(segments, heard):
-        guess, within = (t, 0.6) if t is not None else (length * before / total, 10.0)
+            print(f"  Whisper failed on {wav.name} ({exc}); estimating its line starts")
+    heard[0] = 0.0
+    # a heard start earlier than one before it is a mismatch
+    for i in range(1, len(heard)):
+        if heard[i] is not None and heard[i] <= max((h for h in heard[:i] if h is not None), default=0.0):
+            heard[i] = None
+    words = [0]
+    for line in lines:
+        words.append(words[-1] + _n(line))
+    known = [(i, t) for i, t in enumerate(heard) if t is not None] + [(len(lines), length)]
+    starts = []
+    for i, t in enumerate(heard):
+        if i == 0:
+            starts.append(0.0)
+            continue
+        if t is not None:
+            guess, within = t, 0.6
+        else:  # between the nearest known starts, by share of words
+            (a, ta), (b, tb) = max(k for k in known if k[0] < i), min(k for k in known if k[0] > i)
+            guess, within = ta + (tb - ta) * (words[i] - words[a]) / max(1, words[b] - words[a]), 2.0
         near = [p for p in pauses if abs(p - guess) <= within]
         start = min(near, key=lambda p: abs(p - guess)) - LEAD_IN if near else guess
-        starts.append(max(0.0, start) if before else 0.0)
-        before += _words(seg)
+        starts.append(max(start, starts[-1]))
     return starts
 
 
@@ -87,30 +108,39 @@ def _whisper():
         from faster_whisper import WhisperModel
         return WhisperModel(WHISPER_MODEL, device="cpu", compute_type="int8")
     except Exception as exc:
-        print(f"  Whisper unavailable ({exc}); estimating chapter starts from word counts")
+        print(f"  Whisper unavailable ({exc}); estimating line starts from word counts")
         return None
 
 
-def find(script: EpisodeScript, out_dir: Path) -> list[Chapter]:
-    """Each segment's start in episode.mp3, read back from the list of files it was built from."""
+def find(script: EpisodeScript, out_dir: Path) -> tuple[list[Chapter], list[tuple[Line, float, float]]]:
+    """The chapters, and each line with its start and end in episode.mp3, read back from the
+    list of files the MP3 was built from."""
     by_name, at = {}, 0.0  # file name -> (path, where it starts)
     for rel in re.findall(r"segments/(.+)'$", (out_dir / "concat.txt").read_text(), re.M):
         path = out_dir / "segments" / rel  # relative, so a run restored on another machine still works
-        by_name.setdefault(path.name, (path, at))
         with wave.open(str(path)) as w:
-            at += w.getnframes() / w.getframerate()
+            length = w.getnframes() / w.getframerate()
+        by_name.setdefault(path.name, (path, at, length))
+        at += length
 
-    model, chapters, si = False, [], 0
+    model, chapters, timed, si = False, [], [], 0
     for ci, chunk in enumerate(_chunk(script.segments)):
+        lines = [l for s in chunk for l in s.lines]
         if (name := f"chunk{ci:02d}.wav") in by_name:
-            path, t0 = by_name[name]
+            path, t0, length = by_name[name]
             model = _whisper() if model is False else model
-            offsets = _chunk_starts(model, path, chunk)
-            chapters += [Chapter(title=s.title, start=t0 + o) for s, o in zip(chunk, offsets)]
-        else:  # voiced line by line: each segment's first line is its own file
-            chapters += [Chapter(title=s.title, start=by_name[f"{si + k:02d}-000.wav"][1]) for k, s in enumerate(chunk)]
+            starts = [t0 + o for o in _chunk_starts(model, path, lines)]
+            ends = [*starts[1:], t0 + length]
+        else:  # voiced line by line: each line is its own file
+            files = [by_name[f"{si + k:02d}-{li:03d}.wav"] for k, s in enumerate(chunk) for li in range(len(s.lines))]
+            starts, ends = [f[1] for f in files], [f[1] + f[2] for f in files]
+        k = 0
+        for seg in chunk:
+            chapters.append(Chapter(title=seg.title, start=starts[k]))
+            k += len(seg.lines)
+        timed += list(zip(lines, starts, ends))
         si += len(chunk)
-    return _tidy(chapters)
+    return _tidy(chapters), timed
 
 
 def _tidy(chapters: list[Chapter]) -> list[Chapter]:
@@ -143,6 +173,20 @@ def embed(mp3: Path, chapters: list[Chapter]) -> None:
     _ffmpeg("-i", str(mp3), "-f", "ffmetadata", "-i", str(meta), "-map", "0:a", "-map_metadata", "0",
             "-map_chapters", "1", "-c", "copy", "-id3v2_version", "3", str(tmp))
     tmp.replace(mp3)
+
+
+def _vtt_time(seconds: float) -> str:
+    ms = round(seconds * 1000)
+    return f"{ms // 3600000:02d}:{ms // 60000 % 60:02d}:{ms // 1000 % 60:02d}.{ms % 1000:03d}"
+
+
+def vtt(timed: list[tuple[Line, float, float]]) -> str:
+    """The transcript as WebVTT: one cue per script line, with the host as the cue's voice."""
+    out = ["WEBVTT", ""]
+    for line, start, end in timed:
+        text = line.text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        out += [f"{_vtt_time(start)} --> {_vtt_time(max(end, start + 0.5))}", f"<v {line.speaker}>{text}", ""]
+    return "\n".join(out)
 
 
 def clock(seconds: float) -> str:

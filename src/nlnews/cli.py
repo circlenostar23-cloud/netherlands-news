@@ -79,14 +79,17 @@ def run(args) -> None:
     from nlnews import tts
     title = f"{day.strftime('%a %d %b')}: {script.episode_title}"
     mp3, voices_file = d / "episode.mp3", d / "voices.txt"
-    chapters_file, rebuilt = d / "chapters.json", args.fresh or not mp3.exists()
+    chapters_file, transcript = d / "chapters.json", d / "transcript.vtt"
+    rebuilt = args.fresh or not mp3.exists()
     if rebuilt:
         _, voices = tts.synthesize_episode(script, d, title)
         voices_file.write_text(voices)
-    if rebuilt or not chapters_file.exists():
+    if rebuilt or not chapters_file.exists() or not transcript.exists():
         from nlnews import chapters as chaptersmod
+        transcript.unlink(missing_ok=True)
         try:
-            chapters = chaptersmod.find(script, d)
+            chapters, timed = chaptersmod.find(script, d)
+            transcript.write_text(chaptersmod.vtt(timed))
             chaptersmod.embed(mp3, chapters)
             chapters_file.write_text(TypeAdapter(list[Chapter]).dump_json(chapters, indent=2).decode())
         except Exception as exc:  # chapters are a nice-to-have; don't lose the episode over them
@@ -94,7 +97,7 @@ def run(args) -> None:
             chapters = []
     else:
         chapters = TypeAdapter(list[Chapter]).validate_json(chapters_file.read_text())
-    print(f"  {len(chapters)} chapters")
+    print(f"  {len(chapters)} chapters" + (", transcript" if transcript.exists() else ", no transcript"))
     voices = voices_file.read_text().strip() if voices_file.exists() else "gemini"
     duration = tts.duration_seconds(mp3)
     print(f"  audio: {mp3} ({duration // 60}m{duration % 60:02d}s, {mp3.stat().st_size / 1e6:.1f} MB, {voices} voices)")
@@ -117,7 +120,7 @@ def run(args) -> None:
     from nlnews import deliver, publish
     feed = None
     if not args.no_publish:
-        publish.upload_episode(f"ep-{day.isoformat()}", title, description, mp3, duration, briefing_md)
+        publish.upload_episode(f"ep-{day.isoformat()}", title, description, mp3, duration, briefing_md, transcript)
         print(f"  feed written: {publish.build_feed()}")
         feed = publish.feed_url()
     if args.no_email or not deliver.configured():
