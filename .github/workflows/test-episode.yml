@@ -1,16 +1,20 @@
 name: Test episode
 
-# Republishes a day's episode under a separate `ep-<date>-test` release, so a feature can be
+# Republishes a day's episode under a separate `ep-<date>-<name>` release, so a feature can be
 # checked in a podcast app without touching the real episode or spending TTS quota: the day's
 # working files come from its Daily episode run, every stage is cached, and only the steps
 # after the audio (chapters, transcript, show notes) run with the current code.
-# `remove` deletes the test release again. Both rebuild the feed and redeploy Pages.
+# `remove` deletes the test release again. Podcast apps keep an episode they've already seen
+# (same guid), so republish a change under a new name rather than over the old one. Both rebuild the feed and redeploy Pages.
 on:
   workflow_dispatch:
     inputs:
       date:
         description: "Episode date (YYYY-MM-DD) whose working files to reuse"
         required: true
+      name:
+        description: "Release suffix: ep-<date>-<name>. Use a new one to republish, since apps keep an episode they've seen"
+        default: test
       action:
         type: choice
         options: [publish, remove]
@@ -37,6 +41,7 @@ jobs:
       SITE_BASE_URL: ${{ vars.SITE_BASE_URL }}
       GH_TOKEN: ${{ github.token }}
       DAY: ${{ inputs.date }}
+      TAG: ep-${{ inputs.date }}-${{ inputs.name }}
       PYTHONUNBUFFERED: "1"
     steps:
       - uses: actions/checkout@v4
@@ -77,14 +82,14 @@ jobs:
           d = Path("data") / day.isoformat()
           script = EpisodeScript.model_validate_json((d / "script.json").read_text())
           title = f"TEST {day.strftime('%a %d %b')}: {script.episode_title}"
-          publish.upload_episode(f"ep-{day.isoformat()}-test", title, (d / "shownotes.md").read_text(),
+          publish.upload_episode(os.environ["TAG"], title, (d / "shownotes.md").read_text(),
                                  d / "episode.mp3", tts.duration_seconds(d / "episode.mp3"), d / "briefing.md",
                                  d / "transcript.vtt")
           PY
 
       - name: Remove the test episode
         if: ${{ inputs.action == 'remove' }}
-        run: gh release delete "ep-$DAY-test" --cleanup-tag --yes --repo "$GITHUB_REPOSITORY"
+        run: gh release delete "$TAG" --cleanup-tag --yes --repo "$GITHUB_REPOSITORY"
 
       - run: python -m nlnews feed
       - uses: actions/configure-pages@v5

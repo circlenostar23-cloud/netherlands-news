@@ -22,7 +22,7 @@ Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`
 
 **NotebookLM comparison:** upload `data/<date>/briefing.md` (also attached to the daily email) to a notebook and click **Audio Overview**.
 
-**Test episode:** to check a change to what happens after the voices (chapters, transcript, show notes) in a podcast app, run **Actions → Test episode** with a date and `publish`. It republishes that day's episode as `ep-<date>-test` from its run's working files (kept 7 days), with no TTS requests and without touching the real episode. Run it again with `remove` to delete it.
+**Test episode:** to check a change to what happens after the voices (chapters, transcript, show notes) in a podcast app, run **Actions → Test episode** with a date and `publish`. It republishes that day's episode as `ep-<date>-<name>` (default `test`; use a new name to republish, since Apple Podcasts keeps an episode it has already seen) from its run's working files (kept 7 days), with no TTS requests and without touching the real episode. Run it again with `remove` to delete it.
 
 **Health check:** `.venv/bin/python scripts/health_check.py` checks today's run, release, feed and audio (pass a date for another day). Add `--voices` to also check that every script line is in the audio and in the right host's voice and takes a few minutes.
 
