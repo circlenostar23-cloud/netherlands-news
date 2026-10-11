@@ -18,11 +18,11 @@ cp .env.example .env   # fill in keys
 .venv/bin/python -m nlnews run --no-publish --no-email # full episode, local MP3 only
 ```
 
-Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`, `script.md`, and `episode.mp3`. Stages are cached per day, so re-running resumes where the last run stopped. Use `--fresh` to rebuild everything.
+Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`, `script.md`, `episode.mp3` (with a chapter per story), `chapters.json`, and `shownotes.md` (the episode description with chapter timestamps and source links). Stages are cached per day, so re-running resumes where the last run stopped. Use `--fresh` to rebuild everything.
 
 **NotebookLM comparison:** upload `data/<date>/briefing.md` (also attached to the daily email) to a notebook and click **Audio Overview**.
 
-**Health check:** `.venv/bin/python scripts/health_check.py` checks today's run, release, feed and audio (pass a date for another day). Add `--voices` to also check that every script line is in the audio and in the right host's voice; that needs `pip install -e '.[check]'` and takes a few minutes.
+**Health check:** `.venv/bin/python scripts/health_check.py` checks today's run, release, feed and audio (pass a date for another day). Add `--voices` to also check that every script line is in the audio and in the right host's voice and takes a few minutes.
 
 ## One-time setup (GitHub Actions)
 

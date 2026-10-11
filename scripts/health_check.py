@@ -8,7 +8,7 @@ checks every script line: that it's in the audio, and that it's in the right hos
     .venv/bin/python scripts/health_check.py              # today's episode
     .venv/bin/python scripts/health_check.py 2026-10-07 --voices
 
---voices needs `pip install -e '.[check]'` (faster-whisper and numpy) and takes a few minutes.
+--voices takes a few minutes.
 The working files are kept for 7 days after the run; pass --data to use a local copy instead.
 Exits 1 if any check fails; warnings alone exit 0.
 """
@@ -188,6 +188,9 @@ def check_audio(mp3: str, words: int | None) -> None:
     loudness, peak = re.search(r"I:\s+(-?[\d.]+) LUFS", summary), re.search(r"Peak:\s+(-?[\d.]+) dBFS", summary)
     if loudness and peak:
         report("ok", f"loudness {loudness.group(1)} LUFS, peak {peak.group(1)} dBFS")
+    chapters = json.loads(_run("ffprobe", "-v", "error", "-show_chapters", "-of", "json", mp3).stdout).get("chapters", [])
+    report("ok" if chapters else "warn", f"{len(chapters)} chapters" + (", from " + ", ".join(
+        f"{_clock(float(c['start_time']))} {c.get('tags', {}).get('title', '')}" for c in chapters[:2]) + " …" if chapters else ""))
 
 
 # --- voices: is each line in the audio, and in the right host's voice? ---
@@ -262,7 +265,7 @@ def check_voices(data: Path, model_name: str) -> None:
         import numpy as np
         from faster_whisper import WhisperModel
     except ImportError:
-        report("FAIL", "needs faster-whisper and numpy: pip install -e '.[check]'")
+        report("FAIL", "needs faster-whisper and numpy: pip install -e .")
         return
     script = EpisodeScript.model_validate_json((data / "script.json").read_text())
     hosts = list(HOSTS)

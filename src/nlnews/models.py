@@ -38,8 +38,14 @@ class StoryPick(BaseModel):
     follow_up_of: str = Field(default="", description="For an update to a story from a recent episode: that story's headline, copied exactly. Empty for a new story")
 
 
+class RunnerUp(BaseModel):
+    working_title: str = Field(description="Short English label for the story")
+    article_ids: list[str] = Field(description="IDs of the articles covering it, best first")
+
+
 class StorySelection(BaseModel):
     stories: list[StoryPick]
+    runners_up: list[RunnerUp] = Field(default=[], description="Stories that nearly made the cut, best first; listed in the show notes, not voiced")
 
 
 # --- Curation pass 2: written briefing ---------------------------------------------
@@ -124,3 +130,8 @@ class EpisodeScript(BaseModel):
     episode_title: str
     description: str = Field(description="2-3 sentence podcast episode description")
     segments: list[Segment]
+
+
+class Chapter(BaseModel):
+    title: str
+    start: float  # seconds into the episode

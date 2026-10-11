@@ -9,7 +9,7 @@ from pathlib import Path
 from pydantic import BaseModel, TypeAdapter
 
 from nlnews.config import TZ, day_dir
-from nlnews.models import Article, Briefing, EpisodeScript, PriorStory, StorySelection
+from nlnews.models import Article, Briefing, Chapter, EpisodeScript, PriorStory, StorySelection
 
 STAGES = ["fetch", "briefing", "script", "audio", "all"]
 
@@ -48,6 +48,8 @@ def run(args) -> None:
                         lambda: curate.select_stories(cluster.cluster(fresh_articles), prior), StorySelection)
     for s in selection.stories:
         print(f"  - [{s.kind}/{s.section}] {s.working_title}" + (" (follow-up)" if s.follow_up_of else ""))
+    for r in selection.runners_up:
+        print(f"  - runner-up: {r.working_title}")
     draft = lambda: _cached(d / "briefing.draft.json", args.fresh,
                             lambda: curate.write_briefing(day, selection, articles, prior), Briefing)
     briefing = _cached(d / "briefing.json", args.fresh, lambda: research.fill_gaps(day, draft()), Briefing)
@@ -77,9 +79,22 @@ def run(args) -> None:
     from nlnews import tts
     title = f"{day.strftime('%a %d %b')}: {script.episode_title}"
     mp3, voices_file = d / "episode.mp3", d / "voices.txt"
-    if args.fresh or not mp3.exists():
+    chapters_file, rebuilt = d / "chapters.json", args.fresh or not mp3.exists()
+    if rebuilt:
         _, voices = tts.synthesize_episode(script, d, title)
         voices_file.write_text(voices)
+    if rebuilt or not chapters_file.exists():
+        from nlnews import chapters as chaptersmod
+        try:
+            chapters = chaptersmod.find(script, d)
+            chaptersmod.embed(mp3, chapters)
+            chapters_file.write_text(TypeAdapter(list[Chapter]).dump_json(chapters, indent=2).decode())
+        except Exception as exc:  # chapters are a nice-to-have; don't lose the episode over them
+            print(f"  chapters failed ({exc}); publishing without them")
+            chapters = []
+    else:
+        chapters = TypeAdapter(list[Chapter]).validate_json(chapters_file.read_text())
+    print(f"  {len(chapters)} chapters")
     voices = voices_file.read_text().strip() if voices_file.exists() else "gemini"
     duration = tts.duration_seconds(mp3)
     print(f"  audio: {mp3} ({duration // 60}m{duration % 60:02d}s, {mp3.stat().st_size / 1e6:.1f} MB, {voices} voices)")
@@ -90,6 +105,12 @@ def run(args) -> None:
         description += f"\n\n({part} with backup Microsoft voices because Gemini's voices were unavailable.)"
     elif "openrouter" in voices:
         description += f"\n\n({part} line by line through a backup service because Gemini's two-host voicing was unavailable.)"
+    try:
+        from nlnews import shownotes
+        description = shownotes.build(description, script, briefing, selection, articles, chapters)
+    except Exception as exc:
+        print(f"  show notes failed ({exc}); using the plain description")
+    (d / "shownotes.md").write_text(description)
     if args.stop_after == "audio":
         return
 

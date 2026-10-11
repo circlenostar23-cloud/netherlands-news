@@ -9,6 +9,7 @@ release downloads redirect to signed URLs that expire within minutes, and Apple 
 caches the redirect target, so playback later fails with "can't play on this device".
 """
 
+import html
 import json
 import os
 import re
@@ -45,6 +46,19 @@ def upload_episode(tag: str, title: str, description: str, mp3: Path, duration: 
         _gh("release", "edit", tag, "--title", title, "--notes", notes, "--repo", _repo())
     except subprocess.CalledProcessError:
         _gh("release", "create", tag, *assets, "--title", title, "--notes", notes, "--repo", _repo())
+
+
+def _html(notes: str) -> str:
+    """The release notes' bit of Markdown as HTML for podcast apps: paragraphs, one line per
+    list item, **bold** and [links](url). Apple Podcasts makes the m:ss timestamps tappable."""
+    def inline(text: str) -> str:
+        text = html.escape(text, quote=False)
+        text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
+        return re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)",
+                      lambda m: f'<a href="{m[2].replace('"', '%22')}">{m[1]}</a>', text)  # already escaped
+    blocks = [b for b in re.split(r"\n\s*\n", notes.strip()) if b.strip()]
+    return "".join("<p>" + "<br>".join(inline(re.sub(r"^- ", "", l.strip())) for l in b.splitlines()) + "</p>"
+                   for b in blocks)
 
 
 def feed_url() -> str | None:
@@ -90,7 +104,7 @@ def build_feed(max_episodes: int = 30) -> Path:
         desc = META.sub("", rel.get("body") or "").strip()
         item = ET.SubElement(ch, "item")
         ET.SubElement(item, "title").text = rel["name"]
-        ET.SubElement(item, "description").text = desc
+        ET.SubElement(item, "description").text = _html(desc)
         ET.SubElement(item, "guid", {"isPermaLink": "false"}).text = rel["tag_name"]
         published = datetime.fromisoformat(rel["published_at"].replace("Z", "+00:00"))
         ET.SubElement(item, "pubDate").text = format_datetime(published)
