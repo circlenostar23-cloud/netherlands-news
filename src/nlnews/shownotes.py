@@ -1,12 +1,12 @@
-"""The episode's show notes: the script's description, chapter timestamps, links to read more
-on each story, What's on in Amsterdam with links (plus shortlisted events that weren't voiced),
+"""The episode's show notes: the script's description, then links to read more on each story, What's on in Amsterdam with links (plus shortlisted events that weren't voiced),
 and runners-up that didn't fit. Written in Markdown for the GitHub release;
-publish.py turns it into HTML for the feed."""
+publish.py turns it into HTML for the feed. The chapters aren't listed: they're in the MP3,
+and Apple Podcasts left timestamps in the description as plain text for this feed."""
 
-from nlnews.chapters import clock
-from nlnews.models import Article, Briefing, Chapter, EpisodeScript, StorySelection
+from nlnews.models import Article, Briefing, EpisodeScript, StorySelection
 
 MAX_LINKS = 2  # per story
+DIVIDER = "— — —"  # between the summary and the link sections; podcast apps drop <hr>
 
 
 def _links(urls: list[str], by_url: dict[str, Article]) -> list[str]:
@@ -39,22 +39,20 @@ def _story_titles(script: EpisodeScript, briefing: Briefing) -> list[str]:
 
 
 def build(description: str, script: EpisodeScript, briefing: Briefing, selection: StorySelection,
-          articles: list[Article], chapters: list[Chapter]) -> str:
+          articles: list[Article]) -> str:
     by_url = {a.url: a for a in articles}
     by_id = {a.id: a for a in articles}
-    out = [description]
-    if chapters:
-        out += ["", "**Chapters**", *(f"- {clock(c.start)} {c.title}" for c in chapters)]
+    out = []
     more = [(t, _links(s.urls, by_url)) for t, s in zip(_story_titles(script, briefing), briefing.stories)]
     if more := [f"- {t}: {', '.join(links)}" for t, links in more if links]:
-        out += ["", "**Read more**", *more]
+        out += ["", "**READ MORE**", *more]
     if briefing.agenda:
         events = [(e.name, e.url, ", ".join(x for x in (e.when, e.where) if x)) for e in briefing.agenda.events]
-        out += ["", f"**What's on in Amsterdam** ({briefing.agenda.window})", *map(_event, events)]
+        out += ["", f"**WHAT'S ON IN AMSTERDAM** ({briefing.agenda.window})", *map(_event, events)]
         if briefing.agenda.more:
-            out += ["", "**More on in Amsterdam**", *(_event((e.name, e.url, e.details)) for e in briefing.agenda.more)]
+            out += ["", "**MORE ON IN AMSTERDAM**", *(_event((e.name, e.url, e.details)) for e in briefing.agenda.more)]
     also = [(r.working_title, _links([by_id[i].url for i in r.article_ids if i in by_id], by_url))
             for r in selection.runners_up]
     if also := [f"- {t}: {', '.join(links)}" for t, links in also if links]:
-        out += ["", "**Also in the news**", *also]
-    return "\n".join(out)
+        out += ["", "**ALSO IN THE NEWS**", *also]
+    return "\n".join([description, "", DIVIDER, *out] if out else [description])

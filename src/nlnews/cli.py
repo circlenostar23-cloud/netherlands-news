@@ -113,7 +113,7 @@ def run(args) -> None:
         description += f"\n\n({part} line by line through a backup service because Gemini's two-host voicing was unavailable.)"
     try:
         from nlnews import shownotes
-        description = shownotes.build(description, script, briefing, selection, articles, chapters)
+        description = shownotes.build(description, script, briefing, selection, articles)
     except Exception as exc:
         print(f"  show notes failed ({exc}); using the plain description")
     (d / "shownotes.md").write_text(description)

@@ -55,8 +55,7 @@ def upload_episode(tag: str, title: str, description: str, mp3: Path, duration: 
 
 def _html(notes: str) -> str:
     """The release notes' bit of Markdown as HTML for podcast apps: a paragraph per line,
-    **bold** and [links](url). Each line is its own paragraph, as in feeds whose m:ss
-    timestamps Apple Podcasts makes tappable; a timestamp after a <br> stayed plain text."""
+    **bold** and [links](url)."""
     def inline(text: str) -> str:
         text = html.escape(text, quote=False)
         text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
