@@ -59,6 +59,9 @@ def run(args) -> None:
         except Exception as exc:  # the What's on segment is optional; don't lose the episode over it
             print(f"  agenda failed ({exc}); skipping What's on")
         (d / "briefing.json").write_text(briefing.model_dump_json(indent=2))
+    elif not all(e.url for e in briefing.agenda.events):
+        agendamod.add_links(day, briefing.agenda)
+        (d / "briefing.json").write_text(briefing.model_dump_json(indent=2))
     briefing_md = d / "briefing.md"
     briefing_md.write_text(curate.render_markdown(briefing))
     print(f"  NotebookLM source: {briefing_md}")

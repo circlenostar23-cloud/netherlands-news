@@ -124,6 +124,19 @@ def _link(candidates: dict[str, dict], guides: list[tuple[str, str, str]], sourc
     return next((url for name, _, url in guides if name.lower() in source.lower() or source.lower() in name.lower()), "")
 
 
+def add_links(day: date, agenda: Agenda) -> None:
+    """Links for picks made before events carried them (a rerun of an older day's episode)."""
+    if all(e.url for e in agenda.events):
+        return
+    try:
+        candidates = _candidates(window(day))
+    except (httpx.HTTPError, ValueError, KeyError) as exc:
+        log.warning("I amsterdam calendar failed: %s", exc)
+        return
+    for e in agenda.events:
+        e.url = e.url or _link(candidates, [], e.source)
+
+
 def build(day: date, recent: list[str] = ()) -> Agenda | None:
     """`recent` names the picks of the last few episodes, which aren't pitched again."""
     days = window(day)

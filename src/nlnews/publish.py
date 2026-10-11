@@ -54,16 +54,15 @@ def upload_episode(tag: str, title: str, description: str, mp3: Path, duration: 
 
 
 def _html(notes: str) -> str:
-    """The release notes' bit of Markdown as HTML for podcast apps: paragraphs, one line per
-    list item, **bold** and [links](url). Apple Podcasts makes the m:ss timestamps tappable."""
+    """The release notes' bit of Markdown as HTML for podcast apps: a paragraph per line,
+    **bold** and [links](url). Each line is its own paragraph, as in feeds whose m:ss
+    timestamps Apple Podcasts makes tappable; a timestamp after a <br> stayed plain text."""
     def inline(text: str) -> str:
         text = html.escape(text, quote=False)
         text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
         return re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)",
                       lambda m: f'<a href="{m[2].replace('"', '%22')}">{m[1]}</a>', text)  # already escaped
-    blocks = [b for b in re.split(r"\n\s*\n", notes.strip()) if b.strip()]
-    return "".join("<p>" + "<br>".join(inline(re.sub(r"^- ", "", l.strip())) for l in b.splitlines()) + "</p>"
-                   for b in blocks)
+    return "".join(f"<p>{inline(re.sub(r'^- ', '', l.strip()))}</p>" for l in notes.splitlines() if l.strip())
 
 
 def feed_url() -> str | None:
