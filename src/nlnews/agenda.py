@@ -20,7 +20,7 @@ import trafilatura
 from nlnews.config import TZ, load_prompt
 from nlnews.fetch import USER_AGENT
 from nlnews.llm import ask
-from nlnews.models import Agenda, EventLink, Shortlist
+from nlnews.models import Agenda, Event, EventLink, Shortlist
 
 log = logging.getLogger(__name__)
 IAMSTERDAM = "https://www.iamsterdam.com/en/"
@@ -94,7 +94,8 @@ def _details(ev: dict, weekend: bool) -> str:
     """When and where, for the show notes: "11:00 - 17:00, Frans Hals Museum, final days"."""
     info = {h["id"]: h["label"] for h in ev.get("highlights", [])}
     day = ev["first"].strftime("%a %d %b") if weekend and ev["first"] == ev["last"] else ""
-    return ", ".join(x for x in (day, info.get("date", ""), info.get("location", ""), ev["note"]) if x)
+    time = re.sub(r"^(\d\d:\d\d) - \1$", r"\1", info.get("date", ""))  # "19:30 - 19:30" for a start time only
+    return ", ".join(x for x in (day, time, info.get("location", ""), ev["note"]) if x)
 
 
 def _text(url: str, limit: int = 3000) -> str:
@@ -116,12 +117,31 @@ def _weekend_guides(day: date) -> list[tuple[str, str, str]]:
     return [g for g in guides if g[1]]
 
 
-def _link(candidates: dict[str, dict], guides: list[tuple[str, str, str]], source: str) -> str:
-    """The page behind an event's `source`: its calendar page, or the weekend guide it came from."""
-    key = re.sub(r"[^0-9a-f]", "", source.lower())[:8]
-    if (ev := candidates.get(key)) and ev.get("slug"):
-        return IAMSTERDAM + ev["slug"]
-    return next((url for name, _, url in guides if name.lower() in source.lower() or source.lower() in name.lower()), "")
+def _words(text: str) -> set[str]:
+    return set(re.findall(r"\w{4,}", text.lower())) - {"live", "with", "from", "amsterdam", "concert", "show"}
+
+
+def _match(candidates: dict[str, dict], event: Event) -> str:
+    """The calendar candidate a pick came from: the ID in its `source`, or, when the model left the
+    ID out (2026-10-12: just "I amsterdam calendar"), the candidate whose title shares the most
+    words with its name ("Dr. Strangelove (Kubrick classic …)" for "Dr. Strangelove or: How I …")."""
+    m = re.search(r"\b[0-9a-f]{8}\b", event.source.lower())
+    if m and (key := m[0]) in candidates:
+        return key
+    if "calendar" not in event.source.lower():
+        return ""
+    name = _words(event.name)
+    shared = {k: len(name & _words(ev["title"])) for k, ev in candidates.items()}
+    best = max(shared, key=shared.get, default="")
+    return best if best and shared[best] and list(shared.values()).count(shared[best]) == 1 else ""
+
+
+def _link(candidates: dict[str, dict], guides: list[tuple[str, str, str]], event: Event) -> str:
+    """The page behind a pick: its calendar page, or the weekend guide it came from."""
+    if (key := _match(candidates, event)) and candidates[key].get("slug"):
+        return IAMSTERDAM + candidates[key]["slug"]
+    source = event.source.lower()
+    return next((url for name, _, url in guides if name.lower() in source or source in name.lower()), "")
 
 
 def add_links(day: date, agenda: Agenda) -> None:
@@ -134,7 +154,7 @@ def add_links(day: date, agenda: Agenda) -> None:
         log.warning("I amsterdam calendar failed: %s", exc)
         return
     for e in agenda.events:
-        e.url = e.url or _link(candidates, [], e.source)
+        e.url = e.url or _link(candidates, [], e)
 
 
 def build(day: date, recent: list[str] = ()) -> Agenda | None:
@@ -150,7 +170,7 @@ def build(day: date, recent: list[str] = ()) -> Agenda | None:
     guides = _weekend_guides(day) if weekend else []
     print(f"  agenda: {len(candidates)} calendar candidates, {len(guides)} weekend guide(s)")
 
-    sources, picked = [], []
+    sources, picked, texts = [], [], []
     if candidates:
         shortlist = ask(load_prompt("agenda_shortlist").format(n=10 if weekend else 8),
                         f"Window: {span}\n\n" + "\n".join(_line(k, ev) for k, ev in candidates.items())
@@ -174,11 +194,12 @@ def build(day: date, recent: list[str] = ()) -> Agenda | None:
         body += "\n\n# Already recommended in the last few episodes\n\n" + "\n".join(f"- {r}" for r in recent)
     agenda = ask(system, body, Agenda, effort="medium")
     for e in agenda.events:
-        e.url = _link(candidates, guides, e.source)
+        e.url = _link(candidates, guides, e)
     # shortlisted but not picked: listed in the show notes, not voiced
-    used = {re.sub(r"[^0-9a-f]", "", e.source.lower())[:8] for e in agenda.events}
+    shortlisted = {k: candidates[k] for k in picked}
+    used = {_match(shortlisted, e) for e in agenda.events}
     agenda.more = [EventLink(name=candidates[k]["title"], details=_details(candidates[k], weekend),
-                             url=IAMSTERDAM + candidates[k]["slug"])
-                   for k in picked if k not in used and candidates[k].get("slug")][:MORE_EVENTS]
+                             url=IAMSTERDAM + candidates[k]["slug"], about=text[:600])
+                   for k, text in zip(picked, texts) if k not in used and candidates[k].get("slug")][:MORE_EVENTS]
     print(f"  agenda: {len(agenda.events)} picks for {agenda.window}, {len(agenda.more)} more in the show notes")
     return agenda if agenda.events else None

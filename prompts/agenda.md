@@ -8,4 +8,4 @@ You'll receive the date window and candidate events: shortlisted entries from I 
 - Favor things that are one-off or time-limited (a concert, a festival, a pop-up, an opening or final weekend) over permanent attractions.
 - Favor things a non-Dutch speaker can enjoy, and spread across neighbourhoods when the options allow.
 
-For each pick, use only details from the sources: write names and descriptions in plain English, keep venue names as they are, and leave `price` empty rather than guessing. Use `note` for practical flags a listener needs before going (a free ticket is required, it's mostly in Dutch, final weekend). `window` restates the days covered in plain English.
+For each pick, set `source` to the heading of the source it came from, copied whole with its bracketed ID (the ID is how the show notes link to the event page). Use only details from the sources: write names and descriptions in plain English, keep venue names as they are, and leave `price` empty rather than guessing. Use `note` for practical flags a listener needs before going (a free ticket is required, it's mostly in Dutch, final weekend). `window` restates the days covered in plain English.

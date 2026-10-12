@@ -85,7 +85,7 @@ class Event(BaseModel):
     price: str = Field(default="", description="e.g. 'free', 'from €10'; empty if the source doesn't say")
     blurb: str = Field(description="1-2 sentences on what it is and why a newcomer might go")
     note: str = Field(default="", description="Practical flag if any: 'free ticket required', 'mostly in Dutch', 'nearly sold out', 'final weekend'")
-    source: str
+    source: str = Field(description="The heading of the source it came from, copied whole, including any bracketed ID, e.g. 'I amsterdam calendar: [1a2b3c4d] ...'")
     url: str = Field(default="", description="Filled in after the picks; leave empty")
 
 
@@ -93,6 +93,7 @@ class EventLink(BaseModel):
     name: str
     details: str  # when and where, e.g. "11:00 - 17:00, Frans Hals Museum, final days"
     url: str
+    about: str = ""  # the start of the event's page, for its one-line summary in the show notes
 
 
 class Agenda(BaseModel):

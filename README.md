@@ -18,7 +18,7 @@ cp .env.example .env   # fill in keys
 .venv/bin/python -m nlnews run --no-publish --no-email # full episode, local MP3 only
 ```
 
-Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`, `script.md`, `episode.mp3` (with a chapter per story), `chapters.json`, `transcript.vtt`, and `shownotes.md` (the episode description with chapter timestamps and source links). Stages are cached per day, so re-running resumes where the last run stopped. Use `--fresh` to rebuild everything.
+Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`, `script.md`, `episode.mp3` (with a chapter per story), `chapters.json`, `transcript.vtt`, and `shownotes.md` (the episode description, then each story, event and runner-up with a one-line summary and its links). Stages are cached per day, so re-running resumes where the last run stopped. Use `--fresh` to rebuild everything.
 
 **NotebookLM comparison:** upload `data/<date>/briefing.md` (also attached to the daily email) to a notebook and click **Audio Overview**.
 
