@@ -68,16 +68,21 @@ def _local(ts: str) -> date:
 
 def _candidates(days: list[date]) -> dict[str, dict]:
     """Events worth considering: one-offs and short runs, plus long runs opening or closing
-    in the window. Skips long-running exhibitions mid-run and Dutch-language events."""
+    in the window. Skips long-running exhibitions mid-run and Dutch-language events.
+    For screenings and series the calendar gives the next date, not the first, so a run that seems
+    to start today has an unknown start: 2026-10-19 aired Akira at LAB111 as opening that day
+    though it had been on for a while (Dr. Strangelove "opened" on 10-12 and again on 10-19)."""
     with ThreadPoolExecutor(max_workers=4) as pool:
         per_day = list(pool.map(_calendar_day, days))
+    today = datetime.now(TZ).date()
     out = {}
     for ev in (e for events in per_day for e in events):
         first, last = _local(ev["date"][0]), _local(ev["date"][-1])
         short = (last - first).days <= 7
         if "dutchlanguage" in ev.get("tags", []) or not (short or first in days or last in days):
             continue
-        ev["note"] = "" if short else ("opening" if first in days else "final days")
+        ev["note"] = ("" if short else "final days" if last in days
+                      else "running, start unknown" if first == today else "opening")
         ev["first"], ev["last"] = first, last
         out[ev["id"][:8]] = ev
     return out
@@ -85,7 +90,8 @@ def _candidates(days: list[date]) -> dict[str, dict]:
 
 def _line(key: str, ev: dict) -> str:
     info = {h["id"]: h["label"] for h in ev.get("highlights", [])}
-    dates = ev["first"].strftime("%a %d %b") + ("" if ev["first"] == ev["last"] else ev["last"].strftime(" – %a %d %b"))
+    dates = (ev["last"].strftime("until %a %d %b") if ev["note"].startswith("running") else
+             ev["first"].strftime("%a %d %b") + ("" if ev["first"] == ev["last"] else ev["last"].strftime(" – %a %d %b")))
     note = f" ({ev['note']})" if ev["note"] else ""
     return f"[{key}] {ev['title']}{note} | {dates} | {info.get('date', '')} | {info.get('location', '')} | {', '.join(ev.get('tags', []))}"
 
@@ -95,7 +101,8 @@ def _details(ev: dict, weekend: bool) -> str:
     info = {h["id"]: h["label"] for h in ev.get("highlights", [])}
     day = ev["first"].strftime("%a %d %b") if weekend and ev["first"] == ev["last"] else ""
     time = re.sub(r"^(\d\d:\d\d) - \1$", r"\1", info.get("date", ""))  # "19:30 - 19:30" for a start time only
-    return ", ".join(x for x in (day, time, info.get("location", ""), ev["note"]) if x)
+    note = ev["last"].strftime("until %a %d %b") if ev["note"].startswith("running") else ev["note"]
+    return ", ".join(x for x in (day, time, info.get("location", ""), note) if x)
 
 
 def _text(url: str, limit: int = 3000) -> str:
