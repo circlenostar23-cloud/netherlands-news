@@ -76,6 +76,8 @@ jobs:
       SITE_BASE_URL: ${{ vars.SITE_BASE_URL }}
       GH_TOKEN: ${{ github.token }}
       PYTHONUNBUFFERED: "1"  # show pipeline progress in the log as it happens
+      # retry: re-voice a chunk that drops or garbles a line; log: report only; off: no check
+      NLNEWS_VOICE_CHECK: ${{ vars.NLNEWS_VOICE_CHECK || 'retry' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -87,7 +89,7 @@ jobs:
       - name: Install ffmpeg
         run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
 
-      # The Whisper model that finds where each story starts, for chapters (~75 MB)
+      # The Whisper model that checks the voices against the script and finds where each story starts (~75 MB)
       - uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface

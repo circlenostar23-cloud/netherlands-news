@@ -17,7 +17,8 @@ import feedparser
 import httpx
 import trafilatura
 
-from nlnews.config import TZ, load_prompt
+from nlnews import previous
+from nlnews.config import TZ, day_dir, load_prompt
 from nlnews.fetch import USER_AGENT
 from nlnews.llm import ask
 from nlnews.models import Agenda, Event, EventLink, Shortlist
@@ -28,6 +29,9 @@ WEEKEND_GUIDE = IAMSTERDAM + "whats-on/weekend-guide"
 YLBB_FEED = "https://www.yourlittleblackbook.me/feed/"
 MORE_EVENTS = 4  # shortlisted events that weren't picked, linked in the show notes
 WEEKEND_EDITIONS = (3, 4)  # Thursday and Friday, each through Sunday
+SEEN_FILE = "calendar.json"  # long runs listed in recent episodes' calendars, attached to each release
+SEEN_SETTLE = 3  # days the record must cover before a run new to the calendar counts as opening
+UNDATED = ("already showing", "start unknown")  # notes for runs whose start the calendar doesn't give
 HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh) AppleWebKit/537.36 Chrome/128 Safari/537.36"}
 _RSC = re.compile(r'self\.__next_f\.push\(\[1,"(.*?)"\]\)', re.S)
 
@@ -66,31 +70,57 @@ def _local(ts: str) -> date:
     return datetime.fromisoformat(ts.replace("Z", "+00:00")).astimezone(TZ).date()
 
 
-def _candidates(days: list[date]) -> dict[str, dict]:
+def _seen(day: date) -> dict | None:
+    """The record of long runs kept by the latest of the last few episodes."""
+    for back in range(1, 4):
+        if text := previous.release_file(day - timedelta(days=back), SEEN_FILE):
+            try:
+                return json.loads(text)
+            except ValueError:
+                log.warning("Unreadable %s from %d day(s) back; ignoring it", SEEN_FILE, back)
+    return None
+
+
+def _rolling_note(key: str, today: date, seen: dict | None) -> str:
+    """A long run that seems to start today. For screenings and series the calendar gives the
+    next date, not the first (2026-10-19 aired Akira at LAB111 as opening though it had been on
+    for a while; Dr. Strangelove "opened" on 10-12 and again on 10-19), so the record of earlier
+    days decides: listed before with today as its start, or new to the calendar, it's opening."""
+    before = (seen or {}).get("runs", {}).get(key)
+    if before:
+        return "opening" if before["first"] == today.isoformat() else "already showing"
+    if seen and date.fromisoformat(seen["since"]) <= today - timedelta(days=SEEN_SETTLE):
+        return "opening"
+    return "start unknown"
+
+
+def _candidates(days: list[date], seen: dict | None = None) -> tuple[dict[str, dict], dict]:
     """Events worth considering: one-offs and short runs, plus long runs opening or closing
     in the window. Skips long-running exhibitions mid-run and Dutch-language events.
-    For screenings and series the calendar gives the next date, not the first, so a run that seems
-    to start today has an unknown start: 2026-10-19 aired Akira at LAB111 as opening that day
-    though it had been on for a while (Dr. Strangelove "opened" on 10-12 and again on 10-19)."""
+    Also returns the updated record of long runs (`seen` is the last episode's)."""
     with ThreadPoolExecutor(max_workers=4) as pool:
         per_day = list(pool.map(_calendar_day, days))
     today = datetime.now(TZ).date()
+    runs = {k: r for k, r in (seen or {}).get("runs", {}).items() if r["last"] >= today.isoformat()}
     out = {}
     for ev in (e for events in per_day for e in events):
-        first, last = _local(ev["date"][0]), _local(ev["date"][-1])
+        key, first, last = ev["id"][:8], _local(ev["date"][0]), _local(ev["date"][-1])
         short = (last - first).days <= 7
+        if not short and first >= today:
+            runs[key] = runs.get(key) or {"title": ev["title"], "first": first.isoformat()}
+            runs[key]["last"] = last.isoformat()
         if "dutchlanguage" in ev.get("tags", []) or not (short or first in days or last in days):
             continue
         ev["note"] = ("" if short else "final days" if last in days
-                      else "running, start unknown" if first == today else "opening")
+                      else _rolling_note(key, today, seen) if first == today else "opening")
         ev["first"], ev["last"] = first, last
-        out[ev["id"][:8]] = ev
-    return out
+        out[key] = ev
+    return out, {"since": (seen or {}).get("since", today.isoformat()), "runs": runs}
 
 
 def _line(key: str, ev: dict) -> str:
     info = {h["id"]: h["label"] for h in ev.get("highlights", [])}
-    dates = (ev["last"].strftime("until %a %d %b") if ev["note"].startswith("running") else
+    dates = (ev["last"].strftime("until %a %d %b") if ev["note"] in UNDATED else
              ev["first"].strftime("%a %d %b") + ("" if ev["first"] == ev["last"] else ev["last"].strftime(" – %a %d %b")))
     note = f" ({ev['note']})" if ev["note"] else ""
     return f"[{key}] {ev['title']}{note} | {dates} | {info.get('date', '')} | {info.get('location', '')} | {', '.join(ev.get('tags', []))}"
@@ -101,7 +131,7 @@ def _details(ev: dict, weekend: bool) -> str:
     info = {h["id"]: h["label"] for h in ev.get("highlights", [])}
     day = ev["first"].strftime("%a %d %b") if weekend and ev["first"] == ev["last"] else ""
     time = re.sub(r"^(\d\d:\d\d) - \1$", r"\1", info.get("date", ""))  # "19:30 - 19:30" for a start time only
-    note = ev["last"].strftime("until %a %d %b") if ev["note"].startswith("running") else ev["note"]
+    note = ev["last"].strftime("until %a %d %b") if ev["note"] in UNDATED else ev["note"]
     return ", ".join(x for x in (day, time, info.get("location", ""), note) if x)
 
 
@@ -156,7 +186,7 @@ def add_links(day: date, agenda: Agenda) -> None:
     if all(e.url for e in agenda.events):
         return
     try:
-        candidates = _candidates(window(day))
+        candidates, _ = _candidates(window(day))
     except (httpx.HTTPError, ValueError, KeyError) as exc:
         log.warning("I amsterdam calendar failed: %s", exc)
         return
@@ -170,7 +200,8 @@ def build(day: date, recent: list[str] = ()) -> Agenda | None:
     weekend = len(days) > 1
     span = f"{days[0].strftime('%A %d %B %Y')}" + (f" to {days[-1].strftime('%A %d %B %Y')}" if weekend else "")
     try:
-        candidates = _candidates(days)
+        candidates, seen = _candidates(days, _seen(day))
+        (day_dir(day) / SEEN_FILE).write_text(json.dumps(seen, indent=1, ensure_ascii=False))
     except (httpx.HTTPError, ValueError, KeyError) as exc:
         log.warning("I amsterdam calendar failed: %s", exc)
         candidates = {}

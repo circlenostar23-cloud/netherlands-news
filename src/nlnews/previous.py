@@ -21,17 +21,21 @@ _PICK = re.compile(r"^- \*\*(.+?)\*\*", re.M)
 _CHECKED = re.compile(r"^\*\*Checked:\*\* (.+ → (?!not confirmed).+)$", re.M)
 
 
-def _briefing_md(day: date) -> str | None:
-    """The briefing as published (the release), else a local build of that day."""
+def release_file(day: date, name: str) -> str | None:
+    """A file as published with that day's episode (the release), else a local build of it."""
     from nlnews.publish import _gh, _repo
     try:
         with tempfile.TemporaryDirectory() as tmp:
-            _gh("release", "download", f"ep-{day.isoformat()}", "--pattern", "briefing.md",
+            _gh("release", "download", f"ep-{day.isoformat()}", "--pattern", name,
                 "--dir", tmp, "--repo", _repo())
-            return (Path(tmp) / "briefing.md").read_text()
+            return (Path(tmp) / name).read_text()
     except (subprocess.CalledProcessError, FileNotFoundError, OSError):
-        local = DATA_DIR / day.isoformat() / "briefing.md"
+        local = DATA_DIR / day.isoformat() / name
         return local.read_text() if local.exists() else None
+
+
+def _briefing_md(day: date) -> str | None:
+    return release_file(day, "briefing.md")
 
 
 def parse(day: date, md: str) -> list[PriorStory]:

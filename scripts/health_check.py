@@ -31,6 +31,7 @@ from nlnews import publish
 from nlnews.config import DATA_DIR, HOSTS, TZ
 from nlnews.models import EpisodeScript
 from nlnews.tts import _chunk
+from nlnews.voicecheck import pitch
 
 WORKFLOW = "episode.yml"
 SLOW_RUN = 18 * 60  # seconds; a clean run takes 12-13 min, a TTS timeout adds 3-10
@@ -116,6 +117,13 @@ def check_log(log: list[str], audio: str) -> None:
     for l in log:
         if "Gemini TTS failed" in l or "OpenRouter TTS failed" in l:
             report("warn", l.strip()[:160])
+    flagged = [l.strip() for l in log if l.startswith("  voice check, ")]
+    retakes = sum(l.startswith("  voicing chunk") for l in log)
+    kept = sum(l.startswith("  retake kept") for l in log)
+    if flagged or retakes:
+        report("warn", f"voice check: {len(flagged)} problem(s), {retakes} chunk(s) voiced again, {kept} retake(s) kept")
+        for l in flagged:
+            print(f"         {l.removeprefix('voice check, ')[:150]}")
     voices = re.search(r", ([\w+ ]+) voices\)", audio)
     voices = voices.group(1) if voices else "unknown"
     report("ok" if voices == "gemini" else "warn", f"voices: {voices}")
@@ -198,20 +206,7 @@ def check_audio(mp3: str, words: int | None) -> None:
 _norm = lambda w: re.sub(r"[^a-z0-9]", "", w.lower())
 
 
-def _pitch(x, sr: int) -> float:
-    """Median pitch in Hz over the voiced 40 ms frames, by autocorrelation between 70 and 350 Hz."""
-    import numpy as np
-    n, hop, lo, hi, found = int(.04 * sr), int(.02 * sr), sr // 350, sr // 70, []
-    for i in range(0, len(x) - n, hop):
-        f = x[i:i + n] - x[i:i + n].mean()
-        if (f ** 2).mean() < 0.02 ** 2:
-            continue
-        ac = np.correlate(f, f, "full")[n - 1:]
-        ac = ac / ac[0]
-        k = lo + int(np.argmax(ac[lo:hi]))
-        if ac[k] > 0.5:
-            found.append(sr / k)
-    return float(np.median(found)) if len(found) >= 10 else 0.0
+_pitch = pitch  # the voice check's, so both judge a line's pitch the same way
 
 
 def _timbre(x, sr: int):

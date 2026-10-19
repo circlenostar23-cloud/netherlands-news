@@ -37,7 +37,7 @@ def _repo() -> str:
 
 
 def upload_episode(tag: str, title: str, description: str, mp3: Path, duration: int, briefing_md: Path,
-                   transcript: Path | None = None) -> None:
+                   transcript: Path | None = None, calendar: Path | None = None) -> None:
     """Create (or update) the episode's release. Watching the repo's releases on GitHub
     turns this into an email notification with the MP3 and briefing attached as downloads."""
     meta = json.dumps({"duration": duration})
@@ -45,6 +45,8 @@ def upload_episode(tag: str, title: str, description: str, mp3: Path, duration: 
     assets = [str(mp3), f"{briefing_md}#Briefing (NotebookLM source)"]
     if transcript and transcript.exists():
         assets.append(f"{transcript}#Transcript")
+    if calendar and calendar.exists():  # the next episode reads it to tell openings from running shows
+        assets.append(f"{calendar}#What's on: runs seen in the calendar")
     try:
         _gh("release", "view", tag, "--repo", _repo())
         _gh("release", "upload", tag, *assets, "--clobber", "--repo", _repo())

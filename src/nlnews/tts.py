@@ -7,6 +7,8 @@ voices through OpenRouter (paid, and it can't do two speakers in one request), a
 carries on with the next request. Gemini is dropped for the rest of the episode on the daily
 limit, when the GEMINI_BUDGET runs out, or after two failed requests in a row. If OpenRouter
 fails too, or isn't set up, the rest is voiced line by line with Microsoft neural voices.
+Each Gemini chunk is checked against the script as soon as it's voiced, and voiced once more
+if it drops, garbles or repeats a line (voicecheck.py, switched by NLNEWS_VOICE_CHECK).
 """
 
 import array
@@ -25,6 +27,7 @@ import edge_tts
 import httpx
 from google import genai
 
+from nlnews import voicecheck
 from nlnews.config import FALLBACK_VOICES, HOSTS, OPENROUTER_TTS_MODEL, TTS_MODEL
 from nlnews.models import EpisodeScript, Segment
 
@@ -37,6 +40,7 @@ GEMINI_BUDGET = 30 * 60  # seconds for all Gemini requests, leaving room for the
 OPENROUTER_BUDGET = 8 * 60  # seconds for the OpenRouter backup; a full episode takes ~2-3 min
 OPENROUTER_TIMEOUT = 60  # seconds per line; a line takes ~4 s
 OPENROUTER_PARALLEL = 6  # lines voiced at once
+DAILY_REQUESTS = 10  # Gemini TTS free tier; a retake never takes a request a later chunk needs
 
 
 def _words(seg: Segment) -> int:
@@ -201,6 +205,41 @@ def _openrouter_wavs(client: httpx.Client, si: int, seg: Segment, line_dir: Path
     return wavs
 
 
+def _check_chunk(path: Path, chunk: list[Segment], voice, spare: bool) -> str:
+    """Check a chunk just voiced by Gemini; if it has a problem, NLNEWS_VOICE_CHECK is `retry` and
+    a request is `spare`, voice it once more and keep the take with fewer problems. Returns a line
+    for voicecheck.txt."""
+    lines = [l for seg in chunk for l in seg.lines]
+    problems = voicecheck.check(path, lines)
+    if problems is None:
+        return f"{path.stem}: not checked"
+    if not problems:
+        return f"{path.stem}: ok"
+    for p in problems:
+        print(f"  voice check, {path.stem}: {p}")
+    report = f"{path.stem}: " + "; ".join(problems)
+    if voicecheck.MODE != "retry" or not spare:
+        why = "NLNEWS_VOICE_CHECK=log" if voicecheck.MODE != "retry" else "no request or time to spare"
+        print(f"  keeping it ({why})")
+        return report + f" | kept, {why}"
+    print(f"  voicing {path.stem} once more")
+    retake = path.with_name(f"{path.stem}.retake.wav")
+    try:
+        retake.write_bytes(_cap_pauses(voice(chunk)))
+        again = voicecheck.check(retake, lines)
+    except Exception as exc:  # a failed retake never costs the episode its first take
+        print(f"  retake failed ({exc}); keeping the first take")
+        return report + f" | retake failed ({exc}), kept the first"
+    if again is None or len(again) >= len(problems):
+        print(f"  retake no better ({len(again) if again is not None else '?'} problems); keeping the first take")
+        return report + f" | retake no better: {'; '.join(again or ['not checked'])}"
+    retake.replace(path)
+    if voicecheck.words_file(retake).exists():  # the chapters step reuses it
+        voicecheck.words_file(retake).replace(voicecheck.words_file(path))
+    print(f"  retake kept ({len(again)} problems)")
+    return report + " | retake kept" + (f": {'; '.join(again)}" if again else ", clean")
+
+
 def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> tuple[Path, str]:
     """Voice each chunk with Gemini. A chunk whose request fails for good is voiced line by line,
     a segment at a time: through OpenRouter (same Gemini voices) until that fails, then with
@@ -215,6 +254,13 @@ def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> tupl
     gap, pause = _silence(seg_dir / "gap.wav", 0.25), _silence(seg_dir / "pause.wav", 0.7)
 
     client, gemini_ok, failed, used, parts, si = None, True, 0, set(), [], 0
+    requests, checks = 0, []  # requests counts this run's tries only, not an earlier failed run's
+
+    def voice(segments: list[Segment]) -> bytes:
+        nonlocal requests
+        requests += 1
+        return _synthesize(client, segments)
+
     or_key = os.environ.get("OPENROUTER_API_KEY")
     or_client, or_deadline = None, None
     chunks = _chunk(script.segments)
@@ -227,8 +273,16 @@ def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> tupl
                     raise TimeoutError(f"Gemini TTS budget of {GEMINI_BUDGET // 60} min used up")
                 print(f"  TTS request {i + 1}/{len(chunks)}: {' / '.join(s.title for s in chunk)}")
                 client = client or genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
-                path.write_bytes(_cap_pauses(_with_retries(lambda: _synthesize(client, chunk), deadline)))
+                path.write_bytes(_cap_pauses(_with_retries(lambda: voice(chunk), deadline)))
                 failed = 0
+                if voicecheck.MODE != "off":
+                    left = sum(not (seg_dir / f"chunk{j:02d}.wav").exists() for j in range(i + 1, len(chunks)))
+                    spare = DAILY_REQUESTS - requests - left >= 1 and time.monotonic() + _timeout(chunk) < deadline
+                    try:
+                        checks.append(_check_chunk(path, chunk, voice, spare))
+                    except Exception as exc:  # the chunk is voiced; a broken check mustn't send it to a backup
+                        print(f"  voice check failed on {path.name} ({exc}); keeping it")
+                        checks.append(f"{path.stem}: check failed ({exc})")
             except Exception as exc:
                 failed += 1
                 # without OpenRouter the backup is Microsoft voices, and the hosts shouldn't change back
@@ -261,6 +315,9 @@ def synthesize_episode(script: EpisodeScript, out_dir: Path, title: str) -> tupl
             si += 1
     if or_client:
         or_client.close()
+
+    if checks:
+        (out_dir / "voicecheck.txt").write_text("\n".join(checks) + "\n")
 
     listing = out_dir / "concat.txt"
     listing.write_text("".join(f"file '{p.resolve()}'\n" for p in parts[:-1]))

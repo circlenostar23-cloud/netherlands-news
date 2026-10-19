@@ -123,7 +123,8 @@ def run(args) -> None:
     from nlnews import deliver, publish
     feed = None
     if not args.no_publish:
-        publish.upload_episode(f"ep-{day.isoformat()}", title, description, mp3, duration, briefing_md, transcript)
+        publish.upload_episode(f"ep-{day.isoformat()}", title, description, mp3, duration, briefing_md, transcript,
+                               d / agendamod.SEEN_FILE)
         print(f"  feed written: {publish.build_feed()}")
         feed = publish.feed_url()
     if args.no_email or not deliver.configured():

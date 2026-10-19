@@ -6,7 +6,7 @@ You'll receive the date window and candidate events: shortlisted entries from I 
 - Don't pick anything listed under "Already recommended in the last few episodes", even on a different date or under a slightly different name. Listeners have heard it.
 - Make it a varied mix, e.g. music, a talk or film, art, food or a market, something free, something outdoors or neighbourhood-y. Don't pick two of the same kind.
 - Favor things that are one-off or time-limited (a concert, a festival, a pop-up, an opening or final weekend) over permanent attractions.
-- A calendar line marked "running, start unknown" is already showing or may begin today: say it's on (until its end date), never that it opens or is new.
+- Say something opens, premieres or is new only when its calendar line is marked "opening" or its event page says so (a premiere screening, an opening night, "in cinemas from" today). A line marked "already showing" or "start unknown" is simply on until its end date.
 - Favor things a non-Dutch speaker can enjoy, and spread across neighbourhoods when the options allow.
 
 For each pick, set `source` to the heading of the source it came from, copied whole with its bracketed ID (the ID is how the show notes link to the event page). Use only details from the sources: write names and descriptions in plain English, keep venue names as they are, and leave `price` empty rather than guessing. Use `note` for practical flags a listener needs before going (a free ticket is required, it's mostly in Dutch, final weekend). `window` restates the days covered in plain English.

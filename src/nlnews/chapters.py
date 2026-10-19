@@ -3,7 +3,8 @@ starts), embedded in the MP3 as ID3 chapters and listed in the show notes, and t
 a WebVTT file the feed points to with a `podcast:transcript` tag.
 
 Gemini voices several stories in one request, so where a line starts inside a chunk isn't
-known. Whisper (tiny.en, ~1.5 min for an episode on 4 cores) finds each line's first words.
+known. Whisper (tiny.en, ~1.5 min for an episode on 4 cores) finds each line's first words,
+from the transcript the voice check already made of each chunk when there is one.
 Lines it doesn't recognise, and every line when Whisper is missing or fails, are placed by
 their share of the words between the nearest known starts. On ep-2026-10-11 that estimate was
 up to 5 s off for story starts when only the chunk's ends were known, because serious stories
@@ -18,10 +19,10 @@ import subprocess
 import wave
 from pathlib import Path
 
+from nlnews import voicecheck
 from nlnews.models import Chapter, EpisodeScript, Line
 from nlnews.tts import _chunk, _ffmpeg, _quiet
 
-WHISPER_MODEL = "tiny.en"
 LEAD_IN = 0.2  # seconds of the pause kept before a line's first word
 
 
@@ -49,14 +50,8 @@ def _pause_ends(wav: Path, min_pause: float = 0.3, floor_db: float = -45) -> tup
     return len(samples) / rate, ends
 
 
-def _heard_starts(model, wav: Path, lines: list[Line]) -> list[float | None]:
+def _heard_starts(heard: list[tuple[str, float, float]], lines: list[Line]) -> list[float | None]:
     """When Whisper hears each line's first words, or None if it doesn't recognise them."""
-    import numpy as np
-    pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", str(wav), "-ar", "16000", "-ac", "1", "-f", "s16le", "-"],
-                         capture_output=True, check=True).stdout
-    found, _ = model.transcribe(np.frombuffer(pcm, dtype=np.int16).astype(np.float32) / 32768,
-                                language="en", word_timestamps=True, condition_on_previous_text=False)
-    heard = [(_norm(w.word), w.start) for s in found for w in s.words if _norm(w.word)]
     words, firsts = [], []
     for line in lines:
         firsts.append(len(words))
@@ -69,15 +64,17 @@ def _heard_starts(model, wav: Path, lines: list[Line]) -> list[float | None]:
     return [next((at[i] for i in range(f, f + 3) if i in at), None) for f in firsts]
 
 
-def _chunk_starts(model, wav: Path, lines: list[Line]) -> list[float]:
+def _chunk_starts(wav: Path, lines: list[Line]) -> list[float]:
     """Where each line starts inside one Gemini chunk, in seconds."""
     length, pauses = _pause_ends(wav)
     heard = [None] * len(lines)
-    if model is not None:
-        try:
-            heard = _heard_starts(model, wav, lines)
-        except Exception as exc:
-            print(f"  Whisper failed on {wav.name} ({exc}); estimating its line starts")
+    try:
+        if (words := voicecheck.heard(wav)) is not None:
+            heard = _heard_starts(words, lines)
+        else:
+            print(f"  no transcript of {wav.name}; estimating its line starts from word counts")
+    except Exception as exc:
+        print(f"  Whisper failed on {wav.name} ({exc}); estimating its line starts")
     heard[0] = 0.0
     # a heard start earlier than one before it is a mismatch
     for i in range(1, len(heard)):
@@ -103,15 +100,6 @@ def _chunk_starts(model, wav: Path, lines: list[Line]) -> list[float]:
     return starts
 
 
-def _whisper():
-    try:
-        from faster_whisper import WhisperModel
-        return WhisperModel(WHISPER_MODEL, device="cpu", compute_type="int8")
-    except Exception as exc:
-        print(f"  Whisper unavailable ({exc}); estimating line starts from word counts")
-        return None
-
-
 def find(script: EpisodeScript, out_dir: Path) -> tuple[list[Chapter], list[tuple[Line, float, float]]]:
     """The chapters, and each line with its start and end in episode.mp3, read back from the
     list of files the MP3 was built from."""
@@ -123,13 +111,12 @@ def find(script: EpisodeScript, out_dir: Path) -> tuple[list[Chapter], list[tupl
         by_name.setdefault(path.name, (path, at, length))
         at += length
 
-    model, chapters, timed, si = False, [], [], 0
+    chapters, timed, si = [], [], 0
     for ci, chunk in enumerate(_chunk(script.segments)):
         lines = [l for s in chunk for l in s.lines]
         if (name := f"chunk{ci:02d}.wav") in by_name:
             path, t0, length = by_name[name]
-            model = _whisper() if model is False else model
-            starts = [t0 + o for o in _chunk_starts(model, path, lines)]
+            starts = [t0 + o for o in _chunk_starts(path, lines)]
             ends = [*starts[1:], t0 + length]
         else:  # voiced line by line: each line is its own file
             files = [by_name[f"{si + k:02d}-{li:03d}.wav"] for k, s in enumerate(chunk) for li in range(len(s.lines))]
