@@ -1,4 +1,4 @@
-"""What recent episodes already covered, so today's episode brings updates instead of repeats.
+"""What the last week's episodes already covered, so today's episode brings updates instead of repeats.
 
 Each published episode's `briefing.md` is attached to its GitHub release, which is the only
 record that survives between Actions runs (data/ is thrown away). A story from a recent
@@ -18,6 +18,8 @@ from nlnews.models import Article, PriorStory
 
 _STORY = re.compile(r"^## \d+\. (.+)$", re.M)
 _PICK = re.compile(r"^- \*\*(.+?)\*\*", re.M)
+# A full stop after two non-dot characters, not "U.S." or "p.m.", optionally inside a quote
+_SENTENCE_END = re.compile(r"(?:(?<=[^.\s]{2}[.!?])|(?<=[^.\s]{2}[.!?][\"'’”]))\s+(?=[A-Z\"'‘“])")
 _CHECKED = re.compile(r"^\*\*Checked:\*\* (.+ → (?!not confirmed).+)$", re.M)
 
 
@@ -56,7 +58,7 @@ def parse(day: date, md: str) -> list[PriorStory]:
     return stories
 
 
-def load(day: date, days: int = 2) -> list[PriorStory]:
+def load(day: date, days: int = 7) -> list[PriorStory]:
     """Stories from the episodes of the last `days` days, most recent first."""
     out = []
     for back in range(1, days + 1):
@@ -91,6 +93,14 @@ def match(headline: str, prior: list[PriorStory]) -> PriorStory | None:
     by_head = {p.headline: p for p in prior}
     close = difflib.get_close_matches(headline, list(by_head), n=1, cutoff=0.6)
     return by_head.get(headline) or (by_head[close[0]] if close else None)
+
+
+def listing(p: PriorStory, day: date) -> str:
+    """A line for the selector: the full summary for the last two episodes, its first sentence before that."""
+    summary = p.summary
+    if (day - date.fromisoformat(p.date)).days > 2:
+        summary = _SENTENCE_END.split(summary, maxsplit=1)[0]
+    return f"- ({p.date}) {p.headline}: {summary}"
 
 
 def render(p: PriorStory) -> str:

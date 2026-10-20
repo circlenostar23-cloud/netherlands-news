@@ -39,13 +39,13 @@ def run(args) -> None:
     if args.stop_after == "fetch":
         return
 
-    # What the last couple of episodes covered, so repeats come back only as real updates
+    # What the last week's episodes covered, so repeats come back only as real updates
     prior = _cached(d / "previous.json", args.fresh, lambda: previous.load(day), list[PriorStory])
     fresh_articles = previous.drop_covered(articles, prior)
     print(f"  {len(prior)} stories in recent episodes; {len(articles) - len(fresh_articles)} articles already used")
 
     selection = _cached(d / "selection.json", args.fresh,
-                        lambda: curate.select_stories(cluster.cluster(fresh_articles), prior), StorySelection)
+                        lambda: curate.select_stories(day, cluster.cluster(fresh_articles), prior), StorySelection)
     for s in selection.stories:
         print(f"  - [{s.kind}/{s.section}] {s.working_title}" + (" (follow-up)" if s.follow_up_of else ""))
     for r in selection.runners_up:

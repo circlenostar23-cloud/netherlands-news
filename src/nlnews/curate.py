@@ -9,8 +9,8 @@ from nlnews.llm import ask
 from nlnews.models import Article, Briefing, PriorStory, StorySelection
 
 
-def select_stories(groups: list[list[Article]], prior: list[PriorStory] = (), n_min: int = 6, n_max: int = 9,
-                   light: tuple[int, int] = LIGHT_STORIES) -> StorySelection:
+def select_stories(day: date, groups: list[list[Article]], prior: list[PriorStory] = (), n_min: int = 6,
+                   n_max: int = 9, light: tuple[int, int] = LIGHT_STORIES) -> StorySelection:
     lines = []
     for i, group in enumerate(groups):
         lines.append(f"## Cluster {i}")
@@ -19,7 +19,7 @@ def select_stories(groups: list[list[Article]], prior: list[PriorStory] = (), n_
     system = load_prompt("select").format(n_min=n_min, n_max=n_max, light_min=light[0], light_max=light[1])
     if prior:
         lines.append("\n# Already covered in recent episodes")
-        lines += [f"- ({p.date}) {p.headline}: {p.summary}" for p in prior]
+        lines += [previous.listing(p, day) for p in prior]
         system += load_prompt("select_followups")
     selection = ask(system, "\n".join(lines), StorySelection, effort="medium")
     n_light = sum(s.kind == "light" for s in selection.stories)
