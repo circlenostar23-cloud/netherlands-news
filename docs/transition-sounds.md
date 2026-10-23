@@ -1,6 +1,6 @@
 # Transition sounds between stories
 
-Not shipped. Ten rounds of samples on 2026-10-23; the direction is chosen (round 9 version 2 plus the round 10 themes) and what's left is small refinements, then the pipeline. This is the handoff for picking it back up.
+Built into the pipeline (`src/nlnews/cues.py`) with the round 10 set; the tones are still being refined and any of them may be swapped. Ten rounds of samples on 2026-10-23; the direction is chosen (round 9 version 2 plus the round 10 themes).
 
 ## Pick up here
 
@@ -38,7 +38,7 @@ Run from the main checkout (its `.venv` has numpy). Needs Logic Pro's sound libr
 
 **How David reviews:** one file per tone, named by version and cue, listed in a table (tone, where it plays, file) so feedback can name a tone; demos play each cue once. Share samples before any pipeline work.
 
-**Then the pipeline:** render the chosen cues once and commit them (`assets/cues/*.wav`), then splice them in after `chapters.find()` as described at the end of this doc. The intro theme goes at the first chapter start, after the hello.
+**In the pipeline:** see "How the pipeline plays them" at the end of this doc. To swap a tone, replace its file in `assets/cues/`.
 
 **Goal:** a short sound at each story break so a half-listening listener hears that the show has moved on. The script's spoken transitions stay; the sound marks the break and the hosts' first line says what's next.
 
@@ -121,13 +121,18 @@ Pick something that renders the same fragments with real instrument sounds. In r
 
 Whatever renders them, the cues should be made once and committed as files (`assets/cues/*.wav`), not generated per episode.
 
-## Building it into the pipeline (once the sounds are picked)
+## How the pipeline plays them
 
-Mostly simple, with one catch: Gemini voices several stories per request, so there's no file per story to put a cue between. The chapter step already finds where each story starts (Whisper, snapped to a pause), so:
+`src/nlnews/cues.py`, called from `cli.py` right after `chapters.find()`:
 
-1. After `chapters.find()` in `cli.py`, cut the episode at each chapter start and insert the chosen cue (by the next story's `kind`, rotating; the What's on cue before the agenda; the button after the sign-off; nothing before the first story).
-2. Shift the chapter starts and the transcript's cue times by the time inserted before them, then embed the chapters.
-3. The intro theme goes before the first story (after the hello); the What's on theme before the agenda; the sign-off theme after the last line.
-4. Skip a break's cue when its chapter start was estimated, not heard: an estimate can be a few seconds off, and a cue mid-story is worse than none.
+1. **Placement** (`plan()`). The script's segments are the cold open, one per story in the briefing's order, What's on if there is one, then the sign-off. The intro theme goes at the first story's start (after the hello). Each later story gets a `hard-*` or `light-*` cue by its `kind`, rotating within that kind. The section theme goes at What's on, and the button after the sign-off's last word. If the segments don't fit that shape, the episode gets no cues.
+2. **Only at heard breaks.** `chapters.find()` now also returns each segment's start and whether Whisper heard it (or it's the start of a file) rather than estimating it. A cue at an estimated start is skipped, because an estimate can be seconds off.
+3. **Splice** (`splice()`). The MP3 is rebuilt from the voiced files in `concat.txt`, with the cues in, and encoded once with the same settings as `tts.py`. Because it always starts from the voiced files, a rerun (e.g. **Test episode**, which deletes `chapters.json`) never adds the cues twice. If the cues fail, the MP3 is rebuilt without them.
+4. **Timing.** Each break adds `BEFORE` (0.25 s) of quiet plus the cue, minus the `UNDER_NEXT` (0.6 s) of ring-out that plays under the next host's first words, as in the demos. `shift()` moves the chapters and transcript to match: a chapter opens on its cue, and the transcript line starts after it.
+5. **Level.** Each cue is trimmed of silence, set to `CUE_UNDER` (7 dB) under the episode's voices, and capped at `PEAK` (-9 dBFS). The files' own level and padding don't matter.
 
-About 50–80 lines across `tts.py`/`chapters.py`/`cli.py`. Test with **Actions → Test episode** (no TTS requests). The research behind the editorial choices: [Big Podcast on show sound](https://newsletter.bigpodcast.com/p/the-sound-of-your-show), [NPR's Morning Edition theme variations](https://www.newscaststudio.com/2019/05/06/npr-morning-edition-theme-music/), [MuseHub on podcast sound effects](https://www-cf.musehub.com/learn/podcast-sound-effects).
+**Swapping tones:** the cue files are `assets/cues/{hard-*,light-*,intro,section,button}.wav`, 44.1 kHz mono. There can be any number of `hard-*` and `light-*` files, and a missing one is skipped. The current files are the round 10 MP3s (`v2 *.mp3`, `theme *.mp3`) converted to WAV; for refined versions, export WAV straight from the render script. Folding to mono didn't change their level (checked on `hard-1` and `section`).
+
+**First run, ep-2026-10-23** (built locally from that day's run files): 11 cues and 11 chapters, every break heard. The episode went from 14:34 to 15:13 (+39.6 s): ~3 s per story break and ~5.3 s per theme, so more than the ~2 s planned above. Raise `UNDER_NEXT` to let more of each ring-out run under the voices.
+
+Test changes with **Actions → Test episode** (no TTS requests). The research behind the editorial choices: [Big Podcast on show sound](https://newsletter.bigpodcast.com/p/the-sound-of-your-show), [NPR's Morning Edition theme variations](https://www.newscaststudio.com/2019/05/06/npr-morning-edition-theme-music/), [MuseHub on podcast sound effects](https://www-cf.musehub.com/learn/podcast-sound-effects).

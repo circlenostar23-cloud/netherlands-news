@@ -64,8 +64,9 @@ def _heard_starts(heard: list[tuple[str, float, float]], lines: list[Line]) -> l
     return [next((at[i] for i in range(f, f + 3) if i in at), None) for f in firsts]
 
 
-def _chunk_starts(wav: Path, lines: list[Line]) -> list[float]:
-    """Where each line starts inside one Gemini chunk, in seconds."""
+def _chunk_starts(wav: Path, lines: list[Line]) -> tuple[list[float], list[bool]]:
+    """Where each line starts inside one Gemini chunk, in seconds, and whether that start was
+    heard (or is the chunk's start) rather than estimated."""
     length, pauses = _pause_ends(wav)
     heard = [None] * len(lines)
     try:
@@ -97,37 +98,44 @@ def _chunk_starts(wav: Path, lines: list[Line]) -> list[float]:
         near = [p for p in pauses if abs(p - guess) <= within]
         start = min(near, key=lambda p: abs(p - guess)) - LEAD_IN if near else guess
         starts.append(max(start, starts[-1]))
-    return starts
+    return starts, [t is not None for t in heard]
 
 
-def find(script: EpisodeScript, out_dir: Path) -> tuple[list[Chapter], list[tuple[Line, float, float]]]:
-    """The chapters, and each line with its start and end in episode.mp3, read back from the
-    list of files the MP3 was built from."""
+def segment_files(out_dir: Path) -> list[Path]:
+    """The files episode.mp3 was built from, in order, from concat.txt."""
+    # relative, so a run restored on another machine still works
+    return [out_dir / "segments" / rel for rel in re.findall(r"segments/(.+)'$", (out_dir / "concat.txt").read_text(), re.M)]
+
+
+def find(script: EpisodeScript, out_dir: Path) -> tuple[list[Chapter], list[tuple[Line, float, float]], list[tuple[float, bool]]]:
+    """The chapters, each line with its start and end in episode.mp3, and each segment's start
+    with whether it was heard (not estimated), read back from the files the MP3 was built from."""
     by_name, at = {}, 0.0  # file name -> (path, where it starts)
-    for rel in re.findall(r"segments/(.+)'$", (out_dir / "concat.txt").read_text(), re.M):
-        path = out_dir / "segments" / rel  # relative, so a run restored on another machine still works
+    for path in segment_files(out_dir):
         with wave.open(str(path)) as w:
             length = w.getnframes() / w.getframerate()
         by_name.setdefault(path.name, (path, at, length))
         at += length
 
-    chapters, timed, si = [], [], 0
+    chapters, timed, segment_starts, si = [], [], [], 0
     for ci, chunk in enumerate(_chunk(script.segments)):
         lines = [l for s in chunk for l in s.lines]
         if (name := f"chunk{ci:02d}.wav") in by_name:
             path, t0, length = by_name[name]
-            starts = [t0 + o for o in _chunk_starts(path, lines)]
+            offsets, heard = _chunk_starts(path, lines)
+            starts = [t0 + o for o in offsets]
             ends = [*starts[1:], t0 + length]
         else:  # voiced line by line: each line is its own file
             files = [by_name[f"{si + k:02d}-{li:03d}.wav"] for k, s in enumerate(chunk) for li in range(len(s.lines))]
-            starts, ends = [f[1] for f in files], [f[1] + f[2] for f in files]
+            starts, ends, heard = [f[1] for f in files], [f[1] + f[2] for f in files], [True] * len(files)
         k = 0
         for seg in chunk:
             chapters.append(Chapter(title=seg.title, start=starts[k]))
+            segment_starts.append((starts[k], heard[k]))
             k += len(seg.lines)
         timed += list(zip(lines, starts, ends))
         si += len(chunk)
-    return _tidy(chapters), timed
+    return _tidy(chapters), timed, segment_starts
 
 
 def _tidy(chapters: list[Chapter]) -> list[Chapter]:

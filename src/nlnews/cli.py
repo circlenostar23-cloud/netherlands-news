@@ -91,7 +91,16 @@ def run(args) -> None:
         from nlnews import chapters as chaptersmod
         transcript.unlink(missing_ok=True)
         try:
-            chapters, timed = chaptersmod.find(script, d)
+            chapters, timed, segment_starts = chaptersmod.find(script, d)
+            from nlnews import cues
+            try:
+                added = cues.splice(d, cues.plan(script.segments, briefing.stories, segment_starts), title)
+            except Exception as exc:  # nor are the cues; rebuild the MP3 without them, in case a rerun put them in
+                print(f"  cues failed ({exc}); building the episode without them")
+                added = cues.splice(d, [], title)
+            print(f"  {len(added)} cues")
+            chapters = [c.model_copy(update={"start": cues.shift(c.start, added, True)}) for c in chapters]
+            timed = [(l, cues.shift(s, added, False), cues.shift(e, added, True)) for l, s, e in timed]
             transcript.write_text(chaptersmod.vtt(timed))
             chaptersmod.embed(mp3, chapters)
             chapters_file.write_text(TypeAdapter(list[Chapter]).dump_json(chapters, indent=2).decode())
