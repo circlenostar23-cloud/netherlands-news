@@ -34,7 +34,7 @@ Run from the main checkout (its `.venv` has numpy). Needs Logic Pro's sound libr
 **Known issues to tweak next:**
 - The three hard cues are hard to tell apart: the same lead-in, register and mostly the same chords. Give each its own opening (only the kick, only the swell, a soft hat pickup) and vary register and rhythm.
 - The themes haven't had feedback yet.
-- The demo episodes voice placeholder lines with macOS `say`; a real-episode splice (as in `round-1.py`) is the last check before the pipeline.
+- The demo episodes voice placeholder lines with macOS `say`. To hear a tone in a real episode, swap its file and rebuild a day locally (see "How the pipeline plays them").
 
 **How David reviews:** one file per tone, named by version and cue, listed in a table (tone, where it plays, file) so feedback can name a tone; demos play each cue once. Share samples before any pipeline work.
 
@@ -133,6 +133,10 @@ Whatever renders them, the cues should be made once and committed as files (`ass
 
 **Swapping tones:** the cue files are `assets/cues/{hard-*,light-*,intro,section,button}.wav`, 44.1 kHz mono. There can be any number of `hard-*` and `light-*` files, and a missing one is skipped. The current files are the round 10 MP3s (`v2 *.mp3`, `theme *.mp3`) converted to WAV; for refined versions, export WAV straight from the render script. Folding to mono didn't change their level (checked on `hard-1` and `section`).
 
-**First run, ep-2026-10-23** (built locally from that day's run files): 11 cues and 11 chapters, every break heard. The episode went from 14:34 to 15:13 (+39.6 s): ~3 s per story break and ~5.3 s per theme, so more than the ~2 s planned above. Raise `UNDER_NEXT` to let more of each ring-out run under the voices.
+**First run, ep-2026-10-23** (built locally from that day's run files): 11 cues and 11 chapters, every break heard. The episode went from 14:34 to 15:13 (+39.6 s): ~3 s per story break and ~5.3 s per theme, so more than the ~2 s planned above. Raise `UNDER_NEXT` to let more of each ring-out run under the voices. **Test episode** on Actions (Ubuntu) gave the same result and made no voice requests; the test release was then removed.
+
+**Next:** listen to ep-2026-10-24, the first daily episode with cues, and check its log for `N cues` and any "no cue before" lines (estimated starts). Then carry on refining tones ("Known issues" above), swapping files in `assets/cues/`.
+
+**Rebuilding a day locally** (no voice requests): download its run's `episode-data` artifact into `data/`, delete `chapters.json` and `transcript.vtt`, and run `python -m nlnews run --date <day> --stop-after audio` from this checkout's code (in a worktree, set `PYTHONPATH=src` so the main checkout's install isn't used).
 
 Test changes with **Actions → Test episode** (no TTS requests). The research behind the editorial choices: [Big Podcast on show sound](https://newsletter.bigpodcast.com/p/the-sound-of-your-show), [NPR's Morning Edition theme variations](https://www.newscaststudio.com/2019/05/06/npr-morning-edition-theme-music/), [MuseHub on podcast sound effects](https://www-cf.musehub.com/learn/podcast-sound-effects).
