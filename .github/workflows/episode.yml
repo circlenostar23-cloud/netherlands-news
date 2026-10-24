@@ -139,3 +139,12 @@ jobs:
         with:
           path: site/
       - uses: actions/deploy-pages@v4
+
+      # dnlevitz.com lists every episode; tell it to rebuild. A failure here never fails the episode.
+      - name: Update dnlevitz.com
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
+        run: |
+          [ -n "$GH_TOKEN" ] || { echo "No WEBSITE_DISPATCH_TOKEN; skipping"; exit 0; }
+          gh api repos/circlenostar23-cloud/dnlevitz-website/dispatches -f event_type=episode-published
