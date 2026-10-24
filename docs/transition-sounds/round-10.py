@@ -91,22 +91,23 @@ def longest(frag):
     return 6.5 if frag in THEMES else 3.6
 
 
-out = Path(sys.argv[1])
-cues = {k: v for k, v in r9.RETRO.items() if k not in ("section", "button")}
-make_v2 = r9.air_pulse(r9.RETRO, r9.RETRO_HARM)
+if __name__ == "__main__":
+    out = Path(sys.argv[1])
+    cues = {k: v for k, v in r9.RETRO.items() if k not in ("section", "button")}
+    make_v2 = r9.air_pulse(r9.RETRO, r9.RETRO_HARM)
 
-# version 2's story cues with the new themes: the full set as an episode would use it
-demo(out, {"themes": (lambda f: theme(f) if f in THEMES else make_v2(f), 0.16)},
-     list(cues) + list(THEMES), prefix="v2+themes ", longest=longest)
-# round 9's versions as they were, for reference by name
-for name, (make, wet, frags) in r9.VERSIONS.items():
-    demo(out, {name: (make, wet)}, frags, prefix=f"v{name.split('-')[0]} ")
+    # version 2's story cues with the new themes: the full set as an episode would use it
+    demo(out, {"themes": (lambda f: theme(f) if f in THEMES else make_v2(f), 0.16)},
+         list(cues) + list(THEMES), prefix="v2+themes ", longest=longest)
+    # round 9's versions as they were, for reference by name
+    for name, (make, wet, frags) in r9.VERSIONS.items():
+        demo(out, {name: (make, wet)}, frags, prefix=f"v{name.split('-')[0]} ")
 
-# the v2 story cues are already there under "v2"; keep only the themes under their own names
-for f in cues:
-    (out / f"v2+themes {f}.mp3").unlink()
-for f in THEMES:
-    (out / f"v2+themes {f}.mp3").rename(out / f"theme {f}.mp3")
-(out / "v2+themes demo episode.mp3").rename(out / "v2 with themes - demo episode.mp3")
-for v in ("v1", "v2"):
-    (out / f"{v} demo episode.mp3").rename(out / f"{v} - demo episode.mp3")
+    # the v2 story cues are already there under "v2"; keep only the themes under their own names
+    for f in cues:
+        (out / f"v2+themes {f}.mp3").unlink()
+    for f in THEMES:
+        (out / f"v2+themes {f}.mp3").rename(out / f"theme {f}.mp3")
+    (out / "v2+themes demo episode.mp3").rename(out / "v2 with themes - demo episode.mp3")
+    for v in ("v1", "v2"):
+        (out / f"{v} demo episode.mp3").rename(out / f"{v} - demo episode.mp3")
