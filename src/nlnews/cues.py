@@ -137,7 +137,9 @@ def splice(out_dir: Path, cues: list[tuple[float, str]], title: str) -> list[tup
 def shift(t: float, added: list[tuple[float, float, float]], at_break: bool) -> float:
     """Where a moment of the voiced audio is in the episode with the cues in. A moment at a break
     (from its cut to the heard word) is placed before that break's cue if `at_break` (a chapter, so
-    it opens with its cue), after it otherwise (a line's first words)."""
+    it opens with its cue), after it otherwise (a line's first words). A cut is a whole sample, so
+    "at" a cut is within half a sample of it."""
+    near = 0.5 / RATE
     if at_break:
-        t = next((cut for cut, heard, _ in added if cut <= t <= heard), t)
-    return t + sum(gap for cut, _, gap in added if cut < t or (cut == t and not at_break))
+        t = next((cut for cut, heard, _ in added if cut - near <= t <= heard + near), t)
+    return t + sum(gap for cut, _, gap in added if cut < t - near or (abs(cut - t) <= near and not at_break))
