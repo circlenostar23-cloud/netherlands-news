@@ -141,7 +141,7 @@ if __name__ == "__main__":
     themes = {"intro": r10.theme("intro"), "sombre-intro": r11.button("sombre-intro"), "section": r10.theme("section")}
     for name, sig in themes.items():
         write_mono(out / f"{name}.wav", mono(r13.themed(sig)))
-    write_mono(out / "button.wav", mono(r15.bed_button("b no hats", r13.SECTION_BEAT)))
+    write_mono(out / "button.wav", mono(r15.bed_button("b no hats, bells", r13.SECTION_BEAT)))  # round 18: with bells
 
     stems = {}
     for name, bar in BEDS.items():

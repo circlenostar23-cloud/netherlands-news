@@ -5,8 +5,8 @@ moved on (docs/transition-sounds.md).
            open over a bed, and the intro theme LAND_AFTER the cold open's last word. On a sombre day
            (the selection's `mood`) the bed, sting and theme are the sombre ones
   stories  a cue before each later story, landing STORY_AFTER the host's last word, chosen by its
-           `kind` and rotating within it; the hard stories with the most airtime get hard-4 and
-           hard-4-short, once each
+           `kind` and rotating within it, never sharing a phrase with its neighbours; the hard story
+           with the most airtime gets hard-4
   outro    the between loop fades in under the last story's end, What's on's theme lands after its
            last word, the hosts start over the theme's last bars, the between bed runs on under
            What's on and the sign-off, and the button lands LAND_AFTER the last word
@@ -44,6 +44,7 @@ CUES = Path(__file__).resolve().parents[2] / "assets" / "cues"
 BEDS = CUES / "beds"
 RATE = 44100
 CUE_UNDER = 7  # dB under the voices
+LIFT = {"section": 0.5}  # dB: What's on's theme measured that much under the story cues in the mix (2026-10-24)
 PEAK = -9  # dBFS
 UNDER_NEXT = 0.6  # seconds of a cue's ring-out that runs under the next host's first words
 BREATH_BACK = 0.8  # seconds before a heard word to look for the host's breath in
@@ -52,7 +53,14 @@ SPEECH, BREATHY = 20, 45  # dB under the voices: louder is speech; between the t
 LAND_AFTER = 0.3  # seconds from the last word to a theme's downbeat
 STORY_AFTER = 0.6  # and to a story cue's, so its swell starts as the host finishes
 LEAD = 0.65  # seconds of a theme's swell before its downbeat
-MAJOR = {"hard-4": 300, "hard-4-short": 220}  # the hard story with the most airtime, if at least this many words, gets it
+MAJOR, MAJOR_WORDS = "hard-4", 300  # once, before the hard story with the most airtime if it has this many words
+PHRASES = {  # the melodic cells each cue plays, all the anthem's phrases backwards; neighbours never share one
+    "intro": {"D F# G A", "B C D"}, "sombre-intro": {"E D B", "B D E"},  # each with its sting
+    "section": {"B C D", "C D E D", "D F# G A"}, "button": {"G E D C"},
+    "hard-1": {"B D E"}, "hard-2": {"G A C"}, "hard-3": {"E D B"}, "hard-4": {"E D B"}, "hard-4-short": {"E D B"},
+    "light-1": {"D F# G A"}, "light-2": {"B C D"}, "light-3": {"C D E D"}, "light-4": {"A C E F#"},
+}
+ORDER = ["hard-1", "hard-3", "hard-2", "hard-4-short"]  # the rotation; hard-3 and hard-4-short apart. Other files follow by name
 MOODS = {"usual": ("intro", "up-first"), "sombre": ("sombre-intro", "sombre-pulse")}  # theme, bed
 STING_BARS, STING_UP = 2, 4  # the sting's bars, and the dB it plays over the bed until the hosts start
 SECTION_BAR, SECTION_BARS, HOST_BARS = 1.12, 3, 2  # What's on's theme: bar, bars, and bars before the hosts
@@ -63,44 +71,77 @@ MAX_NUDGE = 0.12  # the most a bed's tempo is changed to fit; more and it's left
 def plan(segments: list, stories: list, segment_starts: list[tuple[float, bool]], day: date,
          mood: str = "usual") -> list[tuple[float, str]]:
     """Where each cue goes, as (seconds into the voiced audio, cue name); the button at math.inf, the end.
-    `segments` are the script's: cold open, one per story, What's on if there is one, sign-off. Each
-    kind's rotation starts at a cue that moves on by one each day, so every cue gets heard over a week,
-    not only the first one or two. hard-4 and hard-4-short play once at most, before the hard stories
-    with the most airtime, so the rotation's three cues carry the rest."""
+    `segments` are the script's: cold open, one per story, What's on if there is one, sign-off.
+
+    hard-4 plays once at most, before the hard story with the most airtime if it's long enough; the
+    other stories rotate within their kind, from a cue that moves on by one each day so every cue gets
+    heard over a week. Neighbouring breaks never share a melodic cell (PHRASES), and a cue repeats in an
+    episode only once the others of its kind have played (rotate())."""
     extra = segments[1 + len(stories):]
     if not 1 <= len(extra) <= 2 or len(segment_starts) != len(segments):
         print(f"  {len(segments)} segments for {len(stories)} stories; no cues")
         return []
-    pools = {k: sorted(p.stem for p in CUES.glob(f"{k}-*.wav") if p.stem not in MAJOR) for k in ("hard", "light")}
-    used = {k: day.toordinal() for k in pools}
-    major, left = {}, sorted(range(2, len(stories) + 1), key=lambda i: -stories[i - 1].airtime)  # stable: ties go to the earlier
-    for name, words in MAJOR.items():
-        if (CUES / f"{name}.wav").exists() and (i := next((i for i in left if stories[i - 1].kind == "hard"
-                                                          and segment_starts[i][1]), None)) is not None:
-            if stories[i - 1].airtime >= words:
-                major[i] = name
-                left.remove(i)
-    placed = []
-    for i, story in enumerate(stories, start=1):
-        start, heard = segment_starts[i]
-        if not heard:
+    heard = [i for i in range(1, len(stories) + 1) if segment_starts[i][1]]
+    for i in range(1, len(stories) + 1):
+        if i not in heard:
             print(f"  no cue before {segments[i].title!r}: its start was estimated")
-            continue
-        if i == 1:
-            placed.append((start, MOODS[mood][0]))
-            continue
-        if (name := major.get(i)) is None:
-            if not (pool := pools[story.kind]):
-                continue
-            name = pool[used[story.kind] % len(pool)]
-            used[story.kind] += 1
-        placed.append((start, name))
-    if len(extra) == 2:  # What's on, whatever the script calls it, then the sign-off
-        start, heard = segment_starts[1 + len(stories)]
-        if heard:
-            placed.append((start, "section"))
+    fixed = {heard[0]: MOODS[mood][0]} if heard and heard[0] == 1 else {}
+    hard = [i for i in heard if i > 1 and stories[i - 1].kind == "hard"]
+    if (CUES / f"{MAJOR}.wav").exists() and hard:
+        i = max(hard, key=lambda i: (stories[i - 1].airtime, -i))
+        before = heard[heard.index(i) - 1]
+        if stories[i - 1].airtime >= MAJOR_WORDS and not PHRASES[MAJOR] & PHRASES.get(fixed.get(before), set()):
+            fixed[i] = MAJOR
+    if len(extra) == 2 and segment_starts[1 + len(stories)][1]:  # What's on, whatever the script calls it
+        fixed[1 + len(stories)] = "section"
+    rank = lambda name: (ORDER.index(name) if name in ORDER else len(ORDER), name)
+    pools = {k: sorted((p.stem for p in CUES.glob(f"{k}-*.wav") if p.stem != MAJOR), key=rank) for k in ("hard", "light")}
+    breaks = [i for i in heard if i in fixed or pools[stories[i - 1].kind]]
+    breaks += [1 + len(stories)] if 1 + len(stories) in fixed else []
+    names = rotate(breaks, fixed, pools, {k: day.toordinal() for k in pools}, lambda i: stories[i - 1].kind)
+    placed = [(segment_starts[i][0], names[i]) for i in breaks]
     placed.append((math.inf, "button"))
     return [(t, name) for t, name in placed if (CUES / f"{name}.wav").exists()]
+
+
+def rotate(breaks: list[int], fixed: dict, pools: dict, at: dict, kind) -> dict[int, str]:
+    """A cue for each break: its fixed one, or the next in its kind's rotation (from `at`) that shares
+    no phrase with the cue before or after it and, if it can, doesn't repeat one before the rest of its
+    pool has played. Searched with backtracking, so an early pick never forces a clash later; with no
+    clash-free way (a pool of one), the rotation's own order."""
+    def clash(a, b):
+        return bool(PHRASES.get(a, set()) & PHRASES.get(b, set()))
+
+    def go(k, prev, at, strict, heard=frozenset()):
+        if k == len(breaks):
+            return {}
+        i = breaks[k]
+        if i in fixed:
+            options = [(fixed[i], at)]
+        else:
+            pool, start = pools[kind(i)], at[kind(i)]
+            options = [(c, at | {kind(i): (start + j) % len(pool) + 1}) for j in range(len(pool))
+                       for c in [pool[(start + j) % len(pool)]]]
+            options.sort(key=lambda o: o[0] in heard)  # stable: the rotation's order within each
+            if strict:
+                options = [o for o in options if o[0] not in heard or set(pool) <= heard]
+        for name, nxt in options:
+            if prev is not None and clash(prev, name):
+                continue
+            if (rest := go(k + 1, name, nxt, strict, heard | {name})) is not None:
+                return {i: name} | rest
+        return None
+
+    for strict in (True, False):
+        if (found := go(0, None, at, strict)) is not None:
+            return found
+    names, at = {}, dict(at)
+    for i in breaks:
+        if (name := fixed.get(i)) is None:
+            pool = pools[kind(i)]
+            name, at[kind(i)] = pool[at[kind(i)] % len(pool)], at[kind(i)] + 1
+        names[i] = name
+    return names
 
 
 def first_sentence(script, out_dir: Path) -> tuple[float, float] | None:
@@ -157,8 +198,24 @@ def _cue(name: str, voice_db: float, keep_lead: bool = False) -> np.ndarray:
     x = _decode("-i", str(CUES / f"{name}.wav"))
     sounding = np.nonzero(np.abs(x) > np.abs(x).max() * 10 ** (-55 / 20))[0]
     x = x[0 if keep_lead else sounding[0]: sounding[-1] + 1]
-    x *= 10 ** ((voice_db - CUE_UNDER - _loud_db(x)) / 20)
-    return x * min(1, 10 ** (PEAK / 20) / np.abs(x).max())
+    x *= 10 ** ((voice_db - CUE_UNDER + LIFT.get(name, 0) - _loud_db(x)) / 20)
+    return _limit(x, PEAK)
+
+
+def _limit(x: np.ndarray, ceiling: float, hold: float = 0.005) -> np.ndarray:
+    """`x` with its peaks over `ceiling` dBFS brought down over a few ms around each, not the whole
+    cue: a bell's strike (the button's) would otherwise turn all of it down."""
+    c, win = 10 ** (ceiling / 20), int(hold * RATE)
+    g = np.minimum(1, c / np.maximum(np.abs(x), 1e-9))
+    if g.min() >= 1:
+        return x
+    low = g.copy()  # the least gain within `hold` of each sample
+    for k in range(1, win + 1):
+        low[k:] = np.minimum(low[k:], g[:-k])
+        low[:-k] = np.minimum(low[:-k], g[k:])
+    run = np.concatenate([[0], np.cumsum(np.pad(low, win, constant_values=1), dtype=np.float64)])
+    smooth = (run[2 * win + 1:] - run[: -2 * win - 1]) / (2 * win + 1)  # never above the gain a peak needs
+    return (x * smooth[: len(x)]).astype(np.float32)
 
 
 def _cut(voice: np.ndarray, t: float, voice_db: float) -> int:
@@ -373,8 +430,14 @@ def _section(mix: _Mix, t: float, voice_db: float, voice_level: float) -> None:
         ramp[:off] = 10 ** (-30 / 20)
         ramp[off: off + fade] = 10 ** (np.linspace(-30, 0, fade) / 20)
         mix.lay(down - PRE_BARS * bar - off, music * ramp, _bed_level(voice_level))
-    mix.lay(down - lead, theme, lambda x, voices: _duck(x, voices, under=10, gaps=0))
-    mix.insert(cut, min(t, len(voice) / RATE), max(0, down + HOST_BARS * bar - mix.out(cut)))
+    hosts = max(mix.out(cut), down + HOST_BARS * bar)
+
+    def under_hosts(x, voices, quiet=hosts - (down - lead)):
+        voices = voices.copy()
+        voices[:quiet] = 0  # the story's last words come before the theme's downbeat; it isn't ducked for them
+        return _duck(x, voices, under=10, gaps=0)
+    mix.lay(down - lead, theme, under_hosts)
+    mix.insert(cut, min(t, len(voice) / RATE), hosts - mix.out(cut))
     mix.outro = down + SECTION_BARS * bar  # where the between bed starts, on the theme's last bar line
 
 
