@@ -4,6 +4,23 @@ Built into the pipeline (`src/nlnews/cues.py`) with the round 10 set; the tones 
 
 ## Pick up here
 
+**Round 12 is waiting on David's feedback** (2026-10-24). His round 11 picks:
+- **Hard cues:** minor hard-1, sus hard-2 and minor hard-3 as the new `hard-1/2/3`.
+- **light-4** joins the rotation.
+- **Sign-off:** anthem-b or free-b, not yet decided between.
+- **Beds:** the `up-first` bed under the cold open (intro), and the `between` bed for the outro. The outro is either under the sign-off only, or under all of What's on and the sign-off ("not sure if that would be too long"), and it must run smoothly into the button.
+
+`round-12.py` puts these together on ep-2026-10-24's real audio. Samples: `data/transition-samples/round-12/` in the main checkout. Round 11's samples are in `round-11/`.
+
+**Landing a theme after the hosts.** David heard "a bit of a lag" between the last word and the theme in round 11's cold-open mixes. It was 1.63 s: the cut followed the transcript's end time, which runs about 0.3–0.6 s past the last word, then came 0.25 s of quiet and the 0.65 s swell. Round 12 finds the last word in the audio (`last_word()`), lands the theme's downbeat 0.3 s after it, and plays the swell under the word. The beds are built backwards from the landing, with their bars counted back so the last one is always D9sus. That means the fixed loop never forces a wait. The pipeline should do the same when it places themes after speech, especially the button, which `plan()` puts 0.4 s after the sign-off's transcript end.
+
+**Keep the current tones until David finalises replacements.** When one is replaced, move its file to `assets/cues/round-10/` first: `cues.py` only reads the top folder, so the old file stays in git, ready to move back.
+
+**The beds need pipeline work once picked:**
+- Overlay each bed in `splice()`, ducked under the voices (`duck()` in `round-11.py`) and built backwards from its theme's downbeat (`bed()` in `round-12.py`).
+- Nothing is inserted for a bed, so `shift()` is unchanged.
+- `splice()` changed on main in `310a36e` (the cut now keeps the hosts' breath before a cue), so start that work from an up-to-date main.
+
 **The chosen set: "version 2", the anthem backwards, with its themes.** In David's words, round 9's version 2 is "more dynamic", and he'll keep building on it and the round 10 themes, refining with smaller tweaks before it goes into episodes. Round 8's approach 5 (same production, the anthem's original fragments) is kept in reserve.
 
 | Cue | Plays | Notes | Chords |
@@ -29,11 +46,10 @@ swiftc -O docs/transition-sounds/render.swift -o /tmp/render
 RENDER=/tmp/render .venv/bin/python docs/transition-sounds/round-10.py data/transition-samples/round-11
 ```
 
-Run from the main checkout (its `.venv` has numpy). Needs Logic Pro's sound library on this Mac (see "Real instruments without downloads" below). Story cues are defined by `RETRO` / `RETRO_HARM` and `air_pulse()` in `round-9.py`; the themes by `THEMES_SPEC` and `theme()` in `round-10.py`. The latest samples are in `data/transition-samples/round-10-themes/` in the main checkout: one file per tone (`v2 hard-1.mp3`, `theme intro.mp3`, ...) and demo episodes.
+Run from the main checkout (its `.venv` has numpy). Needs Logic Pro's sound library on this Mac (see "Real instruments without downloads" below). Story cues are defined by `RETRO` / `RETRO_HARM` and `air_pulse()` in `round-9.py`; the themes by `THEMES_SPEC` and `theme()` in `round-10.py`. Round 11 runs the same way (`round-11.py <out-dir> <episode.mp3> <transcript.vtt>`; the episode files, from `gh release download ep-<date> -p episode.mp3 -p transcript.vtt`, give the cold-open demos). Round 10's samples are in `data/transition-samples/round-10-themes/` in the main checkout: one file per tone (`v2 hard-1.mp3`, `theme intro.mp3`, ...) and demo episodes.
 
 **Known issues to tweak next:**
-- The three hard cues are hard to tell apart: the same lead-in, register and mostly the same chords. Give each its own opening (only the kick, only the swell, a soft hat pickup) and vary register and rhythm.
-- The themes haven't had feedback yet.
+- The three hard cues are hard to tell apart: the same lead-in, register and mostly the same chords. Round 11 gives each its own opening (only the kick, only the swell, a soft hat pickup) and varies register and rhythm.
 - The demo episodes voice placeholder lines with macOS `say`. To hear a tone in a real episode, swap its file and rebuild a day locally (see "How the pipeline plays them").
 
 **How David reviews:** one file per tone, named by version and cue, listed in a table (tone, where it plays, file) so feedback can name a tone; demos play each cue once. Share samples before any pipeline work.
@@ -86,6 +102,8 @@ A different low note under each (E under the hard cues gives a sober, minor colo
 | 8 | No minor chords: IV→I / V→I in open add9, sus2 and maj7 voicings; hard vs light by energy, not mode. Five approaches on bells and Rhodes: open chords, a Rhodes pulse leading in, the motif scattered across octaves with echoes, call and answer ending on an upward step, a hi-hat swell and soft kick lead-in | **Approach 5 (air and pulse) is the closest yet**, kept in reserve. Its hats sounded fake (drum-machine), the bells too heavy, "like church bells"; the kick was nice. Also wants to loosen the fixed melodic sequence |
 | 9 | Two developments of approach 5. (1) Real acoustic hats sliced from Logic's Drum Kit Designer kit, and a "glint" bell: hum and strike filtered out, ring cut short, an octave above the Rhodes. (2) The same production on cells from the anthem played backwards (rising lines, pickups into the downbeat) over new chords including a borrowed F (bVII→I) and A-over-G (Lydian) | **Version 2 is more dynamic**; glad of the rethink. The three hard cues were hard to tell apart (same opening, register and chords) |
 | 10 | Longer themes (3 bars, ~5 s) in version 2's language with a fuller kit (kick, closed hats on eighths, soft shaker): **intro** after the hello, **What's on**, **sign-off**. Demos now play each cue once, hard and light alternating; every tone is its own file, named by version and cue | "Getting somewhere solid": **version 2 plus these themes is the set to refine** |
+| 11 | After hearing ep-2026-10-24, the first episode with cues. Hard cues: "a little more neutral rather than so positive", in two versions (suspended, minor). light-4. Five sign-off takes. Intro bed in three feels | Notes on round 10: **light-1 and light-3 are favourites** (jazzy chords, more interesting rhythm); **What's on is the favourite theme** (jazzy, the suspended last note); the intro theme is "pretty good"; the button "sounds a little too christmasy". On round 11: minor hard-1, sus hard-2, minor hard-3 and light-4 are good; likes buttons anthem-b and free-b; "really like" the up-first and between beds |
+| 12 | The round 11 picks together; the up-first bed under the real cold open into the first story; the between bed under the sign-off, or What's on and the sign-off, into each liked button; themes land 0.3 s after the last word | Waiting for feedback |
 
 ## Lessons
 
@@ -106,7 +124,7 @@ This Mac has Logic Pro's sound library, so round 7 needed no new tools:
 
 The options below are still the fallback if this library isn't available (CI, another machine).
 
-**More samples on this Mac:** Logic's Drum Kit Designer kits (acoustic, `EXS Factory Samples/Drum Kit Designer Consolidated`) are one long file per drum with the hits end to end; the sampler can't load them, but splitting at the attacks works (`round-9.py` names the hi-hat hits it uses, by start time). Ultrabeat Samples has drum-machine kits; those hats read as fake.
+**More samples on this Mac:** Logic's Drum Kit Designer kits (acoustic, `EXS Factory Samples/Drum Kit Designer Consolidated`) are one long file per drum with the hits end to end; the sampler can't load them, but splitting at the attacks works (`round-9.py` names the hi-hat hits it uses, by start time; `round-11.py` the snare's soft cross-stick hits). The Alchemy bass `Bass/Real Bass/MMBass Mute` follows Logic's naming except "E0", which sounds at E2 (measured), so `round-11.py` leaves it out. Ultrabeat Samples has drum-machine kits; those hats read as fake.
 
 ## Next: tools to try
 
