@@ -4,13 +4,26 @@ Built into the pipeline (`src/nlnews/cues.py`) with the round 10 set; the tones 
 
 ## Pick up here
 
-**Round 12 is waiting on David's feedback** (2026-10-24). His round 11 picks:
-- **Hard cues:** minor hard-1, sus hard-2 and minor hard-3 as the new `hard-1/2/3`.
+**Round 13 is waiting on David's feedback** (2026-10-24). Decided so far:
+- **Hard cues:** minor hard-1, sus hard-2 and minor hard-3 as the new `hard-1/2/3` (round 11).
 - **light-4** joins the rotation.
-- **Sign-off:** anthem-b or free-b, not yet decided between.
-- **Beds:** the `up-first` bed under the cold open (intro), and the `between` bed for the outro. The outro is either under the sign-off only, or under all of What's on and the sign-off ("not sure if that would be too long"), and it must run smoothly into the button.
+- **Intro:** the `up-first` bed under the cold open. Round 13 adds a 2-bar sting at the top before the hosts start, which David asked to hear.
+- **Outro:** the `between` bed under all of What's on and the sign-off, into button **anthem-b** ("this version is best").
 
-`round-12.py` puts these together on ep-2026-10-24's real audio. Samples: `data/transition-samples/round-12/` in the main checkout. Round 11's samples are in `round-11/`.
+Open questions:
+- Does the sting at the top work?
+- Is the sombre intro right? `round-13.py` has it for a day after a tragedy: E minor, a 0.36 s beat, no backbeat, its own sting and theme.
+- Does What's on's theme joining straight into the bed work?
+
+**Round 13 is built from the run's voiced files** (the `episode-data` artifact) with the pipeline's own placement: `chapters.find()`, `cues.plan()` and `cues._cut()`, which includes the breath fix. Run it as `PYTHONPATH=src python round-13.py <out> data/<day>`. Rounds 11–12 cut their demos from the published episode, which already had round 10's cues in it. Samples for each round are in `data/transition-samples/round-NN/` in the main checkout.
+
+**Joining a bed to a theme on both sides:** a bed has two fixed points: where it starts (the top of the show, or What's on's theme's last bar line) and where its theme lands. `fit()` picks the bar length nearest the bed's own tempo that fits a whole number of bars between them. On ep-2026-10-24 the nudge was −1.9% (up-first), +3% (sombre) and +0.7% (outro), small enough not to hear. The outro bed starts at What's on's tempo on its theme's last bar line, so there's no fade-in. On ep-2026-10-24 the music held at −22 to −27 dB across the join, then ducked when the hosts came back in.
+
+**Choosing the sombre intro (proposed, not built):**
+- Add an episode-level `mood` (`usual` | `sombre`) that the selection step sets next to each story's `kind` (`prompts/select.md`), with a one-line reason printed in the run log.
+- Sombre should be rare: deaths on a large scale, a disaster or attack, national mourning. A single murder story isn't enough; ep-2026-10-24, which led with the Hajar case among others, stays `usual`.
+- Add a manual override as a workflow input.
+- Keyword rules or counting hard stories would misfire too often.
 
 **Landing a theme after the hosts.** David heard "a bit of a lag" between the last word and the theme in round 11's cold-open mixes. It was 1.63 s: the cut followed the transcript's end time, which runs about 0.3–0.6 s past the last word, then came 0.25 s of quiet and the 0.65 s swell. Round 12 finds the last word in the audio (`last_word()`), lands the theme's downbeat 0.3 s after it, and plays the swell under the word. The beds are built backwards from the landing, with their bars counted back so the last one is always D9sus. That means the fixed loop never forces a wait. The pipeline should do the same when it places themes after speech, especially the button, which `plan()` puts 0.4 s after the sign-off's transcript end.
 
@@ -103,7 +116,8 @@ A different low note under each (E under the hard cues gives a sober, minor colo
 | 9 | Two developments of approach 5. (1) Real acoustic hats sliced from Logic's Drum Kit Designer kit, and a "glint" bell: hum and strike filtered out, ring cut short, an octave above the Rhodes. (2) The same production on cells from the anthem played backwards (rising lines, pickups into the downbeat) over new chords including a borrowed F (bVII→I) and A-over-G (Lydian) | **Version 2 is more dynamic**; glad of the rethink. The three hard cues were hard to tell apart (same opening, register and chords) |
 | 10 | Longer themes (3 bars, ~5 s) in version 2's language with a fuller kit (kick, closed hats on eighths, soft shaker): **intro** after the hello, **What's on**, **sign-off**. Demos now play each cue once, hard and light alternating; every tone is its own file, named by version and cue | "Getting somewhere solid": **version 2 plus these themes is the set to refine** |
 | 11 | After hearing ep-2026-10-24, the first episode with cues. Hard cues: "a little more neutral rather than so positive", in two versions (suspended, minor). light-4. Five sign-off takes. Intro bed in three feels | Notes on round 10: **light-1 and light-3 are favourites** (jazzy chords, more interesting rhythm); **What's on is the favourite theme** (jazzy, the suspended last note); the intro theme is "pretty good"; the button "sounds a little too christmasy". On round 11: minor hard-1, sus hard-2, minor hard-3 and light-4 are good; likes buttons anthem-b and free-b; "really like" the up-first and between beds |
-| 12 | The round 11 picks together; the up-first bed under the real cold open into the first story; the between bed under the sign-off, or What's on and the sign-off, into each liked button; themes land 0.3 s after the last word | Waiting for feedback |
+| 12 | The round 11 picks together; the up-first bed under the real cold open into the first story; the between bed under the sign-off, or What's on and the sign-off, into each liked button; themes land 0.3 s after the last word | Hard picks and light-4 confirmed; on the outro: "the What's on version is best" with anthem-b, and asked whether the bed could join the theme instead of fading in. On the intro: try a sting at the top; the cut sounded like it lost a breath; wanted a more serious version for a day after a tragedy |
+| 13 | Built from the run's voiced files with the breath fix. Intro: a sting at the top, the up-first bed, the intro theme. A sombre intro for tragedy days. Outro: What's on's theme straight into the between bed, tempo fitted to land anthem-b | Waiting for feedback |
 
 ## Lessons
 
