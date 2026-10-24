@@ -1,27 +1,30 @@
 # Transition sounds between stories
 
-Built into the pipeline (`src/nlnews/cues.py`) with the round 10 set; the tones are still being refined and any of them may be swapped. Ten rounds of samples on 2026-10-23; the direction is chosen (round 9 version 2 plus the round 10 themes).
+Built into the pipeline (`src/nlnews/cues.py`) with the round 10 set. Rounds 11–16 (2026-10-24) chose a new set with beds under the intro and outro; it isn't built in yet (see Pick up here).
 
 ## Pick up here
 
-**Round 16 is waiting on David's feedback** (2026-10-24).
-- **Intro sting after the cold open's first two sentences** (David's pick from round 15, on ep-2026-10-23). The split goes in the quiet after the second sentence, before the next breath (`round-15.py`'s `sentence_ends()` and `quiet_point()`).
-- **The loop into the sting:** `round-16.py` fades in 2 or 4 bars of the up-first loop under the second sentence, leading into the sting on its downbeat. It's shorter than the outro's six bars, since it only runs under two sentences.
-- **The glitch at "students are furious" on ep-2026-10-23 is Gemini's.** The mix is identical to the raw chunk there, and the first music comes in after those words. The run's voice check passed the chunk, because it only checks words and voices against the script, not dropouts.
+**The new set is decided** (2026-10-24, rounds 11–16). Next comes building it into the pipeline. Until then, the pipeline plays the round 10 tones.
 
-**Round 15** (2026-10-24). Decided so far:
-- **Hard cues:** minor hard-1, sus hard-2 and minor hard-3 as `hard-1/2/3`; `hard-4` (round 13's sombre theme) for a major story and `hard-4 short` for a less major one. Both "great".
-- **light-4** joins the rotation.
-- **Intro:** the `up-first` bed with a sting.
-- **Sombre intro:** the `sombre-pulse` bed ("this is great") with round 13's sombre sting and theme.
-- **Outro, ready** ("the outro overall sounds ready"): round 15's `closing()`. Six bars of the `between` loop fade in under the last story's end, What's on's theme follows on the downbeat, the hosts start over its last bars, the `between` bed carries on under What's on and the sign-off, and button `bed-b` without hi-hats ends it (`b no hats`: shaker kept).
+| Part | What plays | Made by |
+|---|---|---|
+| Intro | The cold open's **first sentence dry**; the `up-first` sting 0.3 s after its last word; the rest of the cold open over the `up-first` bed; the intro theme 0.3 s after the cold open's last word; then the first story. No loop fading in before the sting: David tried it (round 16) and found the sting straight after the sentence cleaner | `round-15.py` `split_opening()`, split by `sentence_ends()` + `quiet_point()`; bed and sting from `round-13.py` |
+| Sombre intro | The same shape on the `sombre-pulse` bed, with round 13's sombre sting and theme, for a day after a tragedy (choosing it is below) | `round-14.py` bed, `round-13.py` sting and `sombre-intro` theme |
+| Hard stories | `hard-1` (was minor hard-1), `hard-2` (sus hard-2), `hard-3` (minor hard-3); `hard-4` (the sombre theme) for a major story, `hard-4 short` for a less major one (choosing them is below) | `round-11.py` `HARD`, `round-14.py` |
+| Light stories | `light-1`, `light-2`, `light-3` (round 10), plus `light-4` | `round-9.py`, `round-11.py` `LIGHT_4` |
+| Outro | Six bars of the `between` loop fade in under the last story's end; What's on's theme on the downbeat, 0.3 s after its last word; the hosts start over the theme's last bars; the `between` bed under What's on and the sign-off; button `bed-b` without hi-hats (shaker kept), 0.3 s after the last word. "The outro overall sounds ready" | `round-15.py` `closing()`, `BUTTON_VERSIONS["b no hats"]` |
 
-`round-15.py` tries:
-- **Intro split, one more try:** the sting after the first sentence, or the first two. The split goes in the quiet just after the sentence's last word (`quiet_point()`), so the breath for the next sentence plays after the sting. Round 14 split at Whisper's word start, which left the breath to be covered by the sting. David's view: "maybe this idea won't work with how we currently script episodes"; if it doesn't, scrap the split and keep round 13's sting at the top.
-- **Outro loop:** six bars of the between bed fade in under the last story, from about 6 s before its last word, and lead into What's on's theme on its downbeat.
-- **Button bed-b versions:** without hi-hats, with the bell glint, with fuller bells, and with hi-hats plus glint.
-- **Intro split test:** David found ep-2026-10-22's first two sentences too short to compare fairly. It is now on ep-2026-10-23, whose two sentences are longer: the sting lands 4.6 s or 10.9 s in. Samples are in `data/transition-samples/round-15/ep-2026-10-23/`. For that day, `sentence_ends()` reads the whole cold open, since its second sentence ends the first line.
-- Rendered first on ep-2026-10-24, then again on ep-2026-10-22 (the day the Dutch internet switched itself off), which David asked for so the demos don't lead with US politics. The 10-22 samples are in `data/transition-samples/round-15/ep-2026-10-22/`. That run also showed two Whisper quirks that `sentence_ends()` now handles: misheard names ("DigiD" as "digiid"), and word times a few tenths out, so `quiet_point()` searches from 0.3 s before Whisper's sentence end.
+**Notes for the build:**
+- **Split point:**
+  - The split goes in the quiet just after the first sentence's last word, so the breath for the next sentence plays after the sting with it (Whisper's word starts land after the breath).
+  - `sentence_ends()` matches the script's words to Whisper's and handles misheard names ("DigiD" heard as "digiid").
+  - `quiet_point()` searches from 0.3 s before Whisper's sentence end, since its word times can be a few tenths out.
+  - If the cold open's first sentence is very short, the sting comes in only a few seconds in. That's fine by David's pick, but worth watching.
+- **Beds and themes:**
+  - Each bed is built back from where its theme lands, with its bar length fitted (`fit()`) so a whole number of bars fills the span. The last bar is always D9sus.
+  - The beds are ducked under the voices (`duck()` in `round-11.py`).
+  - Nothing is inserted into the voice for a bed, so `shift()` only moves for the themes and story cues.
+- **Glitches in the voiced audio:** the glitch at "students are furious" on ep-2026-10-23 was in Gemini's audio, not the mix. A separate session is adding a dropout check to `voicecheck.py`.
 
 **Choosing hard-4 (proposed, not built).** `kind` has no measure of scale, but each story's `airtime` (its word budget, from `prompts/airtime.md`) is the editor's judgment of how much it matters. Story order is too, but the first story gets the intro theme, not a hard cue.
 - A hard story of at least 300 words gets `hard-4`; 220–299 words gets `hard-4 short`; shorter ones rotate `hard-1/2/3`. On ep-2026-10-24 that gives `hard-4` to the Hajar case (330), `hard-4 short` to single-use packaging (270) and Storm Austen (240), and `hard-1/2/3` to the PHP flaw (190) and Albert Heijn (100).
@@ -132,7 +135,7 @@ A different low note under each (E under the hard cues gives a sober, minor colo
 | 13 | Built from the run's voiced files with the breath fix. Intro: a sting at the top, the up-first bed, the intro theme. A sombre intro for tragedy days. Outro: What's on's theme straight into the between bed, tempo fitted to land anthem-b | Intro "nice": try some of the cold open dry before the sting. Sombre intro "nice": hear a couple of other options; its end sting could also be a hard story cue. Outro: too long a wait for What's on's theme after the story; anthem-b is a little mismatched with the bed |
 | 14 | Intro: cold open dry, sting, hello over the bed. Sombre beds `pulse` and `air`; `hard-4` (and `hard-4 short`). Outro: What's on's theme fades in under the story's end, hosts over its last bars; buttons `bed-a/b/c` from the bed | Split intro: the sting comes in too late and covers a breath; try it after a sentence or two. **sombre-pulse**, **hard-4** (for a major story) and **hard-4 short** (a less major one) are great. Outro: **bed-b** is best; wanted a loop fading in under the story's end, not just one bar; try bed-b without hi-hats and with bells |
 | 15 | Sting after one or two sentences, split before the breath. Outro loop of six bars under the story's end. bed-b without hi-hats, with glint, with fuller bells. Re-rendered on ep-2026-10-22, and the intro test on ep-2026-10-23 for longer sentences | **The outro is ready**, with bed-b without hi-hats. The sting goes **after two sentences**. Asked about a glitch at "students are furious" (Gemini's) and for a loop fading in before the sting |
-| 16 | 2 or 4 bars of the up-first loop fading in under the second sentence, into the sting | Waiting for feedback |
+| 16 | 2 or 4 bars of the up-first loop fading in under the second sentence, into the sting | "Good to try", but cleaner without: **the sting after the first sentence**, with no loop before it. The set is decided |
 
 ## Lessons
 
