@@ -15,6 +15,7 @@ twice.
 
 import math
 import subprocess
+from datetime import date
 from pathlib import Path
 
 import numpy as np
@@ -32,15 +33,17 @@ BREATH_BACK = 0.8  # seconds before a heard word to look for the host's breath i
 QUIET, BREATH = 50, 36  # dB under the voices: the quiet before a breath, and a breath
 
 
-def plan(segments: list, stories: list, segment_starts: list[tuple[float, bool]]) -> list[tuple[float, str]]:
+def plan(segments: list, stories: list, segment_starts: list[tuple[float, bool]], day: date) -> list[tuple[float, str]]:
     """Where each cue goes, as (seconds into the voiced audio, cue name); the button at math.inf, the end.
-    `segments` are the script's: cold open, one per story, What's on if there is one, sign-off."""
+    `segments` are the script's: cold open, one per story, What's on if there is one, sign-off. Each
+    kind's rotation starts at a cue that moves on by one each day, so every cue gets heard over a week,
+    not only the first one or two."""
     extra = segments[1 + len(stories):]
     if not 1 <= len(extra) <= 2 or len(segment_starts) != len(segments):
         print(f"  {len(segments)} segments for {len(stories)} stories; no cues")
         return []
     pools = {k: sorted(p.stem for p in CUES.glob(f"{k}-*.wav")) for k in ("hard", "light")}
-    used = {k: 0 for k in pools}
+    used = {k: day.toordinal() for k in pools}
     placed = []
     for i, story in enumerate(stories, start=1):
         start, heard = segment_starts[i]

@@ -149,7 +149,8 @@ def load_run(d):
     for w in (d / "segments").glob("*.words.json"):  # an artifact keeps no mtimes; the transcripts are current
         w.touch()
     _, _, starts = chapters.find(script, d)
-    placed = cues.plan(script.segments, briefing.stories, starts)
+    from datetime import date
+    placed = cues.plan(script.segments, briefing.stories, starts, date.fromisoformat(briefing.date))
     voice = cues._decode("-f", "concat", "-safe", "0", "-i", str(listing(d)))
     voice_db = cues._loud_db(voice)
     cuts = {name: cues._cut(voice, t, voice_db) / cues.RATE for t, name in placed if t != float("inf")}

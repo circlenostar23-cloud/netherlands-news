@@ -94,7 +94,7 @@ def run(args) -> None:
             chapters, timed, segment_starts = chaptersmod.find(script, d)
             from nlnews import cues
             try:
-                added = cues.splice(d, cues.plan(script.segments, briefing.stories, segment_starts), title)
+                added = cues.splice(d, cues.plan(script.segments, briefing.stories, segment_starts, day), title)
             except Exception as exc:  # nor are the cues; rebuild the MP3 without them, in case a rerun put them in
                 print(f"  cues failed ({exc}); building the episode without them")
                 added = cues.splice(d, [], title)
