@@ -1,10 +1,10 @@
 # Transition sounds between stories
 
-Built into the pipeline (`src/nlnews/cues.py`) with the set chosen in rounds 11–16 (2026-10-24), on branch `claude/cues-new-set-34ee9a` until David merges it (see Pick up here). `main` still plays the round 10 set.
+Built into the pipeline (`src/nlnews/cues.py`) with the set chosen in rounds 11–19 (2026-10-24), live from the 2026-10-25 episode (see Pick up here). The round 10 files are in `assets/cues/round-10/`.
 
 ## Pick up here
 
-**The new set is built in** (branch `claude/cues-new-set-34ee9a`, 2026-10-24) and waiting for David to listen and merge.
+**The new set is live.** David signed off on round 19 ("this is perfect, let's lock this all in") and it was merged to `main` on 2026-10-24, so ep-2026-10-25 is the first daily episode with it.
 
 **Round 19 (David's notes on round 18):** the sooner story cues and the split before the breath are good; "this format worked for me to review" (clips per transition).
 1. "hard-4-short doesn't need to go after hard-4 … it can be in rotation with the other three", and hard-4 for the longer stories; "overall we should just make sure we aren't repeating the same melodic phrases over and over." `hard-4-short` now rotates with `hard-1/2/3` (in the order 1, 3, 2, 4-short, so the two E D B cues sit apart), and `hard-4` plays once, before the hard story with the most airtime if it's 300+ words. Many cues share a cell of the reversed anthem, so each cue's cells are listed in `PHRASES`, and `rotate()` searches (with backtracking) for picks where no two neighbouring breaks share a cell, themes included, and no cue repeats before the rest of its pool has played:
@@ -77,7 +77,7 @@ Its clips are in `data/transition-samples/round-18-sooner/`.
 
 **Testing on Actions:** only `main` may deploy to `github-pages`, so **Test episode**'s `publish` can't run from a branch. Its new `check` action builds a day the same way, without publishing, and keeps the episode as the `test-episode` artifact. It passed for 10-23 and 10-24 on the branch (runs 40095646383 and 40095857332), with the same bars, cues and length as the local builds and no voice requests. After merging, `publish` (with `mood: sombre` to hear that intro) puts a test episode in the feed.
 
-**Next:** David listens to the round 19 clips and decides whether to merge. `STORY_AFTER` is the one number to change if the story cues should come sooner or later still. Watch for: a cold open whose first sentence is very short (the sting comes in only a few seconds in, as on 10-24); the first `mood: sombre` the selection sets, and its reason in the log.
+**Next:** listen to ep-2026-10-25 and check its log for the `mood:` line, the bed lines and `N cues`. `STORY_AFTER` is the one number to change if the story cues should come sooner or later still. Watch for: a cold open whose first sentence is very short (the sting comes in only a few seconds in, as on 10-24); the first `mood: sombre` the selection sets, and its reason in the log.
 
 **Re-rendering the cues** (on this Mac, from the main checkout's `.venv`): `python docs/transition-sounds/render-cues.py assets/cues`. It takes ~10 s and doesn't need `render.swift`.
 
