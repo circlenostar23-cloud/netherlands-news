@@ -28,6 +28,8 @@ PEAK = -9  # dBFS
 BEFORE = 0.25  # seconds of quiet added before a cue
 UNDER_NEXT = 0.6  # seconds of a cue's ring-out that runs under the next host's first words
 BUTTON_AFTER = 0.4  # seconds between the sign-off's last word and the button
+BREATH_BACK = 0.8  # seconds before a heard word to look for the host's breath in
+QUIET, BREATH = 50, 36  # dB under the voices: the quiet before a breath, and a breath
 
 
 def plan(segments: list, stories: list, segment_starts: list[tuple[float, bool]]) -> list[tuple[float, str]]:
@@ -80,6 +82,21 @@ def _cue(name: str, voice_db: float) -> np.ndarray:
     return x * min(1, 10 ** (PEAK / 20) / np.abs(x).max())
 
 
+def _cut(voice: np.ndarray, t: float, voice_db: float) -> int:
+    """Where a cue before the word heard at `t` cuts the voice: at `t`, or before the breath the host
+    takes for that word, so the breath plays after the cue with its line. Whisper puts a word's start
+    after the breath, or sometimes at it."""
+    c, win, hop = round(t * RATE), int(0.04 * RATE), int(0.01 * RATE)
+    starts = list(range(max(0, c - int(BREATH_BACK * RATE)), c - win + 1, hop))
+    if not starts:
+        return c
+    db = [10 * math.log10(np.mean(voice[s: s + win] ** 2) + 1e-12) for s in starts]
+    q = int(np.argmin(db))
+    if db[q] < voice_db - QUIET and max(db[q:]) > voice_db - BREATH:
+        return starts[q] + win // 2
+    return c
+
+
 def splice(out_dir: Path, cues: list[tuple[float, str]], title: str) -> list[tuple[float, float]]:
     """Rebuild episode.mp3 from the voiced files with the cues in. Returns where time was added,
     as (seconds into the voiced audio, seconds added), for shift()."""
@@ -90,14 +107,14 @@ def splice(out_dir: Path, cues: list[tuple[float, str]], title: str) -> list[tup
     pieces, overlays, added, at, length = [], [], [], 0, 0  # at: in the voice; length: of the output so far
     for t, name in sorted(cues):
         cue = _cue(name, voice_db)
-        cut = min(round(t * RATE) if t != math.inf else len(voice), len(voice))
+        cut = len(voice) if t == math.inf else min(_cut(voice, t, voice_db), len(voice))
         before, under = (BUTTON_AFTER, 0) if name == "button" else (BEFORE, UNDER_NEXT)
         gap = round(before * RATE) + max(0, len(cue) - round(under * RATE))
         pieces += [voice[at:cut], np.zeros(gap, np.float32)]
         length += cut - at
         overlays.append((length + round(before * RATE), cue))
         length += gap
-        added.append((min(t, len(voice) / RATE), gap / RATE))  # t itself, so shift() matches it exactly
+        added.append((cut / RATE, min(t, len(voice) / RATE), gap / RATE))  # t itself, so shift() matches it exactly
         at = cut
     pieces.append(voice[at:])
     out = np.concatenate(pieces)
@@ -114,8 +131,10 @@ def splice(out_dir: Path, cues: list[tuple[float, str]], title: str) -> list[tup
     return added
 
 
-def shift(t: float, added: list[tuple[float, float]], at_break: bool) -> float:
-    """Where a moment of the voiced audio is in the episode with the cues in. A moment exactly at a
-    break is placed before that break's cue if `at_break` (a chapter, so it opens with its cue),
-    after it otherwise (a line's first words)."""
-    return t + sum(gap for at, gap in added if at < t or (at == t and not at_break))
+def shift(t: float, added: list[tuple[float, float, float]], at_break: bool) -> float:
+    """Where a moment of the voiced audio is in the episode with the cues in. A moment at a break
+    (from its cut to the heard word) is placed before that break's cue if `at_break` (a chapter, so
+    it opens with its cue), after it otherwise (a line's first words)."""
+    if at_break:
+        t = next((cut for cut, heard, _ in added if cut <= t <= heard), t)
+    return t + sum(gap for cut, _, gap in added if cut < t or (cut == t and not at_break))
