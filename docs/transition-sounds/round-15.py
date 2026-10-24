@@ -52,12 +52,12 @@ def bed_button(version, beat):
 
 
 def sentence_ends(d, voice):
-    """Where each of the cold open's first line's sentences ends, as (its last word's end, the next
-    word's start), in seconds, from Whisper's words for the first chunk."""
+    """Where each of the cold open's sentences ends, as (its last word's end, the next word's start),
+    in seconds, from Whisper's words for the first chunk (which starts with the cold open)."""
     from nlnews import voicecheck
     from nlnews.chapters import _norm
     from nlnews.models import EpisodeScript
-    line = EpisodeScript.model_validate_json((d / "script.json").read_text()).segments[0].lines[0].text
+    line = " ".join(l.text for l in EpisodeScript.model_validate_json((d / "script.json").read_text()).segments[0].lines)
     heard = voicecheck.heard(d / "segments" / "chunk00.wav")
     sentences = re.findall(r"[^.?!]+[.?!]", line)
     tokens = lambda text: re.findall(r"[\w']+", text)  # "son-in-law" is three words to Whisper

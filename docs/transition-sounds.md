@@ -9,12 +9,13 @@ Built into the pipeline (`src/nlnews/cues.py`) with the round 10 set; the tones 
 - **light-4** joins the rotation.
 - **Intro:** the `up-first` bed with a sting.
 - **Sombre intro:** the `sombre-pulse` bed ("this is great") with round 13's sombre sting and theme.
-- **Outro:** a loop fades in under the last story's end, What's on's theme follows, the hosts start over its last bars, the `between` bed carries on under What's on and the sign-off, and button `bed-b` ends it ("the best one").
+- **Outro, ready** ("the outro overall sounds ready"): round 15's `closing()`. Six bars of the `between` loop fade in under the last story's end, What's on's theme follows on the downbeat, the hosts start over its last bars, the `between` bed carries on under What's on and the sign-off, and button `bed-b` without hi-hats ends it (`b no hats`: shaker kept).
 
 `round-15.py` tries:
 - **Intro split, one more try:** the sting after the first sentence, or the first two. The split goes in the quiet just after the sentence's last word (`quiet_point()`), so the breath for the next sentence plays after the sting. Round 14 split at Whisper's word start, which left the breath to be covered by the sting. David's view: "maybe this idea won't work with how we currently script episodes"; if it doesn't, scrap the split and keep round 13's sting at the top.
 - **Outro loop:** six bars of the between bed fade in under the last story, from about 6 s before its last word, and lead into What's on's theme on its downbeat.
 - **Button bed-b versions:** without hi-hats, with the bell glint, with fuller bells, and with hi-hats plus glint.
+- **Intro split test:** David found ep-2026-10-22's first two sentences too short to compare fairly. It is now on ep-2026-10-23, whose two sentences are longer: the sting lands 4.6 s or 10.9 s in. Samples are in `data/transition-samples/round-15/ep-2026-10-23/`. For that day, `sentence_ends()` reads the whole cold open, since its second sentence ends the first line.
 - Rendered first on ep-2026-10-24, then again on ep-2026-10-22 (the day the Dutch internet switched itself off), which David asked for so the demos don't lead with US politics. The 10-22 samples are in `data/transition-samples/round-15/ep-2026-10-22/`. That run also showed two Whisper quirks that `sentence_ends()` now handles: misheard names ("DigiD" as "digiid"), and word times a few tenths out, so `quiet_point()` searches from 0.3 s before Whisper's sentence end.
 
 **Choosing hard-4 (proposed, not built).** `kind` has no measure of scale, but each story's `airtime` (its word budget, from `prompts/airtime.md`) is the editor's judgment of how much it matters. Story order is too, but the first story gets the intro theme, not a hard cue.
