@@ -61,10 +61,11 @@ jobs:
       - run: pip install -e .
       - name: Fetch the day's working files
         run: |
-          run=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow episode.yml -L 20 --json databaseId,createdAt \
-            --jq "[.[] | select(.createdAt[:10] == \"$DAY\")][0].databaseId // empty")
-          [ -n "$run" ] || { echo "No Daily episode run on $DAY"; exit 1; }
-          gh run download "$run" --repo "$GITHUB_REPOSITORY" -n episode-data -D data
+          for run in $(gh run list --repo "$GITHUB_REPOSITORY" --workflow episode.yml -L 20 --json databaseId,createdAt \
+              --jq ".[] | select(.createdAt[:10] == \"$DAY\") | .databaseId"); do
+            gh run download "$run" --repo "$GITHUB_REPOSITORY" -n episode-data -D data && break
+          done
+          [ -d "data/$DAY" ] || { echo "No Daily episode run on $DAY with working files"; exit 1; }
       - name: Build the episode
         run: |
           set -o pipefail
@@ -111,11 +112,13 @@ jobs:
       - name: Fetch the day's working files
         if: ${{ inputs.action == 'publish' }}
         run: |
-          # the day's run (they start at 02:13 or 03:13 UTC, so the UTC date is the day), latest first
-          run=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow episode.yml -L 20 --json databaseId,createdAt \
-            --jq "[.[] | select(.createdAt[:10] == \"$DAY\")][0].databaseId // empty")
-          [ -n "$run" ] || { echo "No Daily episode run on $DAY"; exit 1; }
-          gh run download "$run" --repo "$GITHUB_REPOSITORY" -n episode-data -D data
+          # the day's runs (they start at 02:13 or 03:13 UTC, so the UTC date is the day), latest first;
+          # a later one may have no working files (a feed-only or skipped run)
+          for run in $(gh run list --repo "$GITHUB_REPOSITORY" --workflow episode.yml -L 20 --json databaseId,createdAt \
+              --jq ".[] | select(.createdAt[:10] == \"$DAY\") | .databaseId"); do
+            gh run download "$run" --repo "$GITHUB_REPOSITORY" -n episode-data -D data && break
+          done
+          [ -d "data/$DAY" ] || { echo "No Daily episode run on $DAY with working files"; exit 1; }
           ls "data/$DAY"
 
       - name: Publish the test episode
