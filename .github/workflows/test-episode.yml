@@ -19,6 +19,11 @@ on:
         type: choice
         options: [publish, remove]
         default: publish
+      mood:
+        description: "The intro's music: as the selection set it (auto), or usual or sombre"
+        type: choice
+        options: [auto, usual, sombre]
+        default: auto
 
 permissions:
   actions: read
@@ -71,7 +76,7 @@ jobs:
         if: ${{ inputs.action == 'publish' }}
         run: |
           rm -f "data/$DAY/chapters.json" "data/$DAY/transcript.vtt"
-          python -m nlnews run --date "$DAY" --stop-after audio
+          python -m nlnews run --date "$DAY" --stop-after audio ${{ inputs.mood != 'auto' && format('--mood {0}', inputs.mood) || '' }}
           python - <<'PY'
           import os
           from datetime import date

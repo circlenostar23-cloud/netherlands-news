@@ -1,0 +1,11 @@
+{
+  "pre": 0.7,
+  "near": 8,
+  "lead": 0.65,
+  "button_bar": 1.12,
+  "bars": {
+    "up-first": 1.08,
+    "sombre-pulse": 1.44,
+    "between": 1.12
+  }
+}

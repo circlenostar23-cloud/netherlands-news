@@ -50,6 +50,8 @@ def run(args) -> None:
         print(f"  - [{s.kind}/{s.section}] {s.working_title}" + (" (follow-up)" if s.follow_up_of else ""))
     for r in selection.runners_up:
         print(f"  - runner-up: {r.working_title}")
+    mood = args.mood or selection.mood
+    print(f"  mood: {mood}" + (" (set by hand)" if args.mood else f": {selection.mood_reason}" if selection.mood_reason else ""))
     draft = lambda: _cached(d / "briefing.draft.json", args.fresh,
                             lambda: curate.write_briefing(day, selection, articles, prior), Briefing)
     briefing = _cached(d / "briefing.json", args.fresh, lambda: research.fill_gaps(day, draft()), Briefing)
@@ -94,7 +96,8 @@ def run(args) -> None:
             chapters, timed, segment_starts = chaptersmod.find(script, d)
             from nlnews import cues
             try:
-                added = cues.splice(d, cues.plan(script.segments, briefing.stories, segment_starts, day), title)
+                placed = cues.plan(script.segments, briefing.stories, segment_starts, day, mood)
+                added = cues.splice(d, placed, title, cues.first_sentence(script, d))
             except Exception as exc:  # nor are the cues; rebuild the MP3 without them, in case a rerun put them in
                 print(f"  cues failed ({exc}); building the episode without them")
                 added = cues.splice(d, [], title)
@@ -163,6 +166,7 @@ def main() -> None:
     r.add_argument("--fresh", action="store_true", help="Ignore cached stage outputs")
     r.add_argument("--no-publish", action="store_true", help="Skip GitHub release + feed")
     r.add_argument("--no-email", action="store_true", help="Skip email delivery")
+    r.add_argument("--mood", choices=["usual", "sombre"], help="The intro's mood, in place of the selection's")
     r.set_defaults(func=run)
     f = sub.add_parser("feed", help="Rebuild the podcast feed from GitHub releases")
     f.set_defaults(func=feed)

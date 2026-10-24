@@ -21,6 +21,11 @@ on:
         description: "Only rebuild the feed and redeploy Pages (no new episode)"
         type: boolean
         default: false
+      mood:
+        description: "The intro's music: as the selection set it (auto), or usual or sombre"
+        type: choice
+        options: [auto, usual, sombre]
+        default: auto
 
 permissions:
   actions: read     # download artifacts from earlier runs
@@ -120,7 +125,7 @@ jobs:
 
       - name: Run pipeline
         if: ${{ !inputs.feed_only }}
-        run: python -m nlnews run ${{ inputs.no_email && '--no-email' || '' }}
+        run: python -m nlnews run ${{ inputs.no_email && '--no-email' || '' }} ${{ inputs.mood != 'auto' && inputs.mood && format('--mood {0}', inputs.mood) || '' }}
 
       - name: Rebuild feed only
         if: ${{ inputs.feed_only }}

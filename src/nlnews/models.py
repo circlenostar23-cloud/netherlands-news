@@ -45,6 +45,8 @@ class RunnerUp(BaseModel):
 
 class StorySelection(BaseModel):
     stories: list[StoryPick]
+    mood: Literal["usual", "sombre"] = Field(default="usual", description="sombre only on a day of large loss of life, a disaster or attack, or national mourning; otherwise usual")
+    mood_reason: str = Field(default="", description="One line on why the day is usual or sombre")
     runners_up: list[RunnerUp] = Field(default=[], description="Stories that nearly made the cut, best first; listed in the show notes, not voiced")
 
 
