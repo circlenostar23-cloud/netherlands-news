@@ -4,16 +4,18 @@ Built into the pipeline (`src/nlnews/cues.py`) with the round 10 set; the tones 
 
 ## Pick up here
 
-**Round 13 is waiting on David's feedback** (2026-10-24). Decided so far:
+**Round 14 is waiting on David's feedback** (2026-10-24). Decided so far:
 - **Hard cues:** minor hard-1, sus hard-2 and minor hard-3 as the new `hard-1/2/3` (round 11).
 - **light-4** joins the rotation.
-- **Intro:** the `up-first` bed under the cold open. Round 13 adds a 2-bar sting at the top before the hosts start, which David asked to hear.
-- **Outro:** the `between` bed under all of What's on and the sign-off, into button **anthem-b** ("this version is best").
+- **Intro:** the `up-first` bed with a sting.
+- **Outro:** the `between` bed under all of What's on and the sign-off, joined straight to What's on's theme.
+- **Sombre intro:** liked, as is round 13's sombre theme ("the new end sting"), which could also be a hard story cue.
 
-Open questions:
-- Does the sting at the top work?
-- Is the sombre intro right? `round-13.py` has it for a day after a tragedy: E minor, a 0.36 s beat, no backbeat, its own sting and theme.
-- Does What's on's theme joining straight into the bed work?
+`round-14.py` tries:
+- **Intro split:** the top line and hook dry, the sting 0.3 s after them, then the hello over the bed. The hello is found as the cold open's line with the weekday in it. In the pipeline the script could mark it instead.
+- **Sombre options:** two more sombre beds, `pulse` and `air`, and the sombre theme as `hard-4`, plus `hard-4 short`.
+- **Outro, tighter:** a bar of D9sus fades in under the last story's last words, What's on's theme lands 0.3 s after them, and the hosts start over its last bars. The gap from the last word to the hosts goes from 5.9 s to 2.5 s (after 2 bars) or 1.4 s (after 1 bar).
+- **Outro buttons:** three made from the bed's own chords, hook and kit, at its tempo (`bed-a/b/c`), since anthem-b sounded "a little mismatched" with the bed.
 
 **Round 13 is built from the run's voiced files** (the `episode-data` artifact) with the pipeline's own placement: `chapters.find()`, `cues.plan()` and `cues._cut()`, which includes the breath fix. Run it as `PYTHONPATH=src python round-13.py <out> data/<day>`. Rounds 11–12 cut their demos from the published episode, which already had round 10's cues in it. Samples for each round are in `data/transition-samples/round-NN/` in the main checkout.
 
@@ -117,7 +119,8 @@ A different low note under each (E under the hard cues gives a sober, minor colo
 | 10 | Longer themes (3 bars, ~5 s) in version 2's language with a fuller kit (kick, closed hats on eighths, soft shaker): **intro** after the hello, **What's on**, **sign-off**. Demos now play each cue once, hard and light alternating; every tone is its own file, named by version and cue | "Getting somewhere solid": **version 2 plus these themes is the set to refine** |
 | 11 | After hearing ep-2026-10-24, the first episode with cues. Hard cues: "a little more neutral rather than so positive", in two versions (suspended, minor). light-4. Five sign-off takes. Intro bed in three feels | Notes on round 10: **light-1 and light-3 are favourites** (jazzy chords, more interesting rhythm); **What's on is the favourite theme** (jazzy, the suspended last note); the intro theme is "pretty good"; the button "sounds a little too christmasy". On round 11: minor hard-1, sus hard-2, minor hard-3 and light-4 are good; likes buttons anthem-b and free-b; "really like" the up-first and between beds |
 | 12 | The round 11 picks together; the up-first bed under the real cold open into the first story; the between bed under the sign-off, or What's on and the sign-off, into each liked button; themes land 0.3 s after the last word | Hard picks and light-4 confirmed; on the outro: "the What's on version is best" with anthem-b, and asked whether the bed could join the theme instead of fading in. On the intro: try a sting at the top; the cut sounded like it lost a breath; wanted a more serious version for a day after a tragedy |
-| 13 | Built from the run's voiced files with the breath fix. Intro: a sting at the top, the up-first bed, the intro theme. A sombre intro for tragedy days. Outro: What's on's theme straight into the between bed, tempo fitted to land anthem-b | Waiting for feedback |
+| 13 | Built from the run's voiced files with the breath fix. Intro: a sting at the top, the up-first bed, the intro theme. A sombre intro for tragedy days. Outro: What's on's theme straight into the between bed, tempo fitted to land anthem-b | Intro "nice": try some of the cold open dry before the sting. Sombre intro "nice": hear a couple of other options; its end sting could also be a hard story cue. Outro: too long a wait for What's on's theme after the story; anthem-b is a little mismatched with the bed |
+| 14 | Intro: cold open dry, sting, hello over the bed. Sombre beds `pulse` and `air`; `hard-4` (and `hard-4 short`). Outro: What's on's theme fades in under the story's end, hosts over its last bars; buttons `bed-a/b/c` from the bed | Waiting for feedback |
 
 ## Lessons
 
