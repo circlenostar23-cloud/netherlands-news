@@ -6,6 +6,8 @@ name: Test episode
 # after the audio (chapters, transcript, show notes) run with the current code.
 # `remove` deletes the test release again. Podcast apps keep an episode they've already seen
 # (same guid), so republish a change under a new name rather than over the old one. Both rebuild the feed and redeploy Pages.
+# `check` builds the episode the same way and keeps it as the run's `test-episode` artifact, with no release or
+# Pages deploy, so it also runs from a branch (only main may deploy to github-pages).
 on:
   workflow_dispatch:
     inputs:
@@ -17,7 +19,7 @@ on:
         default: test
       action:
         type: choice
-        options: [publish, remove]
+        options: [publish, remove, check]
         default: publish
       mood:
         description: "The intro's music: as the selection set it (auto), or usual or sombre"
@@ -36,7 +38,51 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  check:
+    if: ${{ inputs.action == 'check' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      DAY: ${{ inputs.date }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-tiny.en
+      - run: pip install -e .
+      - name: Fetch the day's working files
+        run: |
+          run=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow episode.yml -L 20 --json databaseId,createdAt \
+            --jq "[.[] | select(.createdAt[:10] == \"$DAY\")][0].databaseId // empty")
+          [ -n "$run" ] || { echo "No Daily episode run on $DAY"; exit 1; }
+          gh run download "$run" --repo "$GITHUB_REPOSITORY" -n episode-data -D data
+      - name: Build the episode
+        run: |
+          set -o pipefail
+          rm -f "data/$DAY/chapters.json" "data/$DAY/transcript.vtt"
+          python -m nlnews run --date "$DAY" --stop-after audio ${{ inputs.mood != 'auto' && format('--mood {0}', inputs.mood) || '' }} | tee build.log
+          if grep -E "cues failed|chapters failed" build.log; then exit 1; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: test-episode
+          path: |
+            data/${{ inputs.date }}/episode.mp3
+            data/${{ inputs.date }}/chapters.json
+            data/${{ inputs.date }}/transcript.vtt
+            build.log
+          retention-days: 7
+
   test:
+    if: ${{ inputs.action != 'check' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
