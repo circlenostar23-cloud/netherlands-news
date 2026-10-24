@@ -4,7 +4,12 @@ Built into the pipeline (`src/nlnews/cues.py`) with the round 10 set; the tones 
 
 ## Pick up here
 
-**Round 15 is waiting on David's feedback** (2026-10-24). Decided so far:
+**Round 16 is waiting on David's feedback** (2026-10-24).
+- **Intro sting after the cold open's first two sentences** (David's pick from round 15, on ep-2026-10-23). The split goes in the quiet after the second sentence, before the next breath (`round-15.py`'s `sentence_ends()` and `quiet_point()`).
+- **The loop into the sting:** `round-16.py` fades in 2 or 4 bars of the up-first loop under the second sentence, leading into the sting on its downbeat. It's shorter than the outro's six bars, since it only runs under two sentences.
+- **The glitch at "students are furious" on ep-2026-10-23 is Gemini's.** The mix is identical to the raw chunk there, and the first music comes in after those words. The run's voice check passed the chunk, because it only checks words and voices against the script, not dropouts.
+
+**Round 15** (2026-10-24). Decided so far:
 - **Hard cues:** minor hard-1, sus hard-2 and minor hard-3 as `hard-1/2/3`; `hard-4` (round 13's sombre theme) for a major story and `hard-4 short` for a less major one. Both "great".
 - **light-4** joins the rotation.
 - **Intro:** the `up-first` bed with a sting.
@@ -126,7 +131,8 @@ A different low note under each (E under the hard cues gives a sober, minor colo
 | 12 | The round 11 picks together; the up-first bed under the real cold open into the first story; the between bed under the sign-off, or What's on and the sign-off, into each liked button; themes land 0.3 s after the last word | Hard picks and light-4 confirmed; on the outro: "the What's on version is best" with anthem-b, and asked whether the bed could join the theme instead of fading in. On the intro: try a sting at the top; the cut sounded like it lost a breath; wanted a more serious version for a day after a tragedy |
 | 13 | Built from the run's voiced files with the breath fix. Intro: a sting at the top, the up-first bed, the intro theme. A sombre intro for tragedy days. Outro: What's on's theme straight into the between bed, tempo fitted to land anthem-b | Intro "nice": try some of the cold open dry before the sting. Sombre intro "nice": hear a couple of other options; its end sting could also be a hard story cue. Outro: too long a wait for What's on's theme after the story; anthem-b is a little mismatched with the bed |
 | 14 | Intro: cold open dry, sting, hello over the bed. Sombre beds `pulse` and `air`; `hard-4` (and `hard-4 short`). Outro: What's on's theme fades in under the story's end, hosts over its last bars; buttons `bed-a/b/c` from the bed | Split intro: the sting comes in too late and covers a breath; try it after a sentence or two. **sombre-pulse**, **hard-4** (for a major story) and **hard-4 short** (a less major one) are great. Outro: **bed-b** is best; wanted a loop fading in under the story's end, not just one bar; try bed-b without hi-hats and with bells |
-| 15 | Sting after one or two sentences, split before the breath. Outro loop of six bars under the story's end. bed-b without hi-hats, with glint, with fuller bells | Waiting for feedback |
+| 15 | Sting after one or two sentences, split before the breath. Outro loop of six bars under the story's end. bed-b without hi-hats, with glint, with fuller bells. Re-rendered on ep-2026-10-22, and the intro test on ep-2026-10-23 for longer sentences | **The outro is ready**, with bed-b without hi-hats. The sting goes **after two sentences**. Asked about a glitch at "students are furious" (Gemini's) and for a loop fading in before the sting |
+| 16 | 2 or 4 bars of the up-first loop fading in under the second sentence, into the sting | Waiting for feedback |
 
 ## Lessons
 
