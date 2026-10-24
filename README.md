@@ -37,7 +37,7 @@ Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`
    - `ANTHROPIC_API_KEY`: optional, only if you switch the writer to Claude
    - `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `EMAIL_TO`: optional. If any are missing, email is skipped. A Gmail app password grants full mailbox access, so the recommended backup is instead: on the repo page, **Watch → Custom → Releases**. GitHub then emails you each new episode, with the MP3 and the briefing as downloads.
    - `FEED_SECRET_PATH`: a random string, e.g. the output of `openssl rand -hex 12`
-   - `WEBSITE_DISPATCH_TOKEN`: optional. A fine-grained PAT with **Contents: read and write** on `circlenostar23-cloud/dnlevitz-website` only. After each run the workflow uses it to tell dnlevitz.com to rebuild, so the site's episode list includes the new episode. Without it, the site updates on its next deploy instead.
+   - `WEBSITE_DISPATCH_TOKEN`: optional. A fine-grained PAT with **Contents: read and write** on `circlenostar23-cloud/dnlevitz-website` only. After each run the workflow uses it to tell dnlevitz.com to rebuild, so the site's episode list includes the new episode. Without it, the site updates on its next deploy instead. The token (GitHub name `netherlands-news-on-website`) expires **2027-01-22**; renew it before then and update this secret.
 4. Add a **variable** `SITE_BASE_URL` set to `https://circlenostar23-cloud.github.io/netherlands-news`.
 5. Go to **Actions → Daily episode → Run workflow** to test it.
 6. Subscribe. In Apple Podcasts: **Library → ⋯ → Follow a Show by URL**, then paste `<SITE_BASE_URL>/<FEED_SECRET_PATH>/feed.xml`. Overcast and Pocket Casts support adding a feed by URL too.
@@ -48,7 +48,7 @@ Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`
 - `X-GitHub-Api-Version: 2022-11-28`
 - `Content-Type: application/json`
 
-The token is a fine-grained PAT with **Actions: read and write** on this repo only. It expires, so renew it before then. A successful request returns `204`. The gate job skips any trigger once today's `ep-<date>` release exists, so the backup (once set up) never spends TTS quota. To rebuild anyway, run the workflow manually with **force** ticked.
+The token is a fine-grained PAT with **Actions: read and write** on this repo only. It expires on **2026-12-28** (GitHub token `dutch-news-scheduler`), so renew it before then. A successful request returns `204`. The gate job skips any trigger once today's `ep-<date>` release exists, so the backup (once set up) never spends TTS quota. To rebuild anyway, run the workflow manually with **force** ticked.
 
 **Privacy note:** the feed is *unlisted*, not private. Its URL is unguessable and `itunes:block` keeps it out of directories. The episodes themselves are public: dnlevitz.com lists every `ep-YYYY-MM-DD` release with its show notes and plays the MP3 from the release (side runs like `ep-<date>-<name>` are left out). Don't share the feed URL itself.
 
