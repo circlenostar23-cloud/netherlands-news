@@ -69,16 +69,18 @@ def sentence_ends(d, voice):
     ends, k = [], 0
     for s in sentences[:-1]:
         k += len(tokens(s))
-        if k - 1 in match and k in match:
-            ends.append((heard[match[k - 1]][2], heard[match[k]][1]))
+        if k - 1 in match and match[k - 1] + 1 < len(heard):  # the next word as heard, even if misheard
+            ends.append((heard[match[k - 1]][2], heard[match[k - 1] + 1][1]))
     return ends
 
 
 def quiet_point(voice, a, b):
-    """The quietest 40 ms between `a` and `b` seconds: the gap before the next breath."""
+    """The quietest 40 ms around the gap Whisper puts between `a` and `b` seconds (its word times can be
+    a few tenths out, so the search starts 0.3 s early): the gap before the next breath."""
     m = voice[:, 0]
     win, hop = int(0.04 * SR), int(0.005 * SR)
-    starts = range(int(a * SR), max(int(a * SR) + 1, int(b * SR) - win), hop)
+    lo, hi = int((a - 0.3) * SR), int((b + 0.1) * SR) - win
+    starts = range(lo, max(lo + 1, hi), hop)
     return (min(starts, key=lambda s: np.mean(m[s: s + win] ** 2)) + win // 2) / SR
 
 
