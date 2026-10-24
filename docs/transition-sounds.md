@@ -4,25 +4,53 @@ Built into the pipeline (`src/nlnews/cues.py`) with the set chosen in rounds 11�
 
 ## Pick up here
 
-**The new set is built in** (branch `claude/cues-new-set-34ee9a`, 2026-10-24) and waiting for David to listen and merge. The rebuilt days are in `data/transition-samples/round-17-pipeline/` in the main checkout:
+**The new set is built in** (branch `claude/cues-new-set-34ee9a`, 2026-10-24) and waiting for David to listen and merge.
 
-| File | What to listen for |
-|---|---|
-| `ep-2026-10-24.mp3` | Intro: the sting at 0:04 after "…son-in-law?", the up-first bed, the intro theme at 0:25. `hard-4` before the Hajar case (2:47), `hard-4-short` before Storm Austen (4:55) and single-use packaging (8:24). Outro: the loop fades in under the steamboat story from 13:03, What's on's theme at 13:11, the button at 14:19 |
-| `ep-2026-10-23.mp3` | Intro: the sting at 0:05 after the first sentence, the intro theme at 0:26. `hard-4-short` before Hajar (2:34) and the fake-pill webshops (7:13). Outro: the loop from 13:14, What's on's theme at 13:21, and a long What's on (91 bars of bed) to the button at 15:06 |
-| `ep-2026-10-24 - sombre intro.mp3` | The same day with `--mood sombre`: the sombre-pulse bed, sting and theme |
+**Round 18 (David's notes on the round 17 episodes):**
+1. "The tones between stories feel a tiny bit delayed." A story cue went in at the next story's start, after the whole pause, so its downbeat came 0.4–1.9 s after the last word (mean 1.3 s). It now lands like the themes: downbeat `STORY_AFTER` (0.6 s) after the last word, swell starting as the host finishes, the next story's first words under its ring-out as before. That's ~0.7 s sooner on average, and the same at every break.
+2. "On 10-23 the intro sting came after a breath." A gap in the solver: the split (and the breath fix, `_cut()`) took the quietest moment in the gap, and on 10-23 the stillness between the inhale and "Now…" (−60 dB) was deeper than the one between the first sentence and the inhale (−54 dB), so the split went after the breath. `_before_breath()` now looks for the breath itself (40 ms+ between 45 and 20 dB under the voices, after a quiet) and splits before it: 10-23's split moved from 4.63 s to 4.23 s. `_cut()` uses the same check; no story break on 10-23 or 10-24 had the problem, so none of them moved.
+3. "Why are we repeating hard-4 and hard-4-short?" They went to every hard story over the airtime cut-offs (two `hard-4-short` on each day). Now each plays at most once an episode: `hard-4` before the hard story with the most airtime if it's 300+ words, `hard-4-short` before the next if it's 220+. The rest rotate `hard-1/2/3`, which with five hard stories still plays one of them twice (never in a row).
+4. "Give me a way to jump between the transitions": samples now come as one short clip per transition (below), numbered in order, as well as the whole episode.
+
+Clips, in `data/transition-samples/round-18-sooner/` in the main checkout (each from a few seconds before the break; the whole episodes are there too):
+
+| Clip | Cue | Into | At |
+|---|---|---|---|
+| `10-23 01 intro` | intro | cold open, sting (now before the breath), bed, theme | 0:00 |
+| `10-23 02 hard-4-short` | hard-4-short | Hajar: a plea for help | 2:28 |
+| `10-23 03 hard-2` | hard-2 | Dutch embassy in Cairo closes | 4:20 |
+| `10-23 04 hard-3` | hard-3 | Schiphol's new decree | 5:59 |
+| `10-23 05 hard-1` | hard-1 | Fake-pill webshops | 7:03 |
+| `10-23 06 hard-2` | hard-2 | National Slavery Museum | 8:35 |
+| `10-23 07 light-1` | light-1 | A historic night for Dutch football | 9:48 |
+| `10-23 08 light-2` | light-2 | Airbnb hosts | 11:12 |
+| `10-23 09 light-3` | light-3 | The Euromast's mystery whistle | 12:16 |
+| `10-23 10 outro` | loop, What's on theme, bed | This weekend in Amsterdam | 13:01 |
+| `10-23 11 button` | button | after the sign-off | 14:48 |
+| `10-24 01 intro` | intro | cold open into the Kushner story | 0:00 |
+| `10-24 02 hard-4` | hard-4 | Hajar was killed the day she vanished | 2:41 |
+| `10-24 03 hard-3` | hard-3 | Storm Austen | 4:48 |
+| `10-24 04 hard-1` | hard-1 | PHP flaw | 6:15 |
+| `10-24 05 hard-2` | hard-2 | Albert Heijn deliveries | 7:33 |
+| `10-24 06 hard-4-short` | hard-4-short | single-use packaging | 8:14 |
+| `10-24 07 light-2` | light-2 | Van Gerwen | 10:04 |
+| `10-24 08 light-3` | light-3 | Sinterklaas's steamboat | 11:27 |
+| `10-24 09 outro` | loop, What's on theme, bed | What's on in Amsterdam | 12:50 |
+| `10-24 10 button` | button | after the sign-off | 14:02 |
+
+Round 17's whole episodes (story cues at the old timing) are in `data/transition-samples/round-17-pipeline/`, with the sombre intro.
 
 | Part | What plays | Where it is |
 |---|---|---|
-| Intro | The cold open's first sentence dry; the `up-first` sting 0.3 s after its last word, split in the quiet before the next breath; the rest of the cold open over the `up-first` bed; the intro theme 0.3 s after the cold open's last word | `cues._opening()`; split from `first_sentence()` and `_quiet_point()` (round 15's `sentence_ends()` and `quiet_point()`) |
+| Intro | The cold open's first sentence dry; the `up-first` sting 0.3 s after its last word, split in the quiet before the next breath (`_before_breath()`); the rest of the cold open over the `up-first` bed; the intro theme 0.3 s after the cold open's last word | `cues._opening()`; split from `first_sentence()` and `_quiet_point()` (round 15's `sentence_ends()` and `quiet_point()`) |
 | Sombre intro | The same on the `sombre-pulse` bed with the sombre sting and `sombre-intro` theme, on a day whose `mood` is `sombre` | `mood` in `prompts/select.md` and `StorySelection`; override with `--mood` or the workflows' `mood` input |
-| Hard stories | `hard-1/2/3` (round 11's minor, sus, minor) in rotation; `hard-4` for a hard story with 300+ words of airtime, `hard-4-short` for 220–299 | `cues.plan()`, `MAJOR` |
+| Hard stories | `hard-1/2/3` (round 11's minor, sus, minor) in rotation; `hard-4` once, before the hard story with the most airtime if 300+ words, `hard-4-short` once, before the next if 220+. Each lands 0.6 s after the last word | `cues.plan()`, `MAJOR`; `STORY_AFTER` |
 | Light stories | `light-1/2/3` (round 10) and `light-4` (round 11) in rotation | `cues.plan()` |
 | Outro | Six bars of the `between` loop fade in under the last story's end; What's on's theme 0.3 s after its last word; the hosts start after two of its three bars; the `between` bed from its last bar line under What's on and the sign-off; button `bed-b` without hi-hats 0.3 s after the last word | `cues._section()`, `_closing()` (round 15's `closing()`) |
 
 **How it's built:**
-- **Rotation:** each kind's rotation starts at the day number mod the pool size, so every cue is heard over a week (before, `hard-1` and `light-1` opened every show and `light-3` was rarely heard). `hard-4` and `hard-4-short` aren't in the rotation, and a story never gets the same cue as the last story of its kind: two major hard stories in a row get `hard-4`, then a rotation cue.
-- **Files:** story cues and themes are WAVs in `assets/cues/`, written by `docs/transition-sounds/render-cues.py` straight from the round scripts' functions. The themes keep their 0.65 s lead-in, so the pipeline knows where each downbeat is. The round 10 files replaced are in `assets/cues/round-10/`; move one back up to restore it.
+- **Rotation:** each kind's rotation starts at the day number mod the pool size, so every cue is heard over a week (before, `hard-1` and `light-1` opened every show and `light-3` was rarely heard). `hard-4` and `hard-4-short` aren't in the rotation and play once an episode at most.
+- **Files:** story cues and themes are WAVs in `assets/cues/`, written by `docs/transition-sounds/render-cues.py` straight from the round scripts' functions. Every cue keeps its 0.65 s lead-in, so the pipeline knows where its downbeat is; `light-1/2/3` were re-rendered from round 9's functions for that (identical to round 10's files once trimmed). The round 10 files replaced are in `assets/cues/round-10/`; move one back up to restore it (it would then play 0.65 s late, since it has no lead-in).
 - **Beds as stems:** a bed's bar count and tempo change daily, and CI has no Logic, so `render-cues.py` also writes each bed as one-beat stems (`assets/cues/beds/<bed>/<bar>.<beat>.flac`, 8.3 MB): the last 8 bars by bars left (`near-1` … `near-8`), any earlier bar by its chord (`far-0` … `far-3`), the sting's 2 bars, and the outro's first bar. `_bed()` lays them on the fitted beats. At the beds' own tempo this matches round 13's `bed()` sample for sample (correlation 0.999); at a fitted tempo the hits stay within 2 ms of it (8 ms at a 6% nudge). Stretching whole bars with ffmpeg's `atempo` was tried first: it moved hits by 10–14 ms and smeared them.
 - **Fitting:** `_fit()` picks the bar count nearest the bed's own tempo; a nudge of more than 12% (`MAX_NUDGE`, only a very short span) leaves the bed out. On ep-2026-10-24: up-first +1.5%, outro +0.6%, sombre −0.4%. The button and themes play at their own tempo, not the bed's (round 15 rendered the button at the fitted tempo; the difference is under 1% on these days).
 - **Level and ducking** follow round 13's `bed_level()`: the bed set to the voices' level, then ducked 17 dB under them while they speak and 9 dB between lines; the sting plays 4 dB up until the hosts start; What's on's theme dips 10 dB under the hosts. Checked against round 15's 10-23 intro demo: same timing, music under the voices within 0.5 dB.
@@ -32,7 +60,7 @@ Built into the pipeline (`src/nlnews/cues.py`) with the set chosen in rounds 11�
 
 **Testing on Actions:** only `main` may deploy to `github-pages`, so **Test episode**'s `publish` can't run from a branch. Its new `check` action builds a day the same way, without publishing, and keeps the episode as the `test-episode` artifact. It passed for 10-23 and 10-24 on the branch (runs 40095646383 and 40095857332), with the same bars, cues and length as the local builds and no voice requests. After merging, `publish` (with `mood: sombre` to hear that intro) puts a test episode in the feed.
 
-**Next:** David listens to the three files above and decides whether to merge. Watch for: a cold open whose first sentence is very short (the sting comes in only a few seconds in, as on 10-24); the first `mood: sombre` the selection sets, and its reason in the log.
+**Next:** David listens to the round 18 clips and decides whether to merge. `STORY_AFTER` is the one number to change if the story cues should come sooner or later still. Watch for: a cold open whose first sentence is very short (the sting comes in only a few seconds in, as on 10-24); the first `mood: sombre` the selection sets, and its reason in the log.
 
 **Re-rendering the cues** (on this Mac, from the main checkout's `.venv`): `python docs/transition-sounds/render-cues.py assets/cues`. It takes ~10 s and doesn't need `render.swift`.
 
@@ -187,7 +215,7 @@ Whatever renders them, the cues should be made once and committed as files (`ass
 2. **Only at heard breaks.** `chapters.find()` now also returns each segment's start and whether Whisper heard it (or it's the start of a file) rather than estimating it. A cue at an estimated start is skipped, because an estimate can be seconds off.
 3. **Splice** (`splice()`, with `_opening()`, `_section()` and `_closing()` for the themes and beds; see Pick up here). The MP3 is rebuilt from the voiced files in `concat.txt`, with the cues in, and encoded once with the same settings as `tts.py`. Because it always starts from the voiced files, a rerun (e.g. **Test episode**, which deletes `chapters.json`) never adds the cues twice. If the cues fail, the MP3 is rebuilt without them.
 4. **Breaths.** Whisper sometimes puts a word's start just after the host's inhale for it, so cutting there plays breath, cue, word. `_cut()` looks back `BREATH_BACK` (0.8 s) for the quietest 40 ms; if that's more than `QUIET` (50 dB) under the voices and something after it is louder than `BREATH` (36 dB under), it cuts at the quiet, and the breath plays under the cue's ring-out with its line. On ep-2026-10-24 and 10-23 this moved 1 of 19 cuts (the 10-24 intro, 0.30 s earlier): breaks at a file start have no breath on either side, and at the others Whisper's start is usually before the breath already. Margins: that breath was 31.5 dB under the voices, the loudest other sound before a break 42 dB under. A false trigger only moves the cut within silence. Before/after clips: `data/transition-samples/breath-cut/` in the main checkout.
-5. **Timing.** Each story break adds `BEFORE` (0.25 s) of quiet plus the cue, minus the `UNDER_NEXT` (0.6 s) of ring-out that plays under the next host's first words, as in the demos. A theme lands `LAND_AFTER` (0.3 s) after the last word, found in the audio (`_last_word()`), with its swell under the word; the hosts come back `UNDER_NEXT` before its end (the intro) or after `HOST_BARS` of its bars (What's on). `shift()` moves the chapters and transcript to match: a chapter opens at the cut, and the transcript line starts after the cue.
+5. **Timing.** A story cue's downbeat lands `STORY_AFTER` (0.6 s) after the last word, and the next story starts `UNDER_NEXT` (0.6 s) before the cue ends, under its ring-out; the time added is whatever that needs beyond the pause already there. A theme lands `LAND_AFTER` (0.3 s) after the last word, found in the audio (`_last_word()`), with its swell under the word; the hosts come back `UNDER_NEXT` before its end (the intro) or after `HOST_BARS` of its bars (What's on). `shift()` moves the chapters and transcript to match: a chapter opens at the cut, and the transcript line starts after the cue.
 6. **Level.** Each cue is trimmed of silence (a theme keeps its lead-in), set to `CUE_UNDER` (7 dB) under the episode's voices, and capped at `PEAK` (-9 dBFS). The files' own level and padding don't matter. The beds are set and ducked as in Pick up here.
 
 **Swapping tones:** the cue files are `assets/cues/{hard-*,light-*,intro,sombre-intro,section,button}.wav`, 44.1 kHz mono. There can be any number of `hard-*` and `light-*` files, and a missing one is skipped. `light-1/2/3` are the round 10 MP3s converted to WAV; the rest come from `render-cues.py`. A theme's downbeat must be `LEAD` (0.65 s) into its file. Folding to mono didn't change their level (checked on `hard-1` and `section`).

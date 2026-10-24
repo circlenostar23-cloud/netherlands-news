@@ -1,7 +1,7 @@
 """The set decided in rounds 11-16, rendered for the pipeline (src/nlnews/cues.py) into assets/cues.
 
-Story cues and themes are whole files, 44.1 kHz mono WAV. The themes keep their lead-in, so each
-one's downbeat is LEAD seconds in, where the pipeline lands it.
+Story cues and themes are whole files, 44.1 kHz mono WAV. Each keeps its lead-in, so its downbeat
+is LEAD seconds in, where the pipeline lands it. light-1/2/3 are round 10's, re-rendered from round 9.
 
 The beds can't be whole files: each is fitted to the day's timing, with a bar count and tempo that
 change from day to day, and their sounds are Logic's, which CI doesn't have. So each bed is rendered
@@ -106,6 +106,13 @@ def stem(events):
     return y[: loud[-1] + 1]
 
 
+def kept(sig, longest):
+    """finish() without trimming the start, so the cue's downbeat stays LEAD in, as the pipeline lands it."""
+    s = ring_out(reverb(sig / np.abs(sig).max(), 0.16), longest=longest)
+    s = s * 10 ** ((VOICE_DB - 7 - level(s)) / 20)
+    return s * min(1, 10 ** (-9 / 20) / np.abs(s).max())
+
+
 def mono(y):
     return y.mean(axis=1)
 
@@ -126,11 +133,11 @@ if __name__ == "__main__":
         "hard-2": r11.story(*r11.HARD["sus"]["hard-2"], "hard"),
         "hard-3": r11.story(*r11.HARD["minor"]["hard-3"], "hard"),
         "light-4": r11.story(*r11.LIGHT_4, "light"),
-    }
+    } | {f: r11.r9.air_pulse(r11.r9.RETRO, r11.r9.RETRO_HARM)(f) for f in ("light-1", "light-2", "light-3")}
     for name, sig in story.items():
-        write_mono(out / f"{name}.wav", mono(finish(sig, 0.16, 3.6)))
-    write_mono(out / "hard-4.wav", mono(finish(r11.button("sombre-intro"), 0.16, 6.5)))
-    write_mono(out / "hard-4-short.wav", mono(finish(r11.button("hard-4 short"), 0.16, 6.5)))
+        write_mono(out / f"{name}.wav", mono(kept(sig, 3.6)))
+    write_mono(out / "hard-4.wav", mono(kept(r11.button("sombre-intro"), 6.5)))
+    write_mono(out / "hard-4-short.wav", mono(kept(r11.button("hard-4 short"), 6.5)))
     themes = {"intro": r10.theme("intro"), "sombre-intro": r11.button("sombre-intro"), "section": r10.theme("section")}
     for name, sig in themes.items():
         write_mono(out / f"{name}.wav", mono(r13.themed(sig)))

@@ -4,16 +4,17 @@ moved on (docs/transition-sounds.md).
   intro    the cold open's first sentence dry, a sting LAND_AFTER its last word, the rest of the cold
            open over a bed, and the intro theme LAND_AFTER the cold open's last word. On a sombre day
            (the selection's `mood`) the bed, sting and theme are the sombre ones
-  stories  a cue before each later story, chosen by its `kind` and rotating within it; a major hard
-           story (by its airtime) gets hard-4 or hard-4-short
+  stories  a cue before each later story, landing STORY_AFTER the host's last word, chosen by its
+           `kind` and rotating within it; the hard stories with the most airtime get hard-4 and
+           hard-4-short, once each
   outro    the between loop fades in under the last story's end, What's on's theme lands after its
            last word, the hosts start over the theme's last bars, the between bed runs on under
            What's on and the sign-off, and the button lands LAND_AFTER the last word
 
 The cues are files in assets/cues: `hard-*.wav` and `light-*.wav` (any number of each), and the
-themes `intro.wav`, `sombre-intro.wav`, `section.wav` and `button.wav`, whose downbeat is LEAD
-seconds in. A missing one is skipped. They're set to sit CUE_UNDER dB under the voices and peak at no
-more than PEAK dBFS here, so their own level doesn't matter.
+themes `intro.wav`, `sombre-intro.wav`, `section.wav` and `button.wav`. Each downbeat is LEAD
+seconds into its file. A missing one is skipped. They're set to sit CUE_UNDER dB under the voices
+and peak at no more than PEAK dBFS here, so their own level doesn't matter.
 
 The beds are fitted to the day: built back from where their theme lands, with the bar length nearest
 their own tempo that fits a whole number of bars. They're assembled from stems in assets/cues/beds,
@@ -44,13 +45,14 @@ BEDS = CUES / "beds"
 RATE = 44100
 CUE_UNDER = 7  # dB under the voices
 PEAK = -9  # dBFS
-BEFORE = 0.25  # seconds of quiet added before a story cue
 UNDER_NEXT = 0.6  # seconds of a cue's ring-out that runs under the next host's first words
 BREATH_BACK = 0.8  # seconds before a heard word to look for the host's breath in
 QUIET, BREATH = 50, 36  # dB under the voices: the quiet before a breath, and a breath
+SPEECH, BREATHY = 20, 45  # dB under the voices: louder is speech; between the two, a breath
 LAND_AFTER = 0.3  # seconds from the last word to a theme's downbeat
+STORY_AFTER = 0.6  # and to a story cue's, so its swell starts as the host finishes
 LEAD = 0.65  # seconds of a theme's swell before its downbeat
-MAJOR = {"hard-4": 300, "hard-4-short": 220}  # a hard story with at least this many words of airtime gets it
+MAJOR = {"hard-4": 300, "hard-4-short": 220}  # the hard story with the most airtime, if at least this many words, gets it
 MOODS = {"usual": ("intro", "up-first"), "sombre": ("sombre-intro", "sombre-pulse")}  # theme, bed
 STING_BARS, STING_UP = 2, 4  # the sting's bars, and the dB it plays over the bed until the hosts start
 SECTION_BAR, SECTION_BARS, HOST_BARS = 1.12, 3, 2  # What's on's theme: bar, bars, and bars before the hosts
@@ -63,14 +65,21 @@ def plan(segments: list, stories: list, segment_starts: list[tuple[float, bool]]
     """Where each cue goes, as (seconds into the voiced audio, cue name); the button at math.inf, the end.
     `segments` are the script's: cold open, one per story, What's on if there is one, sign-off. Each
     kind's rotation starts at a cue that moves on by one each day, so every cue gets heard over a week,
-    not only the first one or two. A cue never plays before two stories of a kind in a row."""
+    not only the first one or two. hard-4 and hard-4-short play once at most, before the hard stories
+    with the most airtime, so the rotation's three cues carry the rest."""
     extra = segments[1 + len(stories):]
     if not 1 <= len(extra) <= 2 or len(segment_starts) != len(segments):
         print(f"  {len(segments)} segments for {len(stories)} stories; no cues")
         return []
     pools = {k: sorted(p.stem for p in CUES.glob(f"{k}-*.wav") if p.stem not in MAJOR) for k in ("hard", "light")}
     used = {k: day.toordinal() for k in pools}
-    last = {}  # the cue before the last story of each kind
+    major, left = {}, sorted(range(2, len(stories) + 1), key=lambda i: -stories[i - 1].airtime)  # stable: ties go to the earlier
+    for name, words in MAJOR.items():
+        if (CUES / f"{name}.wav").exists() and (i := next((i for i in left if stories[i - 1].kind == "hard"
+                                                          and segment_starts[i][1]), None)) is not None:
+            if stories[i - 1].airtime >= words:
+                major[i] = name
+                left.remove(i)
     placed = []
     for i, story in enumerate(stories, start=1):
         start, heard = segment_starts[i]
@@ -80,14 +89,12 @@ def plan(segments: list, stories: list, segment_starts: list[tuple[float, bool]]
         if i == 1:
             placed.append((start, MOODS[mood][0]))
             continue
-        name = next((m for m, words in MAJOR.items() if story.kind == "hard" and story.airtime >= words), None)
-        if name is None or name == last.get(story.kind) or not (CUES / f"{name}.wav").exists():
+        if (name := major.get(i)) is None:
             if not (pool := pools[story.kind]):
                 continue
             name = pool[used[story.kind] % len(pool)]
             used[story.kind] += 1
         placed.append((start, name))
-        last[story.kind] = name
     if len(extra) == 2:  # What's on, whatever the script calls it, then the sign-off
         start, heard = segment_starts[1 + len(stories)]
         if heard:
@@ -146,7 +153,7 @@ def _level(x: np.ndarray) -> float:
 
 
 def _cue(name: str, voice_db: float, keep_lead: bool = False) -> np.ndarray:
-    """A cue set to the voices, its silence trimmed; a theme keeps its lead-in, so its downbeat stays LEAD in."""
+    """A cue set to the voices, its silence trimmed; with `keep_lead`, not at the start, so its downbeat stays LEAD in."""
     x = _decode("-i", str(CUES / f"{name}.wav"))
     sounding = np.nonzero(np.abs(x) > np.abs(x).max() * 10 ** (-55 / 20))[0]
     x = x[0 if keep_lead else sounding[0]: sounding[-1] + 1]
@@ -164,9 +171,30 @@ def _cut(voice: np.ndarray, t: float, voice_db: float) -> int:
         return c
     db = [10 * math.log10(np.mean(voice[s: s + win] ** 2) + 1e-12) for s in starts]
     q = int(np.argmin(db))
-    if db[q] < voice_db - QUIET and max(db[q:]) > voice_db - BREATH:
-        return starts[q] + win // 2
-    return c
+    cut = starts[q] + win // 2 if db[q] < voice_db - QUIET and max(db[q:]) > voice_db - BREATH else c
+    early = _before_breath(voice, c - int(BREATH_BACK * RATE), c + int(0.1 * RATE), voice_db)
+    return min(cut, early) if early is not None else cut
+
+
+def _before_breath(voice: np.ndarray, lo: int, hi: int, voice_db: float) -> int | None:
+    """In voice[lo:hi], from a word's end through a pause, the quiet just before the host's breath,
+    if the breath comes before the pause's quietest point (a word, a quiet, the breath, a deeper quiet,
+    the next word). Picking the quietest point alone would leave that breath before the cue."""
+    win, hop = int(0.01 * RATE), int(0.005 * RATE)
+    starts = np.arange(max(0, lo), max(lo + 1, min(hi, len(voice)) - win), hop)
+    db = np.array([10 * math.log10(np.mean(voice[s: s + win] ** 2) + 1e-12) for s in starts]) - voice_db
+    q = int(np.argmin(db))
+    speech = db > -SPEECH
+    i = start = max([k for k in range(q) if speech[k]], default=-1) + 1  # after the word before the quietest
+    breath = (db > -BREATHY) & ~speech
+    while i < q:
+        j = i
+        while j < q and breath[j]:
+            j += 1
+        if j - i >= 8 and i > start and db[start: i].min() < -QUIET:  # 40 ms or more of breath, after a quiet
+            return int(starts[start + int(np.argmin(db[start: i]))]) + hop
+        i = j + 1
+    return None
 
 
 def _last_word(x: np.ndarray, floor_db: float = -35) -> int:
@@ -178,12 +206,15 @@ def _last_word(x: np.ndarray, floor_db: float = -35) -> int:
     return (loud[-1] + 1) * win if len(loud) and env.max() > 0 else len(x)
 
 
-def _quiet_point(voice: np.ndarray, a: float, b: float) -> int:
-    """The quietest 40 ms around the gap Whisper puts between `a` and `b` seconds (its word times can be
-    a few tenths out, so the search starts 0.3 s early): the gap before the next breath."""
+def _quiet_point(voice: np.ndarray, a: float, b: float, voice_db: float) -> int:
+    """The gap before the next breath, around the one Whisper puts between `a` and `b` seconds (its word
+    times can be a few tenths out, so the search starts 0.3 s early): just before the breath if there is
+    one, else the quietest 40 ms."""
     win, hop = int(0.04 * RATE), int(0.005 * RATE)
-    lo, hi = int((a - 0.3) * RATE), int((b + 0.1) * RATE) - win
-    return min(range(lo, max(lo + 1, hi), hop), key=lambda s: np.mean(voice[s: s + win] ** 2)) + win // 2
+    lo, hi = int((a - 0.3) * RATE), int((b + 0.1) * RATE)
+    if (early := _before_breath(voice, lo, hi, voice_db)) is not None:
+        return early
+    return min(range(lo, max(lo + 1, hi - win), hop), key=lambda s: np.mean(voice[s: s + win] ** 2)) + win // 2
 
 
 def _beds() -> dict:
@@ -304,7 +335,7 @@ def _opening(mix: _Mix, t: float, theme_name: str, voice_db: float, voice_level:
     cut = min(_cut(voice, t, voice_db), len(voice))
     bed_name = next(b for th, b in MOODS.values() if th == theme_name)
     land = None
-    if split and _has_bed(bed_name) and 0 < (s := _quiet_point(voice, *split)) < cut:
+    if split and _has_bed(bed_name) and 0 < (s := _quiet_point(voice, *split, voice_db)) < cut:
         rest = _last_word(voice[s: cut]) + after
         if fitted := _fit(rest, _beds()["bars"][bed_name]):
             n, bar = fitted
@@ -377,11 +408,12 @@ def splice(out_dir: Path, cues: list[tuple[float, str]], title: str,
             _section(mix, t, voice_db, voice_level)
         elif name == "button":
             _closing(mix, voice_db, voice_level)
-        else:
-            cue = _cue(name, voice_db)
+        else:  # its downbeat STORY_AFTER the last word, the next story's first words under its ring-out
+            cue = _cue(name, voice_db, keep_lead=True)
             cut = min(_cut(voice, t, voice_db), len(voice))
-            mix.lay(mix.out(cut) + round(BEFORE * RATE), cue)
-            mix.insert(cut, min(t, len(voice) / RATE), round(BEFORE * RATE) + max(0, len(cue) - round(UNDER_NEXT * RATE)))
+            start = mix.out(_before(voice, mix, cut)) + round((STORY_AFTER - LEAD) * RATE)
+            mix.lay(start, cue)
+            mix.insert(cut, min(t, len(voice) / RATE), max(0, start + len(cue) - round(UNDER_NEXT * RATE) - mix.out(cut)))
     out = mix.build()
     pcm = (np.clip(out, -1, 1) * 32767).astype(np.int16).tobytes()
     tmp = out_dir / "episode.cues.mp3"
