@@ -4,6 +4,23 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 ## Backlog
 
+### Why ep-2026-10-26 didn't get the sombre intro
+*Logged 2026-10-26. Handoff: not investigated yet beyond the facts below.*
+
+**Question (David):** why did today's episode, which led with Storm Boelo, open with the usual intro instead of the sombre one?
+
+**What's known so far:**
+- The selection step set it. The run log (Daily episode run 40262976254) says `mood: usual: Storm Boelo killed a cyclist in Amsterdam, but the day isn't dominated by large loss of life or national mourning.` No `--mood` override was given.
+- That follows the rule as written. `prompts/select.md` (**Mood.**) says sombre is only for "deaths on a large scale, a disaster or attack, or national mourning", and "a single murder, a fatal accident, or a grim court case isn't enough". The `mood` field description in `models.py` (`StorySelection`) says the same. The day's toll was one cyclist killed, a kitesurfer missing, three crew injured on the cargo ship off Schiermonnikoog, and dozens of flights cancelled.
+- So the question is less "why did it misfire" than "should the rule cover a day like this": a named storm leading the show with a death and a search at sea. `docs/transition-sounds.md` (Choosing the sombre intro) explains why the selector judges it rather than keyword rules, and notes ep-2026-10-24 (the Hajar case) stayed `usual` on purpose.
+
+**Things to decide or check:**
+1. Listen to the opening of ep-2026-10-26 (republished at 11:30 with the sting fix) and decide whether sombre would have fit. If yes, say what about the day should count: the lead story's tone, a death in Amsterdam itself, an ongoing search, a storm warning (code orange or red)?
+2. If the rule changes, it's the **Mood.** paragraph in `prompts/select.md` plus the `mood` field description in `models.py`. Re-run the selection on a few past days (cached in each Daily episode run's `episode-data` artifact, kept 7 days, so 10-26's until about 11-02) to check it doesn't make sombre common.
+3. On a sombre day the cue rotation changes too: `hard-4` is left out if it would follow the sombre theme, because both use E D B (`PHRASES` in `cues.py`). Worth hearing on a storm-led line-up.
+
+**To hear 10-26 with the sombre intro:** run **Test episode** with date `2026-10-26`, mood `sombre`, and either `check` (artifact only) or `publish` with a new name (a separate `ep-2026-10-26-<name>` release in the feed). To make it the real episode, use `replace` with mood `sombre`: it swaps the audio in `ep-2026-10-26`, keeps the show notes, and rebuilds the feed and dnlevitz.com.
+
 ### Hosts point to the show notes for further reading
 *Logged 2026-10-11*
 
