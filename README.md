@@ -50,7 +50,7 @@ Output lands in `data/<date>/`: `articles.json`, `selection.json`, `briefing.md`
 
 The token is a fine-grained PAT with **Actions: read and write** on this repo only. It expires on **2026-12-28** (GitHub token `dutch-news-scheduler`), so renew it before then. A successful request returns `204`. The gate job skips any trigger once today's `ep-<date>` release exists, so the backup (once set up) never spends TTS quota. To rebuild anyway, run the workflow manually with **force** ticked.
 
-**Privacy note:** the feed is *unlisted*, not private. Its URL is unguessable and `itunes:block` keeps it out of directories. The episodes themselves are public: dnlevitz.com lists every `ep-YYYY-MM-DD` release with its show notes and plays the MP3 from the release (side runs like `ep-<date>-<name>` are left out). Don't share the feed URL itself.
+**Privacy note:** the feed is *unlisted*, not private. Its URL is unguessable and `itunes:block` keeps it out of directories. The episodes themselves are public: their MP3s and transcripts sit at `<SITE_BASE_URL>/episodes/` (the last 120 daily episodes, `PAGES_EPISODES` in `publish.py`, ~780 MB of Pages' 1 GB), and dnlevitz.com lists every `ep-YYYY-MM-DD` release with its show notes and plays those copies, or the release asset for anything older (side runs like `ep-<date>-<name>` are left out). Safari on iPhone can't play the release assets, which are served as `application/octet-stream`. Only the feed is under the secret path; don't share the feed URL itself.
 
 ## Tuning
 
