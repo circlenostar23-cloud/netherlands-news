@@ -164,9 +164,9 @@ def first_sentence(script, out_dir: Path) -> tuple[float, float] | None:
     tokens = lambda s: re.findall(r"[\w']+", s)  # "son-in-law" is three words to Whisper
     match = {}
     blocks = difflib.SequenceMatcher(None, [_norm(w) for w in tokens(text)], [h[0] for h in heard], autojunk=False)
-    for a, b, n in blocks.get_matching_blocks():
-        for j in range(n):
-            match[a + j] = b + j
+    for op, a, a2, b, b2 in blocks.get_opcodes():
+        if op == "equal" or (op == "replace" and a2 - a == b2 - b):  # a misheard word ("shiphole") still lines up
+            match.update((a + j, b + j) for j in range(a2 - a))
     k = len(tokens(sentences[0])) - 1
     if k not in match or match[k] + 1 >= len(heard):  # the next word as heard, even if misheard
         return None
@@ -411,6 +411,9 @@ def _opening(mix: _Mix, t: float, theme_name: str, voice_db: float, voice_level:
             print(f"  {bed_name} bed: sting {mix.added[-1][2]:.2f} s in at {s / RATE:.2f} s, "
                   f"{n} bars of {bar:.3f} s under the cold open")
     if land is None:
+        why = ("no first sentence heard" if not split else "no bed stems" if not _has_bed(bed_name)
+               else "the split is past the cut" if not 0 < s < cut else "the bed doesn't fit")
+        print(f"  {bed_name} bed left out ({why}): the {theme_name} theme only")
         land = mix.out(_before(voice, mix, cut)) + after
     resume = land - lead + len(theme) - round(UNDER_NEXT * RATE)
     mix.lay(land - lead, theme)

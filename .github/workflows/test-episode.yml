@@ -8,6 +8,8 @@ name: Test episode
 # (same guid), so republish a change under a new name rather than over the old one. Both rebuild the feed and redeploy Pages.
 # `check` builds the episode the same way and keeps it as the run's `test-episode` artifact, with no release or
 # Pages deploy, so it also runs from a branch (only main may deploy to github-pages).
+# `replace` rebuilds the real episode the same way and swaps it into its `ep-<date>` release, keeping the
+# published title and show notes, then tells dnlevitz.com. Apps that already downloaded it keep their copy.
 on:
   workflow_dispatch:
     inputs:
@@ -19,7 +21,7 @@ on:
         default: test
       action:
         type: choice
-        options: [publish, remove, check]
+        options: [publish, remove, check, replace]
         default: publish
       mood:
         description: "The intro's music: as the selection set it (auto), or usual or sombre"
@@ -93,7 +95,7 @@ jobs:
       SITE_BASE_URL: ${{ vars.SITE_BASE_URL }}
       GH_TOKEN: ${{ github.token }}
       DAY: ${{ inputs.date }}
-      TAG: ep-${{ inputs.date }}-${{ inputs.name }}
+      TAG: ${{ inputs.action == 'replace' && format('ep-{0}', inputs.date) || format('ep-{0}-{1}', inputs.date, inputs.name) }}
       PYTHONUNBUFFERED: "1"
     steps:
       - uses: actions/checkout@v4
@@ -110,7 +112,7 @@ jobs:
       - run: pip install -e .
 
       - name: Fetch the day's working files
-        if: ${{ inputs.action == 'publish' }}
+        if: ${{ inputs.action != 'remove' }}
         run: |
           # the day's runs (they start at 02:13 or 03:13 UTC, so the UTC date is the day), latest first;
           # a later one may have no working files (a feed-only or skipped run)
@@ -121,13 +123,17 @@ jobs:
           [ -d "data/$DAY" ] || { echo "No Daily episode run on $DAY with working files"; exit 1; }
           ls "data/$DAY"
 
-      - name: Publish the test episode
-        if: ${{ inputs.action == 'publish' }}
+      - name: Publish the episode
+        if: ${{ inputs.action != 'remove' }}
+        env:
+          REPLACE: ${{ inputs.action == 'replace' }}
         run: |
+          set -o pipefail
           rm -f "data/$DAY/chapters.json" "data/$DAY/transcript.vtt"
-          python -m nlnews run --date "$DAY" --stop-after audio ${{ inputs.mood != 'auto' && format('--mood {0}', inputs.mood) || '' }}
+          python -m nlnews run --date "$DAY" --stop-after audio ${{ inputs.mood != 'auto' && format('--mood {0}', inputs.mood) || '' }} | tee build.log
+          if [ "$REPLACE" = true ] && grep -E "cues failed|chapters failed" build.log; then exit 1; fi
           python - <<'PY'
-          import os
+          import json, os, subprocess
           from datetime import date
           from pathlib import Path
           from nlnews import publish, tts
@@ -135,10 +141,16 @@ jobs:
           day = date.fromisoformat(os.environ["DAY"])
           d = Path("data") / day.isoformat()
           script = EpisodeScript.model_validate_json((d / "script.json").read_text())
-          title = f"TEST {day.strftime('%a %d %b')}: {script.episode_title}"
-          publish.upload_episode(os.environ["TAG"], title, (d / "shownotes.md").read_text(),
-                                 d / "episode.mp3", tts.duration_seconds(d / "episode.mp3"), d / "briefing.md",
-                                 d / "transcript.vtt")
+          title = f"{day.strftime('%a %d %b')}: {script.episode_title}"
+          notes = (d / "shownotes.md").read_text()
+          if os.environ["REPLACE"] == "true":  # the show notes as published, not rebuilt without the LLM
+              body = json.loads(subprocess.run(["gh", "release", "view", os.environ["TAG"], "--json", "body", "--repo",
+                                                os.environ["GITHUB_REPOSITORY"]], capture_output=True, text=True, check=True).stdout)["body"]
+              notes = publish.META.sub("", body).strip()
+          else:
+              title = f"TEST {title}"
+          publish.upload_episode(os.environ["TAG"], title, notes, d / "episode.mp3", tts.duration_seconds(d / "episode.mp3"),
+                                 d / "briefing.md", d / "transcript.vtt")
           PY
 
       - name: Remove the test episode
@@ -151,3 +163,12 @@ jobs:
         with:
           path: site/
       - uses: actions/deploy-pages@v4
+
+      - name: Update dnlevitz.com
+        if: ${{ inputs.action == 'replace' }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
+        run: |
+          [ -n "$GH_TOKEN" ] || { echo "No WEBSITE_DISPATCH_TOKEN; skipping"; exit 0; }
+          gh api repos/circlenostar23-cloud/dnlevitz-website/dispatches -f event_type=episode-published
