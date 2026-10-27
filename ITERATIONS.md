@@ -4,6 +4,29 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 ## Backlog
 
+### Make as much as possible private without breaking publishing
+*Logged 2026-10-27. Handoff: explore and report options; nothing changed yet. Don't flip the repo's visibility until this is done.*
+
+**Why:** the prompts (`prompts/`), selection and airtime logic, and the design write-ups in `docs/` and this file are the show's real edge, and the repo is public, so all of it is readable and copyable. A patent isn't a realistic option (the public repo is already prior art, and the distinctive parts are non-technical), so keeping future work private is the main lever left. Whatever is already public stays copied; this only limits further disclosure.
+
+**Why the whole repo can't just go private:**
+- The feed and the MP3 copies are served from GitHub Pages (`publish.py`, `episode.yml`). Whether a free personal account can serve Pages from a private repo wasn't settled from GitHub's docs (one page says Pro, another says an Enterprise Cloud organization). Check before relying on it.
+- dnlevitz.com reads releases with unauthenticated GitHub API calls (`dnlevitz-website/src/lib/episodes.ts`, `REPO` constant) and plays release assets by `browser_download_url` for episodes older than the Pages window. A browser can't play a private release's audio.
+- `dnlevitz-website/src/content/projects/dutch-daily-briefing.md` links to the repo.
+- Actions minutes aren't the problem: runs take ~12–18 min, so ~450–500 min a month against 2,000 free in private repos.
+
+**Directions to explore (find what's cheapest and safest):**
+1. **Inventory what's actually sensitive**, file by file: `prompts/`, `src/nlnews/` (selection, airtime, voice-check logic), `docs/`, `ITERATIONS.md`, `sources.yaml`, `scripts/`. Decide what must be private and what can stay public (README, feed, releases).
+2. **Private engine repo plus a thin public publishing repo.** The run happens in the private repo; only the release, feed and Pages deploy land in the public one (a token scoped to the public repo does the publishing). dnlevitz.com would then just point `REPO` at the public repo. Check how much of `publish.py`, `health_check.py` and the **Test episode** workflow assume one repo.
+3. **Smaller step: keep code public, load prompts from a private repo at run time** (checkout with a token in the workflow). Cheaper, but the logic in `src/` stays public.
+4. **Leaks that survive a private source repo:** Actions run logs and artifacts in a public repo (the log shows `mood` reasoning and airtime reasons), what each release attaches (`briefing.md`, `shownotes.md`, transcripts), the public Pages site, and `docs/` text that describes the design. Check what a visitor to the public repo can read, and keep logs from echoing prompts.
+5. **What moves with the workflow:** secrets (per repo), the cron-job.org dispatch URL and its PAT (scoped to this repo), `WEBSITE_DISPATCH_TOKEN`, the `SITE_BASE_URL` variable, the Pages setting, and the release-watch emails. The existing feed URL must keep working so subscribers aren't broken.
+6. **Link up with "a shared podcast engine for more shows" below.** That split (engine repo plus a thin repo per show) is the same shape as option 2, and the NYC theater show needs a private setup anyway. Decide whether to do both in one restructure.
+
+**Not decided:** whether to rewrite git history (it removes nothing already cloned or forked, so probably not worth it), and whether protecting the prompts is worth any rework at all, given that the audience and brand are the likelier moat.
+
+**Related:** the trademark and patent notes from the 2026-10-27 research session (a Benelux trademark on a distinctive name is the cheap, realistic protection; the current name is descriptive and may be refused).
+
 ### Why ep-2026-10-26 didn't get the sombre intro
 *Logged 2026-10-26. Handoff: not investigated yet beyond the facts below.*
 
