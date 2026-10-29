@@ -8,8 +8,8 @@ from pathlib import Path
 
 from pydantic import BaseModel, TypeAdapter
 
-from nlnews.config import TZ, day_dir
-from nlnews.models import Article, Briefing, Chapter, EpisodeScript, PriorStory, StorySelection
+from nlnews.config import SOMBRE_ON_DEATH, TZ, day_dir
+from nlnews.models import Article, Briefing, Chapter, EpisodeScript, OpeningCheck, PriorStory, StorySelection
 
 STAGES = ["fetch", "briefing", "script", "audio", "all"]
 
@@ -78,6 +78,16 @@ def run(args) -> None:
     script = _cached(d / "script.json", args.fresh, planned_script, EpisodeScript)
     (d / "script.md").write_text(scriptmod.render_text(script))
     print(f"  script: {scriptmod.word_count(script)} words, {len(script.segments)} segments")
+    if SOMBRE_ON_DEATH and mood == "usual" and not args.mood:
+        try:
+            check = _cached(d / "opening.json", args.fresh,
+                            lambda: scriptmod.opening_mentions_death(script), OpeningCheck)
+            if check.mentions_death:
+                mood = "sombre"
+            print(f"  cold open mentions a death: {'yes' if check.mentions_death else 'no'}: {check.reason}"
+                  + (" → mood: sombre" if check.mentions_death else ""))
+        except Exception as exc:  # the selection's mood still gives a sensible intro; don't lose the episode
+            print(f"  death check on the cold open failed ({exc}); keeping mood: {mood}")
     if args.stop_after == "script":
         return
 

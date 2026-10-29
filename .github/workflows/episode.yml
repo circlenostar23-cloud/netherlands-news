@@ -83,6 +83,8 @@ jobs:
       PYTHONUNBUFFERED: "1"  # show pipeline progress in the log as it happens
       # retry: re-voice a chunk that drops or garbles a line; log: report only; off: no check
       NLNEWS_VOICE_CHECK: ${{ vars.NLNEWS_VOICE_CHECK || 'retry' }}
+      # on: a cold open that mentions someone's death gets the sombre intro; off: the selection's mood only
+      NLNEWS_SOMBRE_ON_DEATH: ${{ vars.NLNEWS_SOMBRE_ON_DEATH || 'on' }}
     steps:
       - uses: actions/checkout@v4
 

@@ -143,6 +143,11 @@ class EpisodeScript(BaseModel):
     segments: list[Segment]
 
 
+class OpeningCheck(BaseModel):
+    mentions_death: bool = Field(description="Whether the cold open mentions someone's death")
+    reason: str = Field(description="One line: whose death, or why not")
+
+
 class Chapter(BaseModel):
     title: str
     start: float  # seconds into the episode
