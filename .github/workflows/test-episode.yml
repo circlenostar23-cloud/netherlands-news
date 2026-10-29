@@ -24,7 +24,7 @@ on:
         options: [publish, remove, check, replace]
         default: publish
       mood:
-        description: "The intro's music: as the selection set it (auto), or usual or sombre"
+        description: "The intro's music: as the script set it (auto), or usual or sombre"
         type: choice
         options: [auto, usual, sombre]
         default: auto
@@ -48,7 +48,6 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       DAY: ${{ inputs.date }}
       PYTHONUNBUFFERED: "1"
-      NLNEWS_SOMBRE_ON_DEATH: ${{ vars.NLNEWS_SOMBRE_ON_DEATH || 'on' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -98,7 +97,6 @@ jobs:
       DAY: ${{ inputs.date }}
       TAG: ${{ inputs.action == 'replace' && format('ep-{0}', inputs.date) || format('ep-{0}-{1}', inputs.date, inputs.name) }}
       PYTHONUNBUFFERED: "1"
-      NLNEWS_SOMBRE_ON_DEATH: ${{ vars.NLNEWS_SOMBRE_ON_DEATH || 'on' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

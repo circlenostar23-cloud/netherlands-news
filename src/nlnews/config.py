@@ -30,9 +30,6 @@ TTS_MODEL = os.environ.get("NLNEWS_TTS_MODEL", "gemini-3.8-flash-tts")
 OPENROUTER_TTS_MODEL = os.environ.get("NLNEWS_OPENROUTER_TTS_MODEL", "google/gemini-3.8-flash-tts")
 
 SHOW_TITLE = "Dutch Daily Briefing"
-# on: a cold open that mentions someone's death gets the sombre intro, whatever the selection's mood
-# (script.opening_mentions_death); off: only the selection's mood counts, as before 2026-10-29
-SOMBRE_ON_DEATH = os.environ.get("NLNEWS_SOMBRE_ON_DEATH", "on").strip().lower() != "off"
 # How many of each episode's stories are lighter fare (culture, sport, science, offbeat), as "min-max"
 LIGHT_STORIES = tuple(int(n) for n in os.environ.get("NLNEWS_LIGHT_STORIES", "2-3").split("-"))
 HOSTS = {

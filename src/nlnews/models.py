@@ -45,8 +45,6 @@ class RunnerUp(BaseModel):
 
 class StorySelection(BaseModel):
     stories: list[StoryPick]
-    mood: Literal["usual", "sombre"] = Field(default="usual", description="sombre only on a day of large loss of life, a disaster or attack, or national mourning; otherwise usual")
-    mood_reason: str = Field(default="", description="One line on why the day is usual or sombre")
     runners_up: list[RunnerUp] = Field(default=[], description="Stories that nearly made the cut, best first; listed in the show notes, not voiced")
 
 
@@ -141,11 +139,9 @@ class EpisodeScript(BaseModel):
     episode_title: str
     description: str = Field(description="2-3 sentence podcast episode description")
     segments: list[Segment]
-
-
-class OpeningCheck(BaseModel):
-    mentions_death: bool = Field(description="Whether the cold open mentions someone's death")
-    reason: str = Field(description="One line: whose death, or why not")
+    # last, so the cold open is written before its mood is set
+    mood: Literal["usual", "sombre"] = Field(default="usual", description="sombre if the cold open says someone died; otherwise usual")
+    mood_reason: str = Field(default="", description="One line on why the cold open is usual or sombre")
 
 
 class Chapter(BaseModel):

@@ -4,7 +4,7 @@ from datetime import date
 
 from nlnews.config import HOSTS, SHOW_TITLE, load_prompt
 from nlnews.llm import ask
-from nlnews.models import AirtimePlan, Briefing, EpisodeScript, OpeningCheck
+from nlnews.models import AirtimePlan, Briefing, EpisodeScript
 
 # Words per story, whatever its kind. The cold open and sign-off take ~120 of the episode's target.
 AIRTIME_FLOOR, AIRTIME_CEILING, OPEN_AND_CLOSE = 90, 340, 120
@@ -59,12 +59,6 @@ def write_script(briefing: Briefing, words: tuple[int, int] = (1800, 2200)) -> E
     return _fix_handoffs(script)
 
 
-def opening_mentions_death(script: EpisodeScript) -> OpeningCheck:
-    """Whether the cold open (the first segment) mentions someone's death, for the sombre intro."""
-    opening = "\n".join(f"{l.speaker}: {l.text}" for l in script.segments[0].lines)
-    return ask(load_prompt("opening_death"), opening, OpeningCheck, effort="low", max_tokens=2000)
-
-
 def _report_lengths(briefing: Briefing, script: EpisodeScript) -> None:
     """Print each story's words against its airtime, assuming one segment per story after the cold open."""
     segs = script.segments[1:1 + len(briefing.stories)]
@@ -100,7 +94,7 @@ def _fix_handoffs(script: EpisodeScript) -> EpisodeScript:
     left = same_speaker_breaks(fixed)
     if left:
         print(f"  {len(left)} story breaks still without a host change: {left}")
-    return fixed
+    return fixed.model_copy(update={"mood": script.mood, "mood_reason": script.mood_reason})
 
 
 def word_count(script: EpisodeScript) -> int:

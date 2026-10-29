@@ -8,8 +8,8 @@ from pathlib import Path
 
 from pydantic import BaseModel, TypeAdapter
 
-from nlnews.config import SOMBRE_ON_DEATH, TZ, day_dir
-from nlnews.models import Article, Briefing, Chapter, EpisodeScript, OpeningCheck, PriorStory, StorySelection
+from nlnews.config import TZ, day_dir
+from nlnews.models import Article, Briefing, Chapter, EpisodeScript, PriorStory, StorySelection
 
 STAGES = ["fetch", "briefing", "script", "audio", "all"]
 
@@ -50,8 +50,6 @@ def run(args) -> None:
         print(f"  - [{s.kind}/{s.section}] {s.working_title}" + (" (follow-up)" if s.follow_up_of else ""))
     for r in selection.runners_up:
         print(f"  - runner-up: {r.working_title}")
-    mood = args.mood or selection.mood
-    print(f"  mood: {mood}" + (" (set by hand)" if args.mood else f": {selection.mood_reason}" if selection.mood_reason else ""))
     draft = lambda: _cached(d / "briefing.draft.json", args.fresh,
                             lambda: curate.write_briefing(day, selection, articles, prior), Briefing)
     briefing = _cached(d / "briefing.json", args.fresh, lambda: research.fill_gaps(day, draft()), Briefing)
@@ -78,16 +76,8 @@ def run(args) -> None:
     script = _cached(d / "script.json", args.fresh, planned_script, EpisodeScript)
     (d / "script.md").write_text(scriptmod.render_text(script))
     print(f"  script: {scriptmod.word_count(script)} words, {len(script.segments)} segments")
-    if SOMBRE_ON_DEATH and mood == "usual" and not args.mood:
-        try:
-            check = _cached(d / "opening.json", args.fresh,
-                            lambda: scriptmod.opening_mentions_death(script), OpeningCheck)
-            if check.mentions_death:
-                mood = "sombre"
-            print(f"  cold open mentions a death: {'yes' if check.mentions_death else 'no'}: {check.reason}"
-                  + (" → mood: sombre" if check.mentions_death else ""))
-        except Exception as exc:  # the selection's mood still gives a sensible intro; don't lose the episode
-            print(f"  death check on the cold open failed ({exc}); keeping mood: {mood}")
+    mood = args.mood or script.mood
+    print(f"  mood: {mood}" + (" (set by hand)" if args.mood else f": {script.mood_reason}" if script.mood_reason else ""))
     if args.stop_after == "script":
         return
 
@@ -176,7 +166,7 @@ def main() -> None:
     r.add_argument("--fresh", action="store_true", help="Ignore cached stage outputs")
     r.add_argument("--no-publish", action="store_true", help="Skip GitHub release + feed")
     r.add_argument("--no-email", action="store_true", help="Skip email delivery")
-    r.add_argument("--mood", choices=["usual", "sombre"], help="The intro's mood, in place of the selection's")
+    r.add_argument("--mood", choices=["usual", "sombre"], help="The intro's mood, in place of the script's")
     r.set_defaults(func=run)
     f = sub.add_parser("feed", help="Rebuild the podcast feed from GitHub releases")
     f.set_defaults(func=feed)

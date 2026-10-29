@@ -3,7 +3,7 @@ moved on (docs/transition-sounds.md).
 
   intro    the cold open's first sentence dry, a sting LAND_AFTER its last word, the rest of the cold
            open over a bed, and the intro theme LAND_AFTER the cold open's last word. On a sombre day
-           (the selection's `mood`) the bed, sting and theme are the sombre ones
+           (the script's `mood`) the bed, sting and theme are the sombre ones
   stories  a cue before each later story, landing STORY_AFTER the host's last word, chosen by its
            `kind` and rotating within it, never sharing a phrase with its neighbours; the hard story
            with the most airtime gets hard-4
