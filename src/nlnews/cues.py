@@ -144,9 +144,9 @@ def rotate(breaks: list[int], fixed: dict, pools: dict, at: dict, kind) -> dict[
     return names
 
 
-def first_sentence(script, out_dir: Path) -> tuple[float, float] | None:
-    """Where the cold open's first sentence ends, as (its last word's end, the next word's start) in
-    seconds into the voiced audio, from Whisper's words for the first chunk; None if not heard."""
+def first_sentence(script, out_dir: Path) -> tuple[float, float, float] | None:
+    """Where the cold open's first sentence ends, as (its last word's start and end, the next word's
+    start) in seconds into the voiced audio, from Whisper's words for the first chunk; None if not heard."""
     from nlnews import voicecheck
     at = 0.0
     for path in segment_files(out_dir):
@@ -170,7 +170,7 @@ def first_sentence(script, out_dir: Path) -> tuple[float, float] | None:
     k = len(tokens(sentences[0])) - 1
     if k not in match or match[k] + 1 >= len(heard):  # the next word as heard, even if misheard
         return None
-    return at + heard[match[k]][2], at + heard[match[k] + 1][1]
+    return at + heard[match[k]][1], at + heard[match[k]][2], at + heard[match[k] + 1][1]
 
 
 def _decode(*args: str) -> np.ndarray:
@@ -263,14 +263,15 @@ def _last_word(x: np.ndarray, floor_db: float = -35) -> int:
     return (loud[-1] + 1) * win if len(loud) and env.max() > 0 else len(x)
 
 
-def _quiet_point(voice: np.ndarray, a: float, b: float, voice_db: float) -> int:
+def _quiet_point(voice: np.ndarray, last: float, a: float, b: float, voice_db: float) -> int:
     """The gap before the next breath, around the one Whisper puts between `a` and `b` seconds (its word
-    times can be a few tenths out, so the search starts 0.3 s early): just before the breath if there is
+    times can be a few tenths out, so the search starts 0.3 s early, though never before the sentence's
+    last word starts at `last`, so a pause for effect before that word isn't taken): just before the breath if there is
     one, else the quietest 40 ms. Only the longest pause there is searched: a sentence's end, often
     with a breath in it, is never as quiet as the hard silence Gemini can leave at the next comma
     (10-30: "...on the tax plan. Tax, asylum", and Whisper put "Tax" at the comma)."""
     win, hop = int(0.04 * RATE), int(0.005 * RATE)
-    lo, hi = int((a - 0.3) * RATE), int((b + 0.1) * RATE)
+    lo, hi = int(max(a - 0.3, last) * RATE), int((b + 0.1) * RATE)
     if pause := _longest_pause(voice, lo, hi, voice_db):
         lo, hi = max(lo, pause[0] - int(0.05 * RATE)), pause[1]  # from the word before it, for _before_breath
     if (early := _before_breath(voice, lo, hi, voice_db)) is not None:
@@ -478,7 +479,7 @@ def _closing(mix: _Mix, voice_db: float, voice_level: float) -> None:
 
 
 def splice(out_dir: Path, cues: list[tuple[float, str]], title: str,
-           split: tuple[float, float] | None = None) -> list[tuple[float, float, float]]:
+           split: tuple[float, float, float] | None = None) -> list[tuple[float, float, float]]:
     """Rebuild episode.mp3 from the voiced files with the cues in. `split` is where the cold open's
     first sentence ends (first_sentence()). Returns where time was added, as (the cut, the heard
     start it's for, seconds added), in the voiced audio, for shift()."""
