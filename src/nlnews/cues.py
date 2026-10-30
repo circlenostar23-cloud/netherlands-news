@@ -266,12 +266,32 @@ def _last_word(x: np.ndarray, floor_db: float = -35) -> int:
 def _quiet_point(voice: np.ndarray, a: float, b: float, voice_db: float) -> int:
     """The gap before the next breath, around the one Whisper puts between `a` and `b` seconds (its word
     times can be a few tenths out, so the search starts 0.3 s early): just before the breath if there is
-    one, else the quietest 40 ms."""
+    one, else the quietest 40 ms. Only the longest pause there is searched: a sentence's end, often
+    with a breath in it, is never as quiet as the hard silence Gemini can leave at the next comma
+    (10-30: "...on the tax plan. Tax, asylum", and Whisper put "Tax" at the comma)."""
     win, hop = int(0.04 * RATE), int(0.005 * RATE)
     lo, hi = int((a - 0.3) * RATE), int((b + 0.1) * RATE)
+    if pause := _longest_pause(voice, lo, hi, voice_db):
+        lo, hi = max(lo, pause[0] - int(0.05 * RATE)), pause[1]  # from the word before it, for _before_breath
     if (early := _before_breath(voice, lo, hi, voice_db)) is not None:
         return early
     return min(range(lo, max(lo + 1, hi - win), hop), key=lambda s: np.mean(voice[s: s + win] ** 2)) + win // 2
+
+
+def _longest_pause(voice: np.ndarray, lo: int, hi: int, voice_db: float) -> tuple[int, int] | None:
+    """The longest stretch of voice[lo:hi] with no speech (breaths count as pause), as samples."""
+    win, hop = int(0.01 * RATE), int(0.005 * RATE)
+    starts = np.arange(max(0, lo), max(lo + 1, min(hi, len(voice)) - win), hop)
+    quiet = [10 * math.log10(np.mean(voice[s: s + win] ** 2) + 1e-12) < voice_db - SPEECH for s in starts]
+    best, run = None, None
+    for k, q in enumerate(quiet + [False]):
+        if q and run is None:
+            run = k
+        elif not q and run is not None:
+            if best is None or k - run > best[1] - best[0]:
+                best = (run, k)
+            run = None
+    return (int(starts[best[0]]), int(starts[best[1] - 1]) + win) if best else None
 
 
 def _beds() -> dict:
