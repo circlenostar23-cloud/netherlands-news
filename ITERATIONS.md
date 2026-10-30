@@ -20,7 +20,7 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 **Costs and risks for option 2:** the voice check (`voicecheck.py`) matches Whisper against the script, so it has to keep using the original words. Respelling can over-anglicise or sound stilted ("g" and "ui" have no English spelling), so judge it by ear on a test day first. The run would need to push a commit (or keep the lexicon in the release/Pages data). Medium work: ~a day including a listening round with **Test episode**.
 
-**Next:** decide whether to try it; if so, start with the 8 repeat terms and the party and leader names (Bontenbal, Jetten, Eerdmans, Paternotte, JA21, BBB, SGP, D66), voice one test episode, and listen.
+**Next:** do it in a local session (decided 2026-10-30), where David can hear each test take. Start with the 8 repeat terms and the party and leader names (Bontenbal, Jetten, Eerdmans, Paternotte, JA21, BBB, SGP, D66), voice one test episode, and listen.
 
 ### Make as much as possible private without breaking publishing
 *Logged 2026-10-27. Handoff: explore and report options; nothing changed yet. Don't flip the repo's visibility until this is done.*
