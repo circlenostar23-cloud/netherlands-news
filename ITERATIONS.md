@@ -4,6 +4,24 @@ Ideas and known issues parked so they don't disrupt the working daily pipeline. 
 
 ## Backlog
 
+### Say Dutch words correctly, and the same way every time
+*Logged 2026-10-30 (David, on ep-2026-10-30). Nice to have; nothing built.*
+
+**Problem:** the show is in English but full of Dutch names and terms, and Gemini says them badly at times, and differently from one sentence or episode to the next.
+
+**What's there now:** `prompts/script.md` only says "say Dutch names naturally". The writer lists `key_terms` per story (`models.py`), but they never reach the voices. Gemini gets plain text plus an optional per-line `style` note (`tts._synthesize()`). There's no SSML or phoneme control on that route.
+
+**Size of it:** the briefings for 10-25 to 10-30 had 46–64 key terms a day, 259 different ones over five days, and only 8 came back on a second day (Tweede Kamer, Belastingdienst, Schiphol, staatssecretaris, Prinsjesdag…). So a hand-kept list covers only the common ones; most terms are new every day.
+
+**Options, cheapest first:**
+1. **A voice direction.** Add a style note to lines with Dutch words, e.g. "Dutch names and terms in a native Dutch accent". One line in `tts.py`, but it may do nothing or colour the whole line, and it doesn't fix consistency.
+2. **A pronunciation lexicon (recommended).** A committed `pronunciations.yaml` mapping each term to an English-reader respelling ("Bontenbal" → "BON-tun-bahl", "Tweede Kamer" → "TVAY-duh KAH-mur"), swapped into the text Gemini gets (not the script, transcript or show notes). Same spelling in, same sound out, which is the consistency fix. New terms each day get a respelling from Claude in the write step (from `key_terms`), and the run commits them back so tomorrow reuses them; David can correct any entry by hand.
+3. **Phonemes (IPA).** The most exact, but Gemini doesn't take SSML. Only Microsoft's fallback voices would use it.
+
+**Costs and risks for option 2:** the voice check (`voicecheck.py`) matches Whisper against the script, so it has to keep using the original words. Respelling can over-anglicise or sound stilted ("g" and "ui" have no English spelling), so judge it by ear on a test day first. The run would need to push a commit (or keep the lexicon in the release/Pages data). Medium work: ~a day including a listening round with **Test episode**.
+
+**Next:** decide whether to try it; if so, start with the 8 repeat terms and the party and leader names (Bontenbal, Jetten, Eerdmans, Paternotte, JA21, BBB, SGP, D66), voice one test episode, and listen.
+
 ### Make as much as possible private without breaking publishing
 *Logged 2026-10-27. Handoff: explore and report options; nothing changed yet. Don't flip the repo's visibility until this is done.*
 
