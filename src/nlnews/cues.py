@@ -144,9 +144,12 @@ def rotate(breaks: list[int], fixed: dict, pools: dict, at: dict, kind) -> dict[
     return names
 
 
-def first_sentence(script, out_dir: Path) -> tuple[float, float] | None:
-    """Where the cold open's first sentence ends, as (its last word's end, the next word's start) in
-    seconds into the voiced audio, from Whisper's words for the first chunk; None if not heard."""
+def first_sentence(script, out_dir: Path) -> tuple[float, float, float] | None:
+    """Where the cold open's first sentence ends, as (its last word's start and end, the next word's
+    start) in seconds into the voiced audio; None if not heard. From Whisper's small model on the first
+    chunk's opening (its word times are within ~0.2 s), else the voice check's tiny one. A next word
+    heard with no length has a made-up time (10-30: tiny's "Tax" 7.10-7.10, said at 6.63), so the search
+    runs to no more than 0.4 s past the sentence's end then."""
     from nlnews import voicecheck
     at = 0.0
     for path in segment_files(out_dir):
@@ -156,21 +159,24 @@ def first_sentence(script, out_dir: Path) -> tuple[float, float] | None:
             at += w.getnframes() / w.getframerate()
     else:
         return None
-    heard = voicecheck.heard(path)
     text = " ".join(l.text for l in script.segments[0].lines)
     sentences = re.findall(r"[^.?!]+[.?!]", text)
-    if not heard or len(sentences) < 2:
+    if len(sentences) < 2:
         return None
     tokens = lambda s: re.findall(r"[\w']+", s)  # "son-in-law" is three words to Whisper
-    match = {}
-    blocks = difflib.SequenceMatcher(None, [_norm(w) for w in tokens(text)], [h[0] for h in heard], autojunk=False)
-    for op, a, a2, b, b2 in blocks.get_opcodes():
-        if op == "equal" or (op == "replace" and a2 - a == b2 - b):  # a misheard word ("shiphole") still lines up
-            match.update((a + j, b + j) for j in range(a2 - a))
     k = len(tokens(sentences[0])) - 1
-    if k not in match or match[k] + 1 >= len(heard):  # the next word as heard, even if misheard
-        return None
-    return at + heard[match[k]][2], at + heard[match[k] + 1][1]
+    for heard in (voicecheck.heard(path, voicecheck.OPENING_MODEL, voicecheck.OPENING_SECONDS), voicecheck.heard(path)):
+        if not heard:
+            continue
+        match = {}
+        blocks = difflib.SequenceMatcher(None, [_norm(w) for w in tokens(text)], [h[0] for h in heard], autojunk=False)
+        for op, a, a2, b, b2 in blocks.get_opcodes():
+            if op == "equal" or (op == "replace" and a2 - a == b2 - b):  # a misheard word ("shiphole") still lines up
+                match.update((a + j, b + j) for j in range(a2 - a))
+        if k in match and match[k] + 1 < len(heard):  # the next word as heard, even if misheard
+            (_, start, end), (_, nxt, nxt_end) = heard[match[k]], heard[match[k] + 1]
+            return at + start, at + end, round(at + (min(nxt, end + 0.4) if nxt_end - nxt < 0.02 else nxt), 2)
+    return None
 
 
 def _decode(*args: str) -> np.ndarray:
@@ -263,15 +269,36 @@ def _last_word(x: np.ndarray, floor_db: float = -35) -> int:
     return (loud[-1] + 1) * win if len(loud) and env.max() > 0 else len(x)
 
 
-def _quiet_point(voice: np.ndarray, a: float, b: float, voice_db: float) -> int:
+def _quiet_point(voice: np.ndarray, last: float, a: float, b: float, voice_db: float) -> int:
     """The gap before the next breath, around the one Whisper puts between `a` and `b` seconds (its word
-    times can be a few tenths out, so the search starts 0.3 s early): just before the breath if there is
-    one, else the quietest 40 ms."""
+    times can be a few tenths out, so the search starts 0.3 s early, though never before the sentence's
+    last word starts at `last`, so a pause for effect before that word isn't taken): just before the breath if there is
+    one, else the quietest 40 ms. Only the longest pause there is searched: a sentence's end, often
+    with a breath in it, is never as quiet as the hard silence Gemini can leave at the next comma
+    (10-30: "...on the tax plan. Tax, asylum", and Whisper put "Tax" at the comma)."""
     win, hop = int(0.04 * RATE), int(0.005 * RATE)
-    lo, hi = int((a - 0.3) * RATE), int((b + 0.1) * RATE)
+    lo, hi = int(max(a - 0.3, last) * RATE), int((b + 0.1) * RATE)
+    if pause := _longest_pause(voice, lo, hi, voice_db):
+        lo, hi = max(lo, pause[0] - int(0.05 * RATE)), pause[1]  # from the word before it, for _before_breath
     if (early := _before_breath(voice, lo, hi, voice_db)) is not None:
         return early
     return min(range(lo, max(lo + 1, hi - win), hop), key=lambda s: np.mean(voice[s: s + win] ** 2)) + win // 2
+
+
+def _longest_pause(voice: np.ndarray, lo: int, hi: int, voice_db: float) -> tuple[int, int] | None:
+    """The longest stretch of voice[lo:hi] with no speech (breaths count as pause), as samples."""
+    win, hop = int(0.01 * RATE), int(0.005 * RATE)
+    starts = np.arange(max(0, lo), max(lo + 1, min(hi, len(voice)) - win), hop)
+    quiet = [10 * math.log10(np.mean(voice[s: s + win] ** 2) + 1e-12) < voice_db - SPEECH for s in starts]
+    best, run = None, None
+    for k, q in enumerate(quiet + [False]):
+        if q and run is None:
+            run = k
+        elif not q and run is not None:
+            if best is None or k - run > best[1] - best[0]:
+                best = (run, k)
+            run = None
+    return (int(starts[best[0]]), int(starts[best[1] - 1]) + win) if best else None
 
 
 def _beds() -> dict:
@@ -458,7 +485,7 @@ def _closing(mix: _Mix, voice_db: float, voice_level: float) -> None:
 
 
 def splice(out_dir: Path, cues: list[tuple[float, str]], title: str,
-           split: tuple[float, float] | None = None) -> list[tuple[float, float, float]]:
+           split: tuple[float, float, float] | None = None) -> list[tuple[float, float, float]]:
     """Rebuild episode.mp3 from the voiced files with the cues in. `split` is where the cold open's
     first sentence ends (first_sentence()). Returns where time was added, as (the cut, the heard
     start it's for, seconds added), in the voiced audio, for shift()."""
