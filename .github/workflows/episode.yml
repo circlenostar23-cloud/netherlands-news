@@ -94,11 +94,12 @@ jobs:
       - name: Install ffmpeg
         run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
 
-      # The Whisper model that checks the voices against the script and finds where each story starts (~75 MB)
+      # The Whisper models: tiny.en checks the voices against the script and finds where each story starts (~75 MB),
+      # small.en finds the end of the cold open's first sentence for the intro sting (~480 MB)
       - uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface
-          key: whisper-tiny.en
+          key: whisper-tiny.en-small.en
 
       - name: Install
         run: |

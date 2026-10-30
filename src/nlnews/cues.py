@@ -146,7 +146,10 @@ def rotate(breaks: list[int], fixed: dict, pools: dict, at: dict, kind) -> dict[
 
 def first_sentence(script, out_dir: Path) -> tuple[float, float, float] | None:
     """Where the cold open's first sentence ends, as (its last word's start and end, the next word's
-    start) in seconds into the voiced audio, from Whisper's words for the first chunk; None if not heard."""
+    start) in seconds into the voiced audio; None if not heard. From Whisper's small model on the first
+    chunk's opening (its word times are within ~0.2 s), else the voice check's tiny one. A next word
+    heard with no length has a made-up time (10-30: tiny's "Tax" 7.10-7.10, said at 6.63), so the search
+    runs to no more than 0.4 s past the sentence's end then."""
     from nlnews import voicecheck
     at = 0.0
     for path in segment_files(out_dir):
@@ -156,21 +159,24 @@ def first_sentence(script, out_dir: Path) -> tuple[float, float, float] | None:
             at += w.getnframes() / w.getframerate()
     else:
         return None
-    heard = voicecheck.heard(path)
     text = " ".join(l.text for l in script.segments[0].lines)
     sentences = re.findall(r"[^.?!]+[.?!]", text)
-    if not heard or len(sentences) < 2:
+    if len(sentences) < 2:
         return None
     tokens = lambda s: re.findall(r"[\w']+", s)  # "son-in-law" is three words to Whisper
-    match = {}
-    blocks = difflib.SequenceMatcher(None, [_norm(w) for w in tokens(text)], [h[0] for h in heard], autojunk=False)
-    for op, a, a2, b, b2 in blocks.get_opcodes():
-        if op == "equal" or (op == "replace" and a2 - a == b2 - b):  # a misheard word ("shiphole") still lines up
-            match.update((a + j, b + j) for j in range(a2 - a))
     k = len(tokens(sentences[0])) - 1
-    if k not in match or match[k] + 1 >= len(heard):  # the next word as heard, even if misheard
-        return None
-    return at + heard[match[k]][1], at + heard[match[k]][2], at + heard[match[k] + 1][1]
+    for heard in (voicecheck.heard(path, voicecheck.OPENING_MODEL, voicecheck.OPENING_SECONDS), voicecheck.heard(path)):
+        if not heard:
+            continue
+        match = {}
+        blocks = difflib.SequenceMatcher(None, [_norm(w) for w in tokens(text)], [h[0] for h in heard], autojunk=False)
+        for op, a, a2, b, b2 in blocks.get_opcodes():
+            if op == "equal" or (op == "replace" and a2 - a == b2 - b):  # a misheard word ("shiphole") still lines up
+                match.update((a + j, b + j) for j in range(a2 - a))
+        if k in match and match[k] + 1 < len(heard):  # the next word as heard, even if misheard
+            (_, start, end), (_, nxt, nxt_end) = heard[match[k]], heard[match[k] + 1]
+            return at + start, at + end, round(at + (min(nxt, end + 0.4) if nxt_end - nxt < 0.02 else nxt), 2)
+    return None
 
 
 def _decode(*args: str) -> np.ndarray:
