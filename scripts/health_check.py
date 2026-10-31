@@ -39,7 +39,7 @@ SLOW_RUN = 18 * 60  # seconds; a clean run takes 12-13 min, a TTS timeout adds 3
 WPM = (140, 185)  # observed pace is 148-180 words a minute; slower or faster suggests lost or repeated audio
 LONG_SILENCE = 1.5  # seconds; pauses are capped at 1.0 when the audio is built
 MIN_MATCHED = 0.5  # share of a line's words found in the transcript; numbers are heard as digits and lower it
-BREATH_LEFT = 0.2  # seconds of breath between a break's last word and its cut; 10-31's sting had 0.55, clean breaks up to 0.11
+BREATH_LEFT = 0.2  # seconds of breath before a cut; 10-31's sting had 0.55 and 10-30's 0.27, every other break 10-25 to 10-31 0.15 or less
 ITUNES = "{http://www.itunes.com/dtds/podcast-1.0.dtd}"
 
 results: list[str] = []
@@ -289,7 +289,9 @@ def check_breaks(data: Path, added: list | None) -> None:
         starts = np.arange(max(0, c - int(1.5 * RATE)), c - win, hop)
         db = np.array([10 * math.log10(np.mean(voice[s: s + win] ** 2) + 1e-12) for s in starts]) - voice_db
         speech = np.flatnonzero(db > -SPEECH)
-        breathy = np.concatenate([[0], db[speech[-1] + 1 if len(speech) else 0:] > -BREATHY, [0]]).astype(int)
+        tail = db[speech[-1] + 1 if len(speech) else 0:]
+        risen = (tail > np.minimum.accumulate(tail) + 6) & (tail > -BREATHY)  # the word's own decay never rises again
+        breathy = np.concatenate([[0], risen, [0]]).astype(int)
         longest = np.diff(np.flatnonzero(np.diff(breathy)))[::2].max(initial=0) * hop / RATE
         if longest >= BREATH_LEFT:
             left.append((cues.shift(cut, added, True), longest))

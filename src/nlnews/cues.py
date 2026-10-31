@@ -49,6 +49,7 @@ PEAK = -9  # dBFS
 UNDER_NEXT = 0.6  # seconds of a cue's ring-out that runs under the next host's first words
 BREATH_BACK = 0.8  # seconds before a heard word to look for the host's breath in
 QUIET, BREATH = 50, 36  # dB under the voices: the quiet before a breath, and a breath
+RISE, BREATH_MIN = 10, 0.1  # a breath rises this many dB over the quiet before it, for this many seconds
 SPEECH, BREATHY = 20, 45  # dB under the voices: louder is speech; between the two, a breath
 LAND_AFTER = 0.3  # seconds from the last word to a theme's downbeat
 STORY_AFTER = 0.6  # and to a story cue's, so its swell starts as the host finishes
@@ -240,29 +241,34 @@ def _cut(voice: np.ndarray, t: float, voice_db: float) -> int:
 
 
 def _before_breath(voice: np.ndarray, lo: int, hi: int, voice_db: float) -> int | None:
-    """In voice[lo:hi], from a word's end through a pause, the quiet just before the host's breath:
-    a word, a quiet, the breath, a deeper quiet, the next word; or a word, the deepest quiet, the
-    breath, a shallower quiet, the next word (10-31: "...protests today. [breath] The interior
-    minister"). Picking the quietest 40 ms alone would leave that breath before the cue."""
+    """In voice[lo:hi], in the pause around its quietest point, the quiet just before the host's
+    breath: the first time the sound rises RISE dB over the quietest point since the word before,
+    and stays up for BREATH_MIN (a word's unvoiced end can stay up 55 ms: 10-29's "January"), or
+    for 40 ms from a quiet under QUIET, is a breath, and the cut goes at that quietest point (the last of a
+    tie, so in Gemini's digital silence it's just before the breath). The breath can come before
+    the pause's quietest point or after it (10-31: "...protests today. [breath] The interior
+    minister", the deepest quiet before the breath), and the quiet before it needn't be deep
+    (10-30: -43 dB, the breath -27). Picking the quietest 40 ms alone would leave that breath
+    before the cue."""
     win, hop = int(0.01 * RATE), int(0.005 * RATE)
     starts = np.arange(max(0, lo), max(lo + 1, min(hi, len(voice)) - win), hop)
     db = np.array([10 * math.log10(np.mean(voice[s: s + win] ** 2) + 1e-12) for s in starts]) - voice_db
     q = int(np.argmin(db))
     speech = db > -SPEECH
-    i = start = max([k for k in range(q) if speech[k]], default=-1) + 1  # after the word before the quietest
-    breath = (db > -BREATHY) & ~speech
-    while i < q:
-        j = i
-        while j < q and breath[j]:
-            j += 1
-        if j - i >= 8 and i > start and db[start: i].min() < -QUIET:  # 40 ms or more of breath, after a quiet
-            return int(starts[start + int(np.argmin(db[start: i]))]) + hop
-        i = j + 1
-    if db[q] < -QUIET:  # the breath after the quietest point, before the next word
-        end = next((k for k in range(q, len(db)) if speech[k]), len(db))
-        runs = np.diff(np.flatnonzero(np.diff(np.concatenate([[0], breath[q:end], [0]]).astype(int))))[::2]
-        if len(runs) and runs.max() >= 8:
-            return int(starts[q]) + hop
+    k = low = max([k for k in range(q) if speech[k]], default=-1) + 1  # after the word before the quietest
+    end = next((k for k in range(q, len(db)) if speech[k]), len(db))  # to the word after it
+    while k < end:
+        if db[k] <= db[low]:
+            low = k
+        elif db[k] > db[low] + RISE:
+            j = k
+            while j < end and db[j] > db[low] + RISE:
+                j += 1
+            if (j - k >= BREATH_MIN * RATE / hop or j - k >= 8 and db[low] < -QUIET) and db[k: j].max() > -BREATHY:
+                return int(starts[low]) + hop
+            k = j
+            continue
+        k += 1
     return None
 
 
