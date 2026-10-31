@@ -1,9 +1,10 @@
 """Health check for one day's published episode.
 
 Checks the workflow run and its log (retries, backup voices, writer fallbacks, unanswered
-research questions), the release, the live feed and its MP3, and the audio itself (length,
-pace, long silences, loudness). With --voices it also downloads the run's working files and
-checks every script line: that it's in the audio, and that it's in the right host's voice.
+research questions), the release, the live feed and its MP3, the audio itself (length, pace,
+long silences, loudness), and, from the run's working files, that no host's breath is left
+before a cue. With --voices it also checks every script line: that it's in the audio, and that
+it's in the right host's voice.
 
     .venv/bin/python scripts/health_check.py              # today's episode
     .venv/bin/python scripts/health_check.py 2026-10-07 --voices
@@ -38,6 +39,7 @@ SLOW_RUN = 18 * 60  # seconds; a clean run takes 12-13 min, a TTS timeout adds 3
 WPM = (140, 185)  # observed pace is 148-180 words a minute; slower or faster suggests lost or repeated audio
 LONG_SILENCE = 1.5  # seconds; pauses are capped at 1.0 when the audio is built
 MIN_MATCHED = 0.5  # share of a line's words found in the transcript; numbers are heard as digits and lower it
+BREATH_LEFT = 0.2  # seconds of breath before a cut; 10-31's sting had 0.55 and 10-30's 0.27, every other break 10-25 to 10-31 0.15 or less
 ITUNES = "{http://www.itunes.com/dtds/podcast-1.0.dtd}"
 
 results: list[str] = []
@@ -244,6 +246,59 @@ def _other_host_scores(feats, labels):
     return scores
 
 
+# --- breaks: is a host's breath left before a cue? ---
+
+def _breaks(data: Path) -> list[tuple[float, float, float]] | None:
+    """Where the cues cut the voice, as splice() returned them: from breaks.json, or worked out
+    again for a run from before 11-01, with the code as it is now, which may cut elsewhere."""
+    if (data / "breaks.json").exists():
+        return [tuple(b) for b in json.loads((data / "breaks.json").read_text())]
+    print("         no breaks.json (a run from before 11-01): the cuts are worked out again with the code as it is now")
+    from nlnews import chapters, cues
+    from nlnews.models import Briefing, StorySelection
+    script = EpisodeScript.model_validate_json((data / "script.json").read_text())
+    stories = Briefing.model_validate_json((data / "briefing.json").read_text()).stories
+    mood = StorySelection.model_validate_json((data / "selection.json").read_text()).mood
+    placed = cues.plan(script.segments, stories, chapters.find(script, data)[2], date.fromisoformat(data.name), mood)
+    return cues.splice(data, placed, "", cues.first_sentence(script, data), dry=True) if placed else None
+
+
+def check_breaks(data: Path, added: list | None) -> None:
+    """From each break's last word to where the voice is cut for its cue, how long the host breathes.
+    A breath there plays dry before the cue, instead of after it with the next line. Measured
+    plainly, not with the splice's own breath finder, so a miss there shows up here."""
+    import math
+    import numpy as np
+    from nlnews import cues
+    from nlnews.cues import BREATHY, RATE, SPEECH
+    print("Breaks")
+    if added is None:
+        report("warn", "skipped: couldn't work out the breaks")
+        return
+    if not added:
+        report("warn", "skipped: no cues in this episode")
+        return
+    listing = data / "concat.local.txt"
+    listing.write_text("".join(f"file '{p.resolve()}'\n" for p in cues.segment_files(data)))
+    voice = cues._decode("-f", "concat", "-safe", "0", "-i", str(listing))
+    listing.unlink()
+    voice_db, win, hop = cues._loud_db(voice), int(0.01 * RATE), int(0.005 * RATE)
+    left = []
+    for cut, _, _ in added:
+        c = round(cut * RATE)
+        starts = np.arange(max(0, c - int(1.5 * RATE)), c - win, hop)
+        db = np.array([10 * math.log10(np.mean(voice[s: s + win] ** 2) + 1e-12) for s in starts]) - voice_db
+        speech = np.flatnonzero(db > -SPEECH)
+        tail = db[speech[-1] + 1 if len(speech) else 0:]
+        risen = (tail > np.minimum.accumulate(tail) + 6) & (tail > -BREATHY)  # the word's own decay never rises again
+        breathy = np.concatenate([[0], risen, [0]]).astype(int)
+        longest = np.diff(np.flatnonzero(np.diff(breathy)))[::2].max(initial=0) * hop / RATE
+        if longest >= BREATH_LEFT:
+            left.append((cues.shift(cut, added, True), longest))
+    report("FAIL" if left else "ok", f"{len(added) - len(left)} of {len(added)} cues with no breath before them"
+           + "".join(f"; {b:.2f} s of breath before the cue at {_clock(t)}" for t, b in left))
+
+
 def fetch_working_files(day: date, run_id: int | None, tmp: Path) -> Path | None:
     local = DATA_DIR / day.isoformat()
     if (local / "script.json").exists() and any((local / "segments").glob("chunk*.wav")):
@@ -254,11 +309,12 @@ def fetch_working_files(day: date, run_id: int | None, tmp: Path) -> Path | None
     return tmp / day.isoformat() if got.returncode == 0 and (tmp / day.isoformat() / "script.json").exists() else None
 
 
-def check_voices(data: Path, model_name: str) -> None:
+def check_voices(data: Path, model_name: str, added: list | None) -> None:
     print("Voices")
     try:
         import numpy as np
         from faster_whisper import WhisperModel
+        from nlnews import cues
     except ImportError:
         report("FAIL", "needs faster-whisper and numpy: pip install -e .")
         return
@@ -302,7 +358,8 @@ def check_voices(data: Path, model_name: str) -> None:
                 lines.append((None, l.speaker, l.text, 0.0, 0.0, None))
                 continue
             clip = x[int(found[0][1] * sr):int(found[-1][2] * sr)]
-            lines.append((starts[path.name] + found[0][1], l.speaker, l.text, len(found) / owner.count(k), _pitch(clip, sr), _timbre(clip, sr)))
+            at = starts[path.name] + found[0][1]
+            lines.append((cues.shift(at, added, False) if added else at, l.speaker, l.text, len(found) / owner.count(k), _pitch(clip, sr), _timbre(clip, sr)))
     if not lines:
         report("warn", "skipped: no Gemini-voiced chunks to check")
         return
@@ -353,9 +410,7 @@ def main() -> None:
     release = check_release(args.day)
     mp3 = check_feed(args.day, release)
     with tempfile.TemporaryDirectory() as tmp:
-        data = args.data
-        if args.voices and not data:
-            data = fetch_working_files(args.day, run_id, Path(tmp))
+        data = args.data or fetch_working_files(args.day, run_id, Path(tmp))
         words = seen.get("words")
         if data and (data / "script.json").exists():
             script = EpisodeScript.model_validate_json((data / "script.json").read_text())
@@ -364,9 +419,19 @@ def main() -> None:
             mp3 = mp3 or str(data / "episode.mp3")
         if mp3:
             check_audio(mp3, words)
+        added = None
+        if data and (data / "concat.txt").exists():
+            try:
+                added = _breaks(data)
+            except Exception as exc:
+                print(f"         couldn't work out the breaks: {exc}")
+            check_breaks(data, added)
+        else:
+            print("Breaks")
+            report("warn", "skipped: no working files (kept 7 days); pass --data")
         if args.voices:
             if data:
-                check_voices(data, args.model)
+                check_voices(data, args.model, added)
             else:
                 print("Voices")
                 report("FAIL", "no working files: the run's episode-data artifact is gone (kept 7 days); pass --data")
