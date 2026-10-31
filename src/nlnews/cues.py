@@ -240,9 +240,10 @@ def _cut(voice: np.ndarray, t: float, voice_db: float) -> int:
 
 
 def _before_breath(voice: np.ndarray, lo: int, hi: int, voice_db: float) -> int | None:
-    """In voice[lo:hi], from a word's end through a pause, the quiet just before the host's breath,
-    if the breath comes before the pause's quietest point (a word, a quiet, the breath, a deeper quiet,
-    the next word). Picking the quietest point alone would leave that breath before the cue."""
+    """In voice[lo:hi], from a word's end through a pause, the quiet just before the host's breath:
+    a word, a quiet, the breath, a deeper quiet, the next word; or a word, the deepest quiet, the
+    breath, a shallower quiet, the next word (10-31: "...protests today. [breath] The interior
+    minister"). Picking the quietest 40 ms alone would leave that breath before the cue."""
     win, hop = int(0.01 * RATE), int(0.005 * RATE)
     starts = np.arange(max(0, lo), max(lo + 1, min(hi, len(voice)) - win), hop)
     db = np.array([10 * math.log10(np.mean(voice[s: s + win] ** 2) + 1e-12) for s in starts]) - voice_db
@@ -257,6 +258,11 @@ def _before_breath(voice: np.ndarray, lo: int, hi: int, voice_db: float) -> int 
         if j - i >= 8 and i > start and db[start: i].min() < -QUIET:  # 40 ms or more of breath, after a quiet
             return int(starts[start + int(np.argmin(db[start: i]))]) + hop
         i = j + 1
+    if db[q] < -QUIET:  # the breath after the quietest point, before the next word
+        end = next((k for k in range(q, len(db)) if speech[k]), len(db))
+        runs = np.diff(np.flatnonzero(np.diff(np.concatenate([[0], breath[q:end], [0]]).astype(int))))[::2]
+        if len(runs) and runs.max() >= 8:
+            return int(starts[q]) + hop
     return None
 
 
@@ -485,10 +491,11 @@ def _closing(mix: _Mix, voice_db: float, voice_level: float) -> None:
 
 
 def splice(out_dir: Path, cues: list[tuple[float, str]], title: str,
-           split: tuple[float, float, float] | None = None) -> list[tuple[float, float, float]]:
-    """Rebuild episode.mp3 from the voiced files with the cues in. `split` is where the cold open's
-    first sentence ends (first_sentence()). Returns where time was added, as (the cut, the heard
-    start it's for, seconds added), in the voiced audio, for shift()."""
+           split: tuple[float, float, float] | None = None, dry: bool = False) -> list[tuple[float, float, float]]:
+    """Rebuild episode.mp3 from the voiced files with the cues in, and note the breaks in breaks.json
+    for the health check. `split` is where the cold open's first sentence ends (first_sentence()).
+    Returns where time was added, as (the cut, the heard start it's for, seconds added), in the
+    voiced audio, for shift(). With `dry`, only that: nothing is built or written."""
     listing = out_dir / "concat.local.txt"
     listing.write_text("".join(f"file '{p.resolve()}'\n" for p in segment_files(out_dir)))
     voice = _decode("-f", "concat", "-safe", "0", "-i", str(listing))
@@ -507,6 +514,9 @@ def splice(out_dir: Path, cues: list[tuple[float, str]], title: str,
             start = mix.out(_before(voice, mix, cut)) + round((STORY_AFTER - LEAD) * RATE)
             mix.lay(start, cue)
             mix.insert(cut, min(t, len(voice) / RATE), max(0, start + len(cue) - round(UNDER_NEXT * RATE) - mix.out(cut)))
+    if dry:
+        listing.unlink()
+        return mix.added
     out = mix.build()
     pcm = (np.clip(out, -1, 1) * 32767).astype(np.int16).tobytes()
     tmp = out_dir / "episode.cues.mp3"
@@ -514,6 +524,7 @@ def splice(out_dir: Path, cues: list[tuple[float, str]], title: str,
                     "-b:a", "64k", "-metadata", f"title={title}", "-metadata", "artist=Dutch Daily Briefing", str(tmp)],
                    input=pcm, check=True)
     tmp.replace(out_dir / "episode.mp3")
+    (out_dir / "breaks.json").write_text(json.dumps(mix.added))
     listing.unlink()
     return mix.added
 
